@@ -1,54 +1,120 @@
 // styles/themes.ts
-export const themes = {
-  default: {
-    light: {
-      primary: '#3b82f6',
-      secondary: '#10b981',
-      accent: '#f59e0b',
-      success: '#10b981',
-      warning: '#f59e0b',
-      error: '#ef4444',
-      background: '#ffffff',
-      surface: '#f9fafb',
-      text: '#1f2937',
-      textSecondary: '#6b7280',
-      border: '#e5e7eb',
-    },
-    dark: {
-      primary: '#60a5fa',
-      secondary: '#34d399',
-      accent: '#fbbf24',
-      success: '#34d399',
-      warning: '#fbbf24',
-      error: '#f87171',
-      background: '#111827',
-      surface: '#1f2937',
-      text: '#f3f4f6',
-      textSecondary: '#d1d5db',
-      border: '#374151',
-    },
+export type ThemeMode = 'light' | 'dark';
+
+export type ThemeColorKey = 'background' | 'primary' | 'secondary' | 'accent' | 'text';
+
+export type ThemePalette = Record<ThemeColorKey, string>;
+
+type ThemeDefinition = {
+  mode: ThemeMode;
+  label: string;
+  colors: Partial<ThemePalette>;
+};
+
+const modeDefaults: Record<ThemeMode, ThemePalette> = {
+  light: {
+    background: '#dddddd',
+    primary: '#888888',
+    secondary: '#bbbbbb',
+    accent: '#666666',
+    text: '#000000',
   },
-  ocean: {
-    light: {
-      primary: '#0369a1',
-      secondary: '#0891b2',
-      accent: '#06b6d4',
-      // ...
-    },
-    dark: {
-      primary: '#0d4a6e',
-      secondary: '#065f73',
-      accent: '#0b8299',
-      // ...
-    },
-  },
-  forest: {
-    light: {
-      primary: '#15803d',
-      secondary: '#059669',
-      accent: '#10b981',
-      // ...
-    },
-    // ...
+  dark: {
+    background: '#111111',
+    primary: '#666666',
+    secondary: '#444444',
+    accent: '#cccccc',
+    text: '#ffffff',
   },
 };
+
+export const themes = {
+  lightDefault: {
+    mode: 'light',
+    label: 'Light Default',
+    colors: {
+    },
+  },
+  darkDefault: {
+    mode: 'dark',
+    label: 'Dark Default',
+    colors: {
+    },
+  },
+
+  lightHedge: {
+    mode: 'light',
+    label: 'Hedgehog Light',
+    colors: {
+      background: '#ded9ce',
+      primary: '#7c644b',
+      secondary: '#ada390',
+      accent: '#57744f',
+      text: '#27272a',
+    },
+  },
+  lightLynx: {
+    mode: 'light',
+    label: 'Lynx Light',
+    colors: {
+      background: '#dedede',
+      primary: '#9292a5',
+      secondary: '#b4acc3',
+      accent: '#41312a',
+      text: '#0e0907',
+    },
+  },
+  darkForest: {
+    mode: 'dark',
+    label: 'Dark Forest',
+    colors: {
+      background: '#052e16',
+      primary: '#4ade80',
+      secondary: '#22c55e',
+      accent: '#84cc16',
+      text: '#dcfce7',
+    },
+  },
+  darkLynx: {
+    mode: 'dark',
+    label: 'Lynx Dark',
+    colors: {
+      background: '#212121',
+      primary: '#5a5a6d',
+      secondary: '#443c53',
+      accent: '#d5c5be',
+      text: '#f8f3f1',
+    },
+  },
+
+} as const satisfies Record<string, ThemeDefinition>;
+
+export type ThemeName = keyof typeof themes;
+
+export const fallbackThemeByMode: Record<ThemeMode, ThemeName> = {
+  light: 'lightDefault',
+  dark: 'darkDefault',
+};
+
+export function isThemeName(value: string | null): value is ThemeName {
+  if (!value) {
+    return false;
+  }
+
+  return value in themes;
+}
+
+export function resolveTheme(themeName: ThemeName): { mode: ThemeMode; palette: ThemePalette } {
+  const selected = themes[themeName];
+  const fallbackName = fallbackThemeByMode[selected.mode];
+  const fallback = themes[fallbackName];
+
+  return {
+    mode: selected.mode,
+    palette: {
+      ...modeDefaults[selected.mode],
+      ...fallback.colors,
+      ...selected.colors,
+    },
+  };
+}

@@ -1,22 +1,18 @@
 // store/slices/themeSlice.ts
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { themes } from '@/styles/themes';
-
-type ThemeName = 'default' | 'ocean' | 'forest';
-type ThemeMode = 'light' | 'dark';
+import { fallbackThemeByMode, isThemeName, resolveTheme } from '@/styles/themes';
+import type { ThemeName } from '@/styles/themes';
 
 interface ThemeState {
   currentTheme: ThemeName;
-  mode: ThemeMode;
 }
 
-type ThemePalette = Record<string, string>;
-type ThemeCollection = Record<ThemeName, Partial<Record<ThemeMode, ThemePalette>>>;
+const storedTheme = localStorage.getItem('theme');
+const defaultTheme: ThemeName = fallbackThemeByMode.light;
 
 const initialState: ThemeState = {
-  currentTheme: (localStorage.getItem('theme') as ThemeName) || 'default',
-  mode: (localStorage.getItem('themeMode') as ThemeMode) || 'light',
+  currentTheme: isThemeName(storedTheme) ? storedTheme : defaultTheme,
 };
 
 export const themeSlice = createSlice({
@@ -26,33 +22,28 @@ export const themeSlice = createSlice({
     setTheme: (state, action: PayloadAction<ThemeName>) => {
       state.currentTheme = action.payload;
       localStorage.setItem('theme', action.payload);
-      // Actualiza CSS variables (ver más abajo)
-      applyThemeToDom(action.payload, state.mode);
-    },
-    setMode: (state, action: PayloadAction<ThemeMode>) => {
-      state.mode = action.payload;
-      localStorage.setItem('themeMode', action.payload);
-      applyThemeToDom(state.currentTheme, action.payload);
+      applyThemeToDom(action.payload);
     },
   },
 });
 
 // Helper para aplicar tema al DOM
-function applyThemeToDom(theme: ThemeName, mode: ThemeMode) {
+function applyThemeToDom(theme: ThemeName) {
   const root = document.documentElement;
-  root.setAttribute('data-theme', mode === 'dark' ? 'dark' : 'default');
-  
-  // Si tienes múltiples temas, también:
+  const { mode, palette } = resolveTheme(theme);
+
   root.setAttribute('data-palette', theme);
-  
-  // Actualizar CSS variables
-  const typedThemes = themes as ThemeCollection;
-  const palette = typedThemes[theme]?.[mode] ?? typedThemes.default.light ?? {};
+  root.setAttribute('data-theme-mode', mode);
+
   Object.entries(palette).forEach(([key, value]) => {
     const cssVarName = `--color-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
     root.style.setProperty(cssVarName, value);
   });
 }
 
-export const { setTheme, setMode } = themeSlice.actions;
+if (typeof document !== 'undefined') {
+  applyThemeToDom(initialState.currentTheme);
+}
+
+export const { setTheme } = themeSlice.actions;
 export default themeSlice.reducer;
