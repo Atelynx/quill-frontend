@@ -1,0 +1,64 @@
+/* globals.css */
+:root {
+  /* Default theme (light mode) */
+  --color-primary: #3b82f6;
+  --color-secondary: #10b981;
+  --color-accent: #f59e0b;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-background: #ffffff;
+  --color-surface: #f9fafb;
+  --color-text: #1f2937;
+  --color-text-secondary: #6b7280;
+  --color-border: #e5e7eb;
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+  --color-primary: #60a5fa;
+  --color-secondary: #34d399;
+  --color-accent: #fbbf24;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+  --color-background: #111827;
+  --color-surface: #1f2937;
+  --color-text: #f3f4f6;
+  --color-text-secondary: #d1d5db;
+  --color-border: #374151;
+}
+
+/* Ocean theme */
+[data-theme="ocean"] {
+  --color-primary: #0369a1;
+  --color-secondary: #0891b2;
+  --color-accent: #06b6d4;
+  /* ... */
+}
+
+/* Dyslexic font */
+[data-font="dyslexic"] {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif;
+}
+
+/* Reading guide */
+[data-reading-guide="true"]::after {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
