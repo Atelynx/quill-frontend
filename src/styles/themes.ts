@@ -64,17 +64,6 @@ export const themes = {
       text: '#0e0907',
     },
   },
-  darkForest: {
-    mode: 'dark',
-    label: 'Dark Forest',
-    colors: {
-      background: '#052e16',
-      primary: '#4ade80',
-      secondary: '#22c55e',
-      accent: '#84cc16',
-      text: '#dcfce7',
-    },
-  },
   darkLynx: {
     mode: 'dark',
     label: 'Lynx Dark',
