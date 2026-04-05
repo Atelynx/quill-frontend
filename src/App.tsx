@@ -1,12 +1,11 @@
 // import { useState } from 'react'
 import { useEffect } from 'react';
-import { setTheme, setMode } from '@/store/slices/themeSlice';
+import { useAppSelector } from '@/store/hooks';
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Home from './pages/Home'
 import TestPage from './pages/TestPage';
 
 function App() {
-  const dispatch = useAppDispatch();
   const { currentTheme, mode } = useAppSelector((state) => state.theme);
   const { dyslexicFont, readingGuide, highContrast, largeText } = useAppSelector(
     (state) => state.accessibility
@@ -16,11 +15,12 @@ function App() {
     // Aplicar tema al cargar
     const root = document.documentElement;
     root.setAttribute('data-theme', mode === 'dark' ? 'dark' : 'default');
+    root.setAttribute('data-palette', currentTheme);
     root.setAttribute('data-font', dyslexicFont ? 'dyslexic' : 'default');
     root.setAttribute('data-reading-guide', readingGuide.toString());
     root.setAttribute('data-high-contrast', highContrast.toString());
     root.classList.toggle('text-lg', largeText);
-  }, [mode, dyslexicFont, readingGuide, highContrast, largeText]);
+  }, [currentTheme, mode, dyslexicFont, readingGuide, highContrast, largeText]);
 
   return (
     <Routes>

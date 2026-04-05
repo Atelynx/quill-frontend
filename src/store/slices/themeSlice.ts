@@ -1,5 +1,7 @@
 // store/slices/themeSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { themes } from '@/styles/themes';
 
 type ThemeName = 'default' | 'ocean' | 'forest';
 type ThemeMode = 'light' | 'dark';
@@ -8,6 +10,9 @@ interface ThemeState {
   currentTheme: ThemeName;
   mode: ThemeMode;
 }
+
+type ThemePalette = Record<string, string>;
+type ThemeCollection = Record<ThemeName, Partial<Record<ThemeMode, ThemePalette>>>;
 
 const initialState: ThemeState = {
   currentTheme: (localStorage.getItem('theme') as ThemeName) || 'default',
@@ -41,7 +46,8 @@ function applyThemeToDom(theme: ThemeName, mode: ThemeMode) {
   root.setAttribute('data-palette', theme);
   
   // Actualizar CSS variables
-  const palette = themes[theme][mode];
+  const typedThemes = themes as ThemeCollection;
+  const palette = typedThemes[theme]?.[mode] ?? typedThemes.default.light ?? {};
   Object.entries(palette).forEach(([key, value]) => {
     const cssVarName = `--color-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
     root.style.setProperty(cssVarName, value);

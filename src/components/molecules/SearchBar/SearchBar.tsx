@@ -1,4 +1,5 @@
 // components/molecules/SearchBar/SearchBar.tsx
+import React from 'react';
 import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
 
@@ -19,10 +20,15 @@ export const SearchBar = ({ onSearch, placeholder = 'Search...' }: SearchBarProp
       <Input
         placeholder={placeholder}
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
+        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+          if (e.key === 'Enter') {
+            handleSearch();
+          }
+        }}
       />
       <Button onClick={handleSearch} variant="primary">
+        Search
       </Button>
     </div>
   );
