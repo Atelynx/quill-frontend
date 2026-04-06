@@ -1,0 +1,28 @@
+import type { PropsWithChildren } from 'react';
+import { Provider } from 'react-redux';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
+import { store } from '../../store/store';
+import { ThemeProvider } from '../../shared/theme/use-theme';
+import { AuthProvider } from '../auth/hooks/use-auth';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  },
+});
+
+export function AppProviders({ children }: PropsWithChildren) {
+  return (
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </Provider>
+  );
+}

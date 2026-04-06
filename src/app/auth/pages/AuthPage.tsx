@@ -8,14 +8,14 @@ import { ThemeToggle } from '../../../shared/components/ThemeToggle';
 import { useAuth } from '../hooks/use-auth';
 
 const loginSchema = z.object({
-  email: z.email('Ingresa un correo valido.'),
+  email: z.string().email('Ingresa un correo valido.'),
   password: z.string().min(8, 'La contrasena debe tener al menos 8 caracteres.'),
 });
 
 const registerSchema = z
   .object({
     fullName: z.string().min(3, 'Ingresa tu nombre completo.'),
-    email: z.email('Ingresa un correo valido.'),
+    email: z.string().email('Ingresa un correo valido.'),
     password: z
       .string()
       .min(8, 'La contrasena debe tener al menos 8 caracteres.'),

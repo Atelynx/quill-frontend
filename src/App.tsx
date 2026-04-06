@@ -1,22 +1,11 @@
-// import { useState } from 'react'
 import { useEffect } from 'react';
 import { useAppSelector } from '@/store/hooks';
-import { Navigate, useRoutes } from 'react-router-dom'
-import Home from './app/Home'
-import TestPage from './app/TestPage';
-
-function RouterHandler() {
-  return useRoutes([
-    { path: '/home', element: <Home /> },
-    { path: '/test', element: <TestPage /> },
-    { path: '/', element: <Navigate to="/home" replace /> },
-  ]);
-}
+import { AppRouter } from './app/router/AppRouter';
 
 function App() {
   const { currentTheme } = useAppSelector((state) => state.theme);
   const { dyslexicFont, readingGuide, highContrast, largeText } = useAppSelector(
-    (state) => state.accessibility
+    (state) => state.accessibility,
   );
 
   useEffect(() => {
@@ -28,7 +17,8 @@ function App() {
     root.classList.toggle('text-lg', largeText);
   }, [currentTheme, dyslexicFont, readingGuide, highContrast, largeText]);
 
-  return <RouterHandler />;
+  return <AppRouter />;
 }
 
-export default App
+export default App;
+

@@ -1,25 +1,25 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
-import { OrderForm } from '../../orders/components/OrderForm';
-import { OrdersTable } from '../../orders/components/OrdersTable';
-import { PortfolioTable } from '../../portfolio/components/PortfolioTable';
-import { TradesTable } from '../../trades/components/TradesTable';
-import { apiClient } from '../../../shared/api/http';
+import { OrderForm } from '../orders/components/OrderForm';
+import { OrdersTable } from '../orders/components/OrdersTable';
+import { PortfolioTable } from '../portfolio/components/PortfolioTable';
+import { TradesTable } from '../trades/components/TradesTable';
+import { apiClient } from '../../shared/api/http';
 import type {
   OrderRecord,
   PortfolioSummary,
   PricePoint,
   StockQuote,
   TradeRecord,
-} from '../../../shared/api/types';
-import { SectionCard } from '../../../shared/components/SectionCard';
-import { AppShell } from '../../../shared/layout/AppShell';
-import { formatCurrency } from '../../../shared/utils/format';
-import { MarketChart } from '../components/MarketChart';
-import { MarketPulseList } from '../components/MarketPulseList';
-import { MarketTable } from '../components/MarketTable';
-import { SummaryCard } from '../components/SummaryCard';
+} from '../../shared/api/types';
+import { SectionCard } from '../../shared/components/SectionCard';
+import { AppShell } from '../../shared/layout/AppShell';
+import { formatCurrency } from '../../shared/utils/format';
+import { MarketChart } from './components/MarketChart';
+import { MarketPulseList } from './components/MarketPulseList';
+import { MarketTable } from './components/MarketTable';
+import { SummaryCard } from './components/SummaryCard';
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL ?? 'http://localhost:3000';
 
