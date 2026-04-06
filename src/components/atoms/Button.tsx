@@ -19,9 +19,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const variantClasses = {
-      primary: 'bg-primary text-white border border-transparent hover:opacity-90',
-      secondary: 'bg-secondary text-white border border-transparent hover:opacity-90',
-      accent: 'bg-accent text-black border border-transparent hover:opacity-90',
+      primary: 'bg-primary text-text border border-transparent hover:opacity-90',
+      secondary: 'bg-secondary text-text border border-transparent hover:opacity-90',
+      accent: 'bg-accent text-secondary border border-transparent hover:opacity-90',
       ghost: 'bg-secondary opacity-40 border border-text text-text hover:opacity-90 hover:text-white',
     };
 
