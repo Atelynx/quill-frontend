@@ -1,0 +1,35 @@
+/* globals.css */
+:root {
+  /* Fallback palette before Redux applies selected theme */
+  --color-background: #f0f0ff;
+  --color-primary: #6666ff;
+  --color-secondary: #8888ff;
+  --color-accent: #3333ff;
+  --color-text: #000022;
+}
+
+/* Dyslexic font */
+[data-font="dyslexic"] {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif;
+}
+
+/* Reading guide */
+[data-reading-guide="true"]::after {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

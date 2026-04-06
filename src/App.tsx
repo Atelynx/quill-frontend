@@ -1,19 +1,24 @@
-// import { useState } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
-// import NotFound from './pages/NotFound'
-import Home from './pages/Home'
-import TestPage from './pages/TestPage';
+import { useEffect } from 'react';
+import { useAppSelector } from '@/store/hooks';
+import { AppRouter } from './app/router/AppRouter';
 
 function App() {
-  // const [count, setCount] = useState(0)
-
-  return (
-    <Routes>
-      <Route path="/home" element={<Home />} />
-      <Route path="/test" element={<TestPage />} />
-      <Route path="/" element={<Navigate to="/home" replace />} />
-    </Routes>
+  const { currentTheme } = useAppSelector((state) => state.theme);
+  const { dyslexicFont, readingGuide, highContrast, largeText } = useAppSelector(
+    (state) => state.accessibility,
   );
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-palette', currentTheme);
+    root.setAttribute('data-font', dyslexicFont ? 'dyslexic' : 'default');
+    root.setAttribute('data-reading-guide', readingGuide.toString());
+    root.setAttribute('data-high-contrast', highContrast.toString());
+    root.classList.toggle('text-lg', largeText);
+  }, [currentTheme, dyslexicFont, readingGuide, highContrast, largeText]);
+
+  return <AppRouter />;
 }
 
-export default App
+export default App;
+

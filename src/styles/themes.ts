@@ -1,0 +1,109 @@
+// styles/themes.ts
+export type ThemeMode = 'light' | 'dark';
+
+export type ThemeColorKey = 'background' | 'primary' | 'secondary' | 'accent' | 'text';
+
+export type ThemePalette = Record<ThemeColorKey, string>;
+
+type ThemeDefinition = {
+  mode: ThemeMode;
+  label: string;
+  colors: Partial<ThemePalette>;
+};
+
+const modeDefaults: Record<ThemeMode, ThemePalette> = {
+  light: {
+    background: '#dddddd',
+    primary: '#888888',
+    secondary: '#bbbbbb',
+    accent: '#666666',
+    text: '#000000',
+  },
+  dark: {
+    background: '#111111',
+    primary: '#666666',
+    secondary: '#444444',
+    accent: '#cccccc',
+    text: '#ffffff',
+  },
+};
+
+export const themes = {
+  lightDefault: {
+    mode: 'light',
+    label: 'Light Default',
+    colors: {
+    },
+  },
+  darkDefault: {
+    mode: 'dark',
+    label: 'Dark Default',
+    colors: {
+    },
+  },
+
+  lightHedge: {
+    mode: 'light',
+    label: 'Hedgehog Light',
+    colors: {
+      background: '#ded9ce',
+      primary: '#7c644b',
+      secondary: '#ada390',
+      accent: '#57744f',
+      text: '#27272a',
+    },
+  },
+  lightLynx: {
+    mode: 'light',
+    label: 'Lynx Light',
+    colors: {
+      background: '#dedede',
+      primary: '#9292a5',
+      secondary: '#b4acc3',
+      accent: '#41312a',
+      text: '#0e0907',
+    },
+  },
+  darkLynx: {
+    mode: 'dark',
+    label: 'Lynx Dark',
+    colors: {
+      background: '#212121',
+      primary: '#5a5a6d',
+      secondary: '#443c53',
+      accent: '#d5c5be',
+      text: '#f8f3f1',
+    },
+  },
+
+} as const satisfies Record<string, ThemeDefinition>;
+
+export type ThemeName = keyof typeof themes;
+
+export const fallbackThemeByMode: Record<ThemeMode, ThemeName> = {
+  light: 'lightDefault',
+  dark: 'darkDefault',
+};
+
+export function isThemeName(value: string | null): value is ThemeName {
+  if (!value) {
+    return false;
+  }
+
+  return value in themes;
+}
+
+export function resolveTheme(themeName: ThemeName): { mode: ThemeMode; palette: ThemePalette } {
+  const selected = themes[themeName];
+  const fallbackName = fallbackThemeByMode[selected.mode];
+  const fallback = themes[fallbackName];
+
+  return {
+    mode: selected.mode,
+    palette: {
+      ...modeDefaults[selected.mode],
+      ...fallback.colors,
+      ...selected.colors,
+    },
+  };
+}
