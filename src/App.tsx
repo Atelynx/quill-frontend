@@ -1,9 +1,17 @@
 // import { useState } from 'react'
 import { useEffect } from 'react';
 import { useAppSelector } from '@/store/hooks';
-import { Routes, Route, Navigate } from 'react-router-dom'
-import Home from './pages/Home'
-import TestPage from './pages/TestPage';
+import { Navigate, useRoutes } from 'react-router-dom'
+import Home from './app/Home'
+import TestPage from './app/TestPage';
+
+function RouterHandler() {
+  return useRoutes([
+    { path: '/home', element: <Home /> },
+    { path: '/test', element: <TestPage /> },
+    { path: '/', element: <Navigate to="/home" replace /> },
+  ]);
+}
 
 function App() {
   const { currentTheme } = useAppSelector((state) => state.theme);
@@ -20,13 +28,7 @@ function App() {
     root.classList.toggle('text-lg', largeText);
   }, [currentTheme, dyslexicFont, readingGuide, highContrast, largeText]);
 
-  return (
-    <Routes>
-      <Route path="/home" element={<Home />} />
-      <Route path="/test" element={<TestPage />} />
-      <Route path="/" element={<Navigate to="/home" replace />} />
-    </Routes>
-  );
+  return <RouterHandler />;
 }
 
 export default App
