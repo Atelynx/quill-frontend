@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import { useAuth } from '../../app/auth/hooks/use-auth';
 import { ThemeToggle } from '../components/ThemeToggle';
+import './app-shell.css';
 
 interface AppShellProps extends PropsWithChildren {
   title: string;
