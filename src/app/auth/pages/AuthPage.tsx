@@ -6,6 +6,7 @@ import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
 import { PasswordField } from '../../../shared/components/PasswordField';
 import { ThemeToggle } from '../../../shared/components/ThemeToggle';
 import { useAuth } from '../hooks/use-auth';
+import '../auth-page.css';
 
 const loginSchema = z.object({
   email: z.string().email('Ingresa un correo valido.'),

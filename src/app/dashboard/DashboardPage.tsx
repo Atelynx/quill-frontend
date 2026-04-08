@@ -20,6 +20,8 @@ import { MarketChart } from './components/MarketChart';
 import { MarketPulseList } from './components/MarketPulseList';
 import { MarketTable } from './components/MarketTable';
 import { SummaryCard } from './components/SummaryCard';
+import './dashboard-data-display.css';
+import './dashboard-page.css';
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL ?? 'http://localhost:3000';
 
