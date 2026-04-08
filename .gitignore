@@ -27,3 +27,7 @@ dist-ssr
 *./node_modules/
 
 temp/*
+
+.env
+*.env.*
+!.env.example
