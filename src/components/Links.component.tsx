@@ -13,6 +13,10 @@ export default function PagesBar() {
         className="block bg-secondary rounded px-2 py-1 hover:text-text">
         Test
       </Link>
+      <Link to="/auth"
+        className="block bg-secondary rounded px-2 py-1 hover:text-text">
+        Quill Login (Actual Project)
+      </Link>
     </nav>
   );
 };

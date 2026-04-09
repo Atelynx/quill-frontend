@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
 import { PasswordField } from '../../../shared/components/PasswordField';
@@ -36,7 +37,14 @@ export function AuthPage() {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const { login, register } = useAuth();
+  const navigate = useNavigate();
+  const { login, register, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -57,6 +65,7 @@ export function AuthPage() {
     try {
       setErrorMessage(null);
       await login(values);
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       setErrorMessage(
         getApiErrorMessage(
