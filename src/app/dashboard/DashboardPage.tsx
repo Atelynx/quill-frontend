@@ -24,6 +24,152 @@ import './dashboard-data-display.css';
 import './dashboard-page.css';
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL ?? 'http://localhost:3000';
+const ENABLE_STUBS =
+  String(import.meta.env.VITE_USE_STUBS ?? import.meta.env.USE_STUBS ?? 'false').toLowerCase() ===
+  'true';
+
+const STUB_QUOTES: StockQuote[] = [
+  {
+    symbol: 'AAPL',
+    name: 'Apple Inc.',
+    sector: 'Technology',
+    currency: 'USD',
+    currentPrice: 193.12,
+    previousClose: 190.42,
+    dayChangePercentage: 1.42,
+  },
+  {
+    symbol: 'MSFT',
+    name: 'Microsoft Corp.',
+    sector: 'Technology',
+    currency: 'USD',
+    currentPrice: 421.64,
+    previousClose: 425.11,
+    dayChangePercentage: -0.82,
+  },
+  {
+    symbol: 'TSLA',
+    name: 'Tesla Inc.',
+    sector: 'Automotive',
+    currency: 'USD',
+    currentPrice: 176.33,
+    previousClose: 171.2,
+    dayChangePercentage: 3,
+  },
+  {
+    symbol: 'AMZN',
+    name: 'Amazon.com Inc.',
+    sector: 'Consumer Discretionary',
+    currency: 'USD',
+    currentPrice: 182.44,
+    previousClose: 183.18,
+    dayChangePercentage: -0.4,
+  },
+];
+
+const STUB_PORTFOLIO: PortfolioSummary = {
+  availableBalance: 1_250_000,
+  reservedBalance: 25_000,
+  investedValue: 675_000,
+  totalEquity: 1_925_000,
+  unrealizedProfitLoss: 48_320,
+  positions: [
+    {
+      symbol: 'AAPL',
+      quantity: 120,
+      reservedQuantity: 0,
+      averageCost: 182.5,
+      marketPrice: 193.12,
+      marketValue: 23_174.4,
+      unrealizedProfitLoss: 1_274.4,
+    },
+    {
+      symbol: 'MSFT',
+      quantity: 40,
+      reservedQuantity: 0,
+      averageCost: 410,
+      marketPrice: 421.64,
+      marketValue: 16_865.6,
+      unrealizedProfitLoss: 465.6,
+    },
+    {
+      symbol: 'TSLA',
+      quantity: 75,
+      reservedQuantity: 10,
+      averageCost: 168,
+      marketPrice: 176.33,
+      marketValue: 13_224.75,
+      unrealizedProfitLoss: 624.75,
+    },
+  ],
+};
+
+const STUB_ORDERS: OrderRecord[] = [
+  {
+    _id: 'order-1',
+    symbol: 'AAPL',
+    side: 'BUY',
+    quantity: 20,
+    limitPrice: 191,
+    status: 'PENDING',
+    createdAt: new Date(Date.now() - 1000 * 60 * 40).toISOString(),
+  },
+  {
+    _id: 'order-2',
+    symbol: 'TSLA',
+    side: 'SELL',
+    quantity: 10,
+    limitPrice: 179,
+    status: 'PENDING',
+    createdAt: new Date(Date.now() - 1000 * 60 * 18).toISOString(),
+  },
+];
+
+const STUB_TRADES: TradeRecord[] = [
+  {
+    _id: 'trade-1',
+    symbol: 'MSFT',
+    side: 'BUY',
+    quantity: 10,
+    executionPrice: 420.25,
+    grossAmount: 4202.5,
+    commissionAmount: 6.5,
+    netAmount: 4209,
+    executedAt: new Date(Date.now() - 1000 * 60 * 12).toISOString(),
+  },
+  {
+    _id: 'trade-2',
+    symbol: 'AAPL',
+    side: 'SELL',
+    quantity: 5,
+    executionPrice: 194.2,
+    grossAmount: 971,
+    commissionAmount: 2.2,
+    netAmount: 968.8,
+    executedAt: new Date(Date.now() - 1000 * 60 * 4).toISOString(),
+  },
+];
+
+function buildStubHistory(symbol: string): PricePoint[] {
+  const baseBySymbol: Record<string, number> = {
+    AAPL: 193.12,
+    MSFT: 421.64,
+    TSLA: 176.33,
+    AMZN: 182.44,
+  };
+  const base = baseBySymbol[symbol] ?? 100;
+
+  return Array.from({ length: 24 }, (_, index) => {
+    const minuteOffset = 24 - index;
+    const swing = Math.sin(index / 3) * (base * 0.008);
+
+    return {
+      symbol,
+      price: Number((base + swing).toFixed(2)),
+      createdAt: new Date(Date.now() - minuteOffset * 60_000).toISOString(),
+    };
+  });
+}
 
 export function DashboardPage() {
   const queryClient = useQueryClient();
@@ -35,6 +181,8 @@ export function DashboardPage() {
 
   const portfolioQuery = useQuery({
     queryKey: ['portfolio-summary'],
+    enabled: !ENABLE_STUBS,
+    initialData: ENABLE_STUBS ? STUB_PORTFOLIO : undefined,
     queryFn: async () => {
       const { data } = await apiClient.get<PortfolioSummary>('/portfolio/summary');
       return data;
@@ -43,6 +191,8 @@ export function DashboardPage() {
 
   const marketQuery = useQuery({
     queryKey: ['market-stocks'],
+    enabled: !ENABLE_STUBS,
+    initialData: ENABLE_STUBS ? STUB_QUOTES : undefined,
     queryFn: async () => {
       const { data } = await apiClient.get<StockQuote[]>('/market/stocks');
       return data;
@@ -51,6 +201,8 @@ export function DashboardPage() {
 
   const ordersQuery = useQuery({
     queryKey: ['orders'],
+    enabled: !ENABLE_STUBS,
+    initialData: ENABLE_STUBS ? STUB_ORDERS : undefined,
     queryFn: async () => {
       const { data } = await apiClient.get<OrderRecord[]>('/orders?status=PENDING');
       return data;
@@ -59,6 +211,8 @@ export function DashboardPage() {
 
   const tradesQuery = useQuery({
     queryKey: ['trades'],
+    enabled: !ENABLE_STUBS,
+    initialData: ENABLE_STUBS ? STUB_TRADES : undefined,
     queryFn: async () => {
       const { data } = await apiClient.get<TradeRecord[]>('/trades?limit=8');
       return data;
@@ -72,13 +226,14 @@ export function DashboardPage() {
 
   const historyQuery = useQuery({
     queryKey: ['market-history', activeSymbol],
+    enabled: !ENABLE_STUBS && Boolean(activeSymbol),
+    initialData: ENABLE_STUBS ? buildStubHistory(activeSymbol) : undefined,
     queryFn: async () => {
       const { data } = await apiClient.get<PricePoint[]>(
         `/market/stocks/${activeSymbol}/history?limit=24`,
       );
       return data;
     },
-    enabled: Boolean(activeSymbol),
   });
 
   useEffect(() => {
@@ -90,6 +245,10 @@ export function DashboardPage() {
   }, [quotes]);
 
   useEffect(() => {
+    if (ENABLE_STUBS) {
+      return;
+    }
+
     const socket = io(socketUrl, {
       transports: ['websocket'],
     });
