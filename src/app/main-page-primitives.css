@@ -31,7 +31,7 @@
   letter-spacing: 0.16em;
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--main-page-accent-strong);
+  color: var(--color-text);
 }
 
 .loading-screen {
