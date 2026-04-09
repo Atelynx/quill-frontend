@@ -23,10 +23,10 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
           </p>
         </div>
 
-        <div className="sidebar-card">
+        <div className="sidebar-card sidebar-card--account">
           <span className="sidebar-card__label">Cuenta activa</span>
-          <strong>{user?.fullName}</strong>
-          <small>{user?.email}</small>
+          <strong className="sidebar-card__account-name">{user?.fullName}</strong>
+          <small className="sidebar-card__account-email">{user?.email}</small>
         </div>
 
         <div className="sidebar-card">

@@ -50,6 +50,16 @@
   color: var(--main-page-inverse-text-muted);
 }
 
+.sidebar-card--account {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.sidebar-card__account-name,
+.sidebar-card__account-email {
+  display: block;
+}
+
 .sidebar-list {
   margin: 0;
   padding-left: 1rem;
