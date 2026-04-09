@@ -75,6 +75,17 @@ export const themes = {
       text: '#f8f3f1',
     },
   },
+  darkOcean: {
+    mode: 'dark',
+    label: 'Ocean Dark',
+    colors: {
+      background: '#091020',
+      primary: '#2aa1ad',
+      secondary: '#174269',
+      accent: '#f48e6b',
+      text: '#f8f6f1',
+    },
+  },
 
 } as const satisfies Record<string, ThemeDefinition>;
 
