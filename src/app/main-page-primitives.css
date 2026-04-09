@@ -1,6 +1,5 @@
 :root {
-  --main-page-surface: color-mix(in srgb, var(--color-background) 86%, white 14%);
-  --main-page-surface-strong: color-mix(in srgb, var(--color-background) 78%, white 22%);
+  --main-page-surface: var(--color-background);
   --main-page-surface-soft: color-mix(in srgb, var(--color-background) 92%, var(--color-primary) 8%);
   --main-page-surface-muted: color-mix(in srgb, var(--color-background) 80%, transparent 20%);
   --main-page-border: color-mix(in srgb, var(--color-text) 14%, transparent);
@@ -73,7 +72,7 @@
 .theme-toggle {
   background: linear-gradient(
     180deg,
-    var(--main-page-surface-strong),
+    var(--main-page-surface),
     var(--main-page-surface-soft)
   );
   color: var(--color-text);

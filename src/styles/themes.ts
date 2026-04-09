@@ -68,7 +68,7 @@ export const themes = {
     mode: 'dark',
     label: 'Lynx Dark',
     colors: {
-      background: '#212121',
+      background: '#16161c',
       primary: '#5a5a6d',
       secondary: '#443c53',
       accent: '#d5c5be',
@@ -79,7 +79,7 @@ export const themes = {
     mode: 'dark',
     label: 'Ocean Dark',
     colors: {
-      background: '#091020',
+      background: '#041030',
       primary: '#2aa1ad',
       secondary: '#174269',
       accent: '#f48e6b',
