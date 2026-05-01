@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useAppSelector } from '@/store/hooks';
 import { AppRouter } from './app/router/AppRouter';
+import { ErrorBoundary } from './shared/components/ErrorBoundary';
 import './app/main-page-forms.css';
 import './app/main-page-primitives.css';
 
@@ -19,7 +20,11 @@ function App() {
     root.classList.toggle('text-lg', largeText);
   }, [currentTheme, dyslexicFont, readingGuide, highContrast, largeText]);
 
-  return <AppRouter />;
+  return (
+    <ErrorBoundary>
+      <AppRouter />
+    </ErrorBoundary>
+  );
 }
 
 export default App;
