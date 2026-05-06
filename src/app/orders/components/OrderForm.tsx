@@ -1,20 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { z } from 'zod';
+import { useCreateOrderMutation } from '../../../shared/api/hooks';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
-import { apiClient } from '../../../shared/api/http';
-import type { StockQuote } from '../../../shared/api/types';
+import { CreateOrderInputSchema } from '../../../shared/api/validators';
+import type { StockQuote } from '../../../shared/api/validators';
 
-const schema = z.object({
-  symbol: z.string().min(1),
-  side: z.enum(['BUY', 'SELL']),
-  quantity: z.number().int().positive(),
-  limitPrice: z.number().positive(),
-});
-
-type FormValues = z.infer<typeof schema>;
+type FormValues = {
+  symbol: string;
+  side: 'BUY' | 'SELL';
+  quantity: number;
+  limitPrice: number;
+};
 
 interface OrderFormProps {
   quotes: StockQuote[];
@@ -22,10 +19,11 @@ interface OrderFormProps {
 }
 
 export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
-  const queryClient = useQueryClient();
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const orderMutation = useCreateOrderMutation();
+  
   const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(CreateOrderInputSchema),
     defaultValues: {
       symbol: selectedSymbol,
       side: 'BUY',
@@ -43,18 +41,13 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
     );
   }, [form, quotes, selectedSymbol]);
 
-  const orderMutation = useMutation({
-    mutationFn: async (values: FormValues) => {
-      setFeedbackMessage(null);
-      await apiClient.post('/orders', values);
-    },
-    onSuccess: () => {
+  const handleSubmit = async (values: FormValues) => {
+    setFeedbackMessage(null);
+    try {
+      await orderMutation.mutateAsync(values);
       setFeedbackMessage(
         'Orden registrada. Quedara pendiente hasta que el mercado cumpla la condicion.',
       );
-      void queryClient.invalidateQueries({ queryKey: ['portfolio-summary'] });
-      void queryClient.invalidateQueries({ queryKey: ['orders'] });
-      void queryClient.invalidateQueries({ queryKey: ['trades'] });
       form.reset({
         symbol: selectedSymbol,
         side: 'BUY',
@@ -62,8 +55,10 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
         limitPrice:
           quotes.find((quote) => quote.symbol === selectedSymbol)?.currentPrice ?? 0,
       });
-    },
-  });
+    } catch (error) {
+      console.error('[OrderForm] Error submitting order:', error);
+    }
+  };
 
   const currentQuote = quotes.find((quote) => quote.symbol === selectedSymbol);
   const selectedSide = useWatch({
@@ -74,7 +69,7 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
   return (
     <form
       className="order-form"
-      onSubmit={form.handleSubmit((values) => orderMutation.mutate(values))}
+      onSubmit={form.handleSubmit(handleSubmit)}
     >
       <div className="inline-note">
         <strong>Precio actual</strong>

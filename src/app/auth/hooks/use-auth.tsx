@@ -5,14 +5,17 @@ import {
   useState,
 } from 'react';
 import type { PropsWithChildren } from 'react';
-import { apiClient } from '../../../shared/api/http';
+import {
+  useLoginMutation,
+  useRegisterMutation,
+} from '../../../shared/api/hooks';
 import type {
   AuthResponse,
   LoginInput,
   RegisterResponse,
   RegisterInput,
   UserProfile,
-} from '../../../shared/api/types';
+} from '../../../shared/api/validators';
 
 const STORAGE_KEY = 'quill_auth';
 const ENABLE_STUB_AUTH =
@@ -54,7 +57,7 @@ function createStubSession(): AuthResponse {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 function readStoredState(): StoredAuthState | null {
-  const raw = localStorage.getItem(STORAGE_KEY);
+  const raw = sessionStorage.getItem(STORAGE_KEY);
 
   if (!raw) {
     return null;
@@ -63,13 +66,15 @@ function readStoredState(): StoredAuthState | null {
   try {
     return JSON.parse(raw) as StoredAuthState;
   } catch {
-    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(STORAGE_KEY);
     return null;
   }
 }
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const [authState, setAuthState] = useState<StoredAuthState | null>(() => readStoredState());
+  const loginMutation = useLoginMutation();
+  const registerMutation = useRegisterMutation();
 
   const persistSession = (session: AuthResponse) => {
     const nextState = {
@@ -77,7 +82,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       user: session.user,
     };
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
     setAuthState(nextState);
   };
 
@@ -96,8 +101,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
       return;
     }
 
-    const { data } = await apiClient.post<AuthResponse>('/auth/login', input);
-    persistSession(data);
+    const response = await loginMutation.mutateAsync(input);
+    persistSession(response);
   };
 
   const register = async (input: RegisterInput) => {
@@ -108,12 +113,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
       };
     }
 
-    const { data } = await apiClient.post<RegisterResponse>('/auth/register', input);
-    return data;
+    return await registerMutation.mutateAsync(input);
   };
 
   const logout = () => {
-    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(STORAGE_KEY);
     setAuthState(null);
   };
 

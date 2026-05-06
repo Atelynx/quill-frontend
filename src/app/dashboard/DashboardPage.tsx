@@ -1,18 +1,25 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 import { OrderForm } from '../orders/components/OrderForm';
 import { OrdersTable } from '../orders/components/OrdersTable';
 import { PortfolioTable } from '../portfolio/components/PortfolioTable';
 import { TradesTable } from '../trades/components/TradesTable';
-import { apiClient } from '../../shared/api/http';
+import {
+  usePortfolioSummary,
+  useMarketStocks,
+  usePendingOrders,
+  useRecentTrades,
+  useStockHistory,
+} from '../../shared/api/hooks';
+import { useAuth } from '../auth/hooks/use-auth';
 import type {
   OrderRecord,
   PortfolioSummary,
   PricePoint,
   StockQuote,
   TradeRecord,
-} from '../../shared/api/types';
+} from '../../shared/api/validators';
 import { SectionCard } from '../../shared/components/SectionCard';
 import { AppShell } from '../../shared/layout/AppShell';
 import { formatCurrency } from '../../shared/utils/format';
@@ -173,68 +180,25 @@ function buildStubHistory(symbol: string): PricePoint[] {
 
 export function DashboardPage() {
   const queryClient = useQueryClient();
+  const { token } = useAuth();
   const previousPricesRef = useRef<Record<string, number>>({});
   const [movementBySymbol, setMovementBySymbol] = useState<
     Record<string, 'up' | 'down' | 'steady'>
   >({});
   const [selectedSymbol, setSelectedSymbol] = useState('AAPL');
 
-  const portfolioQuery = useQuery({
-    queryKey: ['portfolio-summary'],
-    enabled: !ENABLE_STUBS,
-    initialData: ENABLE_STUBS ? STUB_PORTFOLIO : undefined,
-    queryFn: async () => {
-      const { data } = await apiClient.get<PortfolioSummary>('/portfolio/summary');
-      return data;
-    },
-  });
-
-  const marketQuery = useQuery({
-    queryKey: ['market-stocks'],
-    enabled: !ENABLE_STUBS,
-    initialData: ENABLE_STUBS ? STUB_QUOTES : undefined,
-    queryFn: async () => {
-      const { data } = await apiClient.get<StockQuote[]>('/market/stocks');
-      return data;
-    },
-  });
-
-  const ordersQuery = useQuery({
-    queryKey: ['orders'],
-    enabled: !ENABLE_STUBS,
-    initialData: ENABLE_STUBS ? STUB_ORDERS : undefined,
-    queryFn: async () => {
-      const { data } = await apiClient.get<OrderRecord[]>('/orders?status=PENDING');
-      return data;
-    },
-  });
-
-  const tradesQuery = useQuery({
-    queryKey: ['trades'],
-    enabled: !ENABLE_STUBS,
-    initialData: ENABLE_STUBS ? STUB_TRADES : undefined,
-    queryFn: async () => {
-      const { data } = await apiClient.get<TradeRecord[]>('/trades?limit=8');
-      return data;
-    },
-  });
+  // Use custom hooks for data fetching
+  const portfolioQuery = usePortfolioSummary();
+  const marketQuery = useMarketStocks();
+  const ordersQuery = usePendingOrders();
+  const tradesQuery = useRecentTrades(8);
 
   const quotes = useMemo(() => marketQuery.data ?? [], [marketQuery.data]);
   const activeSymbol = quotes.find((quote) => quote.symbol === selectedSymbol)
     ? selectedSymbol
     : quotes[0]?.symbol ?? selectedSymbol;
 
-  const historyQuery = useQuery({
-    queryKey: ['market-history', activeSymbol],
-    enabled: !ENABLE_STUBS && Boolean(activeSymbol),
-    initialData: ENABLE_STUBS ? buildStubHistory(activeSymbol) : undefined,
-    queryFn: async () => {
-      const { data } = await apiClient.get<PricePoint[]>(
-        `/market/stocks/${activeSymbol}/history?limit=24`,
-      );
-      return data;
-    },
-  });
+  const historyQuery = useStockHistory(activeSymbol, 24);
 
   useEffect(() => {
     for (const quote of quotes) {
@@ -251,6 +215,9 @@ export function DashboardPage() {
 
     const socket = io(socketUrl, {
       transports: ['websocket'],
+      auth: {
+        token: token || undefined,
+      },
     });
 
     socket.on('market.quotes', (incomingQuotes: StockQuote[]) => {
