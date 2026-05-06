@@ -32,6 +32,8 @@ export function MarketChart({ data, symbol }: MarketChartProps) {
   const tooltipShadow =
     styles.getPropertyValue('--tooltip-shadow').trim() ||
     '0 18px 34px rgba(16, 35, 58, 0.12)';
+  const tooltipText =
+    'rgba(16, 35, 58, 1)';
 
   return (
     <div className="chart-container">
@@ -72,7 +74,7 @@ export function MarketChart({ data, symbol }: MarketChartProps) {
               `${symbol} · ${new Date(value).toLocaleString('es-CL')}`
             }
             labelStyle={{
-              color: theme === 'light' ? '#10233a' : '#edf3fb',
+              color: tooltipText,
               fontWeight: 700,
             }}
           />
