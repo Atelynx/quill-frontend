@@ -14,11 +14,8 @@ import {
 } from '../../shared/api/hooks';
 import { useAuth } from '../auth/hooks/use-auth';
 import type {
-  OrderRecord,
-  PortfolioSummary,
   PricePoint,
   StockQuote,
-  TradeRecord,
 } from '../../shared/api/validators';
 import { SectionCard } from '../../shared/components/SectionCard';
 import { AppShell } from '../../shared/layout/AppShell';
@@ -35,148 +32,7 @@ const ENABLE_STUBS =
   String(import.meta.env.VITE_USE_STUBS ?? import.meta.env.USE_STUBS ?? 'false').toLowerCase() ===
   'true';
 
-const STUB_QUOTES: StockQuote[] = [
-  {
-    symbol: 'AAPL',
-    name: 'Apple Inc.',
-    sector: 'Technology',
-    currency: 'USD',
-    currentPrice: 193.12,
-    previousClose: 190.42,
-    dayChangePercentage: 1.42,
-  },
-  {
-    symbol: 'MSFT',
-    name: 'Microsoft Corp.',
-    sector: 'Technology',
-    currency: 'USD',
-    currentPrice: 421.64,
-    previousClose: 425.11,
-    dayChangePercentage: -0.82,
-  },
-  {
-    symbol: 'TSLA',
-    name: 'Tesla Inc.',
-    sector: 'Automotive',
-    currency: 'USD',
-    currentPrice: 176.33,
-    previousClose: 171.2,
-    dayChangePercentage: 3,
-  },
-  {
-    symbol: 'AMZN',
-    name: 'Amazon.com Inc.',
-    sector: 'Consumer Discretionary',
-    currency: 'USD',
-    currentPrice: 182.44,
-    previousClose: 183.18,
-    dayChangePercentage: -0.4,
-  },
-];
-
-const STUB_PORTFOLIO: PortfolioSummary = {
-  availableBalance: 1_250_000,
-  reservedBalance: 25_000,
-  investedValue: 675_000,
-  totalEquity: 1_925_000,
-  unrealizedProfitLoss: 48_320,
-  positions: [
-    {
-      symbol: 'AAPL',
-      quantity: 120,
-      reservedQuantity: 0,
-      averageCost: 182.5,
-      marketPrice: 193.12,
-      marketValue: 23_174.4,
-      unrealizedProfitLoss: 1_274.4,
-    },
-    {
-      symbol: 'MSFT',
-      quantity: 40,
-      reservedQuantity: 0,
-      averageCost: 410,
-      marketPrice: 421.64,
-      marketValue: 16_865.6,
-      unrealizedProfitLoss: 465.6,
-    },
-    {
-      symbol: 'TSLA',
-      quantity: 75,
-      reservedQuantity: 10,
-      averageCost: 168,
-      marketPrice: 176.33,
-      marketValue: 13_224.75,
-      unrealizedProfitLoss: 624.75,
-    },
-  ],
-};
-
-const STUB_ORDERS: OrderRecord[] = [
-  {
-    _id: 'order-1',
-    symbol: 'AAPL',
-    side: 'BUY',
-    quantity: 20,
-    limitPrice: 191,
-    status: 'PENDING',
-    createdAt: new Date(Date.now() - 1000 * 60 * 40).toISOString(),
-  },
-  {
-    _id: 'order-2',
-    symbol: 'TSLA',
-    side: 'SELL',
-    quantity: 10,
-    limitPrice: 179,
-    status: 'PENDING',
-    createdAt: new Date(Date.now() - 1000 * 60 * 18).toISOString(),
-  },
-];
-
-const STUB_TRADES: TradeRecord[] = [
-  {
-    _id: 'trade-1',
-    symbol: 'MSFT',
-    side: 'BUY',
-    quantity: 10,
-    executionPrice: 420.25,
-    grossAmount: 4202.5,
-    commissionAmount: 6.5,
-    netAmount: 4209,
-    executedAt: new Date(Date.now() - 1000 * 60 * 12).toISOString(),
-  },
-  {
-    _id: 'trade-2',
-    symbol: 'AAPL',
-    side: 'SELL',
-    quantity: 5,
-    executionPrice: 194.2,
-    grossAmount: 971,
-    commissionAmount: 2.2,
-    netAmount: 968.8,
-    executedAt: new Date(Date.now() - 1000 * 60 * 4).toISOString(),
-  },
-];
-
-function buildStubHistory(symbol: string): PricePoint[] {
-  const baseBySymbol: Record<string, number> = {
-    AAPL: 193.12,
-    MSFT: 421.64,
-    TSLA: 176.33,
-    AMZN: 182.44,
-  };
-  const base = baseBySymbol[symbol] ?? 100;
-
-  return Array.from({ length: 24 }, (_, index) => {
-    const minuteOffset = 24 - index;
-    const swing = Math.sin(index / 3) * (base * 0.008);
-
-    return {
-      symbol,
-      price: Number((base + swing).toFixed(2)),
-      createdAt: new Date(Date.now() - minuteOffset * 60_000).toISOString(),
-    };
-  });
-}
+import { STUB_QUOTES, STUB_PORTFOLIO, STUB_ORDERS, STUB_TRADES, buildStubHistory } from './stubs';
 
 export function DashboardPage() {
   const queryClient = useQueryClient();
@@ -207,6 +63,31 @@ export function DashboardPage() {
       }
     }
   }, [quotes]);
+
+  useEffect(() => {
+    if (!ENABLE_STUBS) return;
+
+    // Seed react-query cache with stub data so hooks return immediately
+    queryClient.setQueryData(['market', 'stocks'], STUB_QUOTES);
+    queryClient.setQueryData(['market-stocks'], STUB_QUOTES); // legacy key compatibility
+    queryClient.setQueryData(['portfolio', 'summary'], STUB_PORTFOLIO);
+    queryClient.setQueryData(['orders', 'pending'], STUB_ORDERS);
+    queryClient.setQueryData(['trades', 'recent', 8], STUB_TRADES);
+
+    for (const q of STUB_QUOTES) {
+      const history = buildStubHistory(q.symbol, 24);
+      queryClient.setQueryData(['market', 'history', q.symbol, 24], history);
+      queryClient.setQueryData(['market-history', q.symbol], history); // legacy key
+      previousPricesRef.current[q.symbol] = q.currentPrice;
+    }
+
+    setMovementBySymbol(
+      Object.fromEntries(STUB_QUOTES.map((q) => [q.symbol, 'steady'])) as Record<
+        string,
+        'up' | 'down' | 'steady'
+      >,
+    );
+  }, [queryClient]);
 
   useEffect(() => {
     if (ENABLE_STUBS) {
