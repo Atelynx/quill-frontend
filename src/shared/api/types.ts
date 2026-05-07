@@ -31,16 +31,16 @@ export interface StockQuote {
   name: string;
   currency: string;
   close: number;
-  open: number;
-  high: number;
-  low: number;
+  open?: number;
+  high?: number;
+  low?: number;
   previousClose: number;
   dayChangePercentage: number;
-  source: string;
-  volume: number;
-  lastMarketDate: string;
-  createdAt: string;
-  updatedAt: string;
+  source?: string;
+  volume?: number;
+  lastMarketDate?: string;
+  createdAt?: string;
+  updatedAt?: string;
   sector?: string;
 }
 
