@@ -21,7 +21,6 @@ export function MarketTable({
           <tr>
             <th>Simbolo</th>
             <th>Empresa</th>
-            <th>Sector</th>
             <th>Precio</th>
             <th>Variacion</th>
           </tr>
@@ -35,7 +34,6 @@ export function MarketTable({
             >
               <td data-label="Simbolo">{quote.symbol}</td>
               <td data-label="Empresa">{quote.name}</td>
-              <td data-label="Sector">{quote.sector}</td>
               <td
                 className={`price-cell price-cell--${
                   movementBySymbol[quote.symbol] ?? 'steady'
