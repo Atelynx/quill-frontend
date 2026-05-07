@@ -29,11 +29,19 @@ export interface StockQuote {
   _id?: string;
   symbol: string;
   name: string;
-  sector: string;
   currency: string;
-  currentPrice: number;
+  close: number;
+  open: number;
+  high: number;
+  low: number;
   previousClose: number;
   dayChangePercentage: number;
+  source: string;
+  volume: number;
+  lastMarketDate: string;
+  createdAt: string;
+  updatedAt: string;
+  sector?: string;
 }
 
 export interface PricePoint {

@@ -15,7 +15,7 @@ export function MarketPulseList({ quotes }: MarketPulseListProps) {
             <strong>{quote.name}</strong>
           </div>
           <div>
-            <b>{formatCurrency(quote.currentPrice)}</b>
+            <b>{formatCurrency(quote.close)}</b>
             <small
               className={
                 quote.dayChangePercentage >= 0 ? 'text-positive' : 'text-negative'

@@ -29,7 +29,7 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
       side: 'BUY',
       quantity: 1,
       limitPrice:
-        quotes.find((quote) => quote.symbol === selectedSymbol)?.currentPrice ?? 0,
+          quotes.find((quote) => quote.symbol === selectedSymbol)?.close ?? 0,
     },
   });
 
@@ -37,7 +37,7 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
     form.setValue('symbol', selectedSymbol);
     form.setValue(
       'limitPrice',
-      quotes.find((quote) => quote.symbol === selectedSymbol)?.currentPrice ?? 0,
+      quotes.find((quote) => quote.symbol === selectedSymbol)?.close ?? 0,
     );
   }, [form, quotes, selectedSymbol]);
 
@@ -53,7 +53,7 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
         side: 'BUY',
         quantity: 1,
         limitPrice:
-          quotes.find((quote) => quote.symbol === selectedSymbol)?.currentPrice ?? 0,
+          quotes.find((quote) => quote.symbol === selectedSymbol)?.close ?? 0,
       });
     } catch (error) {
       console.error('[OrderForm] Error submitting order:', error);
@@ -75,7 +75,7 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
         <strong>Precio actual</strong>
         <span>
           {currentQuote
-            ? `${currentQuote.symbol} · ${currentQuote.currentPrice.toFixed(2)} USD`
+            ? `${currentQuote.symbol} · ${currentQuote.close.toFixed(2)} USD`
             : 'Selecciona una accion para continuar.'}
         </span>
       </div>

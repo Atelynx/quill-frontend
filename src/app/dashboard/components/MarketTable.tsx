@@ -42,7 +42,7 @@ export function MarketTable({
                 }`}
                 data-label="Precio"
               >
-                {formatCurrency(quote.currentPrice)}
+                {formatCurrency(quote.close)}
               </td>
               <td
                 className={
