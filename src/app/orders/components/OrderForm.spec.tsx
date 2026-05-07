@@ -20,9 +20,17 @@ const quotes = [
     name: 'Apple',
     sector: 'Technology',
     currency: 'USD',
-    currentPrice: 190.25,
+    close: 190.25,
+    open: 189.8,
+    high: 191.1,
+    low: 189.2,
     previousClose: 188.4,
     dayChangePercentage: 0.98,
+    source: 'test',
+    volume: 1_000_000,
+    lastMarketDate: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
 ];
 

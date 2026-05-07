@@ -7,11 +7,19 @@ export const StockQuoteSchema = z.object({
   _id: z.string().optional(),
   symbol: z.string(),
   name: z.string(),
-  sector: z.string(),
   currency: z.string(),
-  currentPrice: z.number(),
+  close: z.number(),
+  open: z.number().optional(),
+  high: z.number().optional(),
+  low: z.number().optional(),
   previousClose: z.number(),
   dayChangePercentage: z.number(),
+  source: z.string().optional(),
+  volume: z.number().optional(),
+  lastMarketDate: z.string().datetime().optional(),
+  createdAt: z.string().datetime().optional(),
+  updatedAt: z.string().datetime().optional(),
+  sector: z.string().optional(),
 });
 
 export type StockQuote = z.infer<typeof StockQuoteSchema>;

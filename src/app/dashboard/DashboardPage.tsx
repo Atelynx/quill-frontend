@@ -59,7 +59,7 @@ export function DashboardPage() {
   useEffect(() => {
     for (const quote of quotes) {
       if (previousPricesRef.current[quote.symbol] === undefined) {
-        previousPricesRef.current[quote.symbol] = quote.currentPrice;
+        previousPricesRef.current[quote.symbol] = quote.close;
       }
     }
   }, [quotes]);
@@ -78,7 +78,7 @@ export function DashboardPage() {
       const history = buildStubHistory(q.symbol, 24);
       queryClient.setQueryData(['market', 'history', q.symbol, 24], history);
       queryClient.setQueryData(['market-history', q.symbol], history); // legacy key
-      previousPricesRef.current[q.symbol] = q.currentPrice;
+      previousPricesRef.current[q.symbol] = q.close;
     }
 
     setMovementBySymbol(
@@ -107,14 +107,13 @@ export function DashboardPage() {
       for (const quote of incomingQuotes) {
         const previousPrice = previousPricesRef.current[quote.symbol];
 
-        if (previousPrice === undefined || previousPrice === quote.currentPrice) {
+        if (previousPrice === undefined || previousPrice === quote.close) {
           nextMovements[quote.symbol] = 'steady';
         } else {
-          nextMovements[quote.symbol] =
-            quote.currentPrice > previousPrice ? 'up' : 'down';
+          nextMovements[quote.symbol] = quote.close > previousPrice ? 'up' : 'down';
         }
 
-        previousPricesRef.current[quote.symbol] = quote.currentPrice;
+        previousPricesRef.current[quote.symbol] = quote.close;
       }
 
       setMovementBySymbol(nextMovements);
@@ -128,7 +127,7 @@ export function DashboardPage() {
           (currentPoints = []) => {
             const nextPoint = {
               symbol: activeQuote.symbol,
-              price: activeQuote.currentPrice,
+              price: activeQuote.close,
               createdAt: new Date().toISOString(),
             };
 
@@ -257,7 +256,7 @@ export function DashboardPage() {
           description={
             selectedQuote
               ? `Precio actual ${formatCurrency(
-                  selectedQuote.currentPrice,
+                  selectedQuote.close,
                 )}. Selecciona otra accion en la tabla para cambiar la vista.`
               : 'Selecciona una accion para revisar su evolucion.'
           }
