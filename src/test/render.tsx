@@ -2,7 +2,10 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
 import type { ReactElement, PropsWithChildren } from 'react';
+import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
 import { ThemeProvider } from '../shared/theme/use-theme';
+import { store } from '../store/store';
 
 function TestProviders({ children }: PropsWithChildren) {
   const queryClient = new QueryClient({
@@ -17,9 +20,13 @@ function TestProviders({ children }: PropsWithChildren) {
   });
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>{children}</ThemeProvider>
-    </QueryClientProvider>
+    <Provider store={store}>
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider>{children}</ThemeProvider>
+        </QueryClientProvider>
+      </MemoryRouter>
+    </Provider>
   );
 }
 

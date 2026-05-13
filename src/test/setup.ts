@@ -15,6 +15,11 @@ function createMatchMedia() {
   }));
 }
 
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: createMatchMedia(),
+});
+
 beforeEach(() => {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,

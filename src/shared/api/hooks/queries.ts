@@ -16,9 +16,6 @@ export function usePortfolioSummary() {
     queryFn: portfolioService.getSummary,
     staleTime: 30000, // 30 seconds
     retry: 1,
-    onError: (error) => {
-      console.error('[Query] Portfolio summary fetch failed:', error);
-    },
   });
 }
 
@@ -32,9 +29,6 @@ export function useMarketStocks() {
     queryFn: marketService.getStocks,
     staleTime: 10000, // 10 seconds
     retry: 1,
-    onError: (error) => {
-      console.error('[Query] Market stocks fetch failed:', error);
-    },
   });
 }
 
@@ -48,9 +42,6 @@ export function usePendingOrders() {
     queryFn: ordersService.getPending,
     staleTime: 15000, // 15 seconds
     retry: 1,
-    onError: (error) => {
-      console.error('[Query] Pending orders fetch failed:', error);
-    },
   });
 }
 
@@ -64,9 +55,6 @@ export function useRecentTrades(limit: number = 8) {
     queryFn: () => tradesService.getRecent(limit),
     staleTime: 20000, // 20 seconds
     retry: 1,
-    onError: (error) => {
-      console.error('[Query] Recent trades fetch failed:', error);
-    },
   });
 }
 
@@ -81,8 +69,5 @@ export function useStockHistory(symbol: string, limit: number = 24) {
     staleTime: 5000, // 5 seconds (more frequent updates for chart data)
     retry: 1,
     enabled: Boolean(symbol), // Only fetch if symbol is provided
-    onError: (error) => {
-      console.error('[Query] Stock history fetch failed for symbol:', symbol, error);
-    },
   });
 }

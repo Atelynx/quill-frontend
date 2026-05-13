@@ -81,6 +81,7 @@ export function DashboardPage() {
       previousPricesRef.current[q.symbol] = q.close;
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMovementBySymbol(
       Object.fromEntries(STUB_QUOTES.map((q) => [q.symbol, 'steady'])) as Record<
         string,
@@ -117,11 +118,24 @@ export function DashboardPage() {
       }
 
       setMovementBySymbol(nextMovements);
+      queryClient.setQueryData(['market', 'stocks'], incomingQuotes);
       queryClient.setQueryData(['market-stocks'], incomingQuotes);
 
       const activeQuote = incomingQuotes.find((quote) => quote.symbol === activeSymbol);
 
       if (activeQuote) {
+        queryClient.setQueryData<PricePoint[]>(
+          ['market', 'history', activeSymbol, 24],
+          (currentPoints = []) => {
+            const nextPoint = {
+              symbol: activeQuote.symbol,
+              price: activeQuote.close,
+              createdAt: new Date().toISOString(),
+            };
+
+            return [...currentPoints.slice(-23), nextPoint];
+          },
+        );
         queryClient.setQueryData<PricePoint[]>(
           ['market-history', activeSymbol],
           (currentPoints = []) => {
@@ -140,7 +154,7 @@ export function DashboardPage() {
     return () => {
       socket.disconnect();
     };
-  }, [activeSymbol, queryClient]);
+  }, [activeSymbol, queryClient, token]);
 
   const portfolio = portfolioQuery.data;
   const openOrders = ordersQuery.data ?? [];
