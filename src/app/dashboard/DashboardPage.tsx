@@ -38,8 +38,6 @@ export function DashboardPage() {
   const queryClient = useQueryClient();
   const { token } = useAuth();
   const previousPricesRef = useRef<Record<string, number>>({});
-  const activeSymbolRef = useRef(activeSymbol);
-  activeSymbolRef.current = activeSymbol;
   const [movementBySymbol, setMovementBySymbol] = useState<
     Record<string, 'up' | 'down' | 'steady'>
   >({});
@@ -55,6 +53,9 @@ export function DashboardPage() {
   const activeSymbol = quotes.find((quote) => quote.symbol === selectedSymbol)
     ? selectedSymbol
     : quotes[0]?.symbol ?? selectedSymbol;
+
+  const activeSymbolRef = useRef(activeSymbol);
+  activeSymbolRef.current = activeSymbol;
 
   const historyQuery = useStockHistory(activeSymbol, 24);
 
