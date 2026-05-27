@@ -38,6 +38,8 @@ export function DashboardPage() {
   const queryClient = useQueryClient();
   const { token } = useAuth();
   const previousPricesRef = useRef<Record<string, number>>({});
+  const activeSymbolRef = useRef(activeSymbol);
+  activeSymbolRef.current = activeSymbol;
   const [movementBySymbol, setMovementBySymbol] = useState<
     Record<string, 'up' | 'down' | 'steady'>
   >({});
@@ -90,47 +92,44 @@ export function DashboardPage() {
   }, [queryClient]);
 
   useEffect(() => {
-    if (ENABLE_STUBS) {
-      return;
-    }
+    if (ENABLE_STUBS || quotes.length === 0) return;
 
-    const socket = io(socketUrl, {
+    const socket = io(`${socketUrl}/realtime`, {
       transports: ['websocket'],
-      auth: {
-        token: token || undefined,
-      },
+      auth: { token: token || undefined },
     });
 
-    socket.on('market.quotes', (incomingQuotes: StockQuote[]) => {
-      const nextMovements: Record<string, 'up' | 'down' | 'steady'> = {};
+    socket.on('connect', () => {
+      for (const q of quotes) {
+        socket.emit('subscribe', { topic: q.symbol });
+      }
+    });
 
-      for (const quote of incomingQuotes) {
-        const previousPrice = previousPricesRef.current[quote.symbol];
+    socket.on('price_update', (update: { symbol: string; price: number; dayChangePercentage?: number }) => {
+      const { symbol, price, dayChangePercentage } = update;
+      const previousPrice = previousPricesRef.current[symbol];
 
-        if (previousPrice === undefined || previousPrice === quote.close) {
-          nextMovements[quote.symbol] = 'steady';
-        } else {
-          nextMovements[quote.symbol] = quote.close > previousPrice ? 'up' : 'down';
-        }
-
-        previousPricesRef.current[quote.symbol] = quote.close;
+      if (previousPrice === undefined || previousPrice === price) {
+        setMovementBySymbol((prev) => ({ ...prev, [symbol]: 'steady' }));
+      } else {
+        setMovementBySymbol((prev) => ({ ...prev, [symbol]: price > previousPrice ? 'up' : 'down' }));
       }
 
-      setMovementBySymbol(nextMovements);
-      queryClient.setQueryData(['market-stocks'], incomingQuotes);
+      previousPricesRef.current[symbol] = price;
 
-      const activeQuote = incomingQuotes.find((quote) => quote.symbol === activeSymbol);
+      queryClient.setQueryData<StockQuote[]>(['market-stocks'], (current) =>
+        current?.map((q) =>
+          q.symbol === symbol
+            ? { ...q, close: price, dayChangePercentage: dayChangePercentage ?? q.dayChangePercentage }
+            : q,
+        ),
+      );
 
-      if (activeQuote) {
+      if (symbol === activeSymbolRef.current) {
         queryClient.setQueryData<PricePoint[]>(
-          ['market-history', activeSymbol],
+          ['market-history', symbol],
           (currentPoints = []) => {
-            const nextPoint = {
-              symbol: activeQuote.symbol,
-              price: activeQuote.close,
-              createdAt: new Date().toISOString(),
-            };
-
+            const nextPoint: PricePoint = { symbol, price, createdAt: new Date().toISOString() };
             return [...currentPoints.slice(-23), nextPoint];
           },
         );
@@ -140,7 +139,7 @@ export function DashboardPage() {
     return () => {
       socket.disconnect();
     };
-  }, [activeSymbol, queryClient]);
+  }, [ENABLE_STUBS, quotes.length > 0, queryClient, token]);
 
   const portfolio = portfolioQuery.data;
   const openOrders = ordersQuery.data ?? [];
