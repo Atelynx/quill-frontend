@@ -18,12 +18,18 @@ import {
   type CreateOrderInput,
   TradeRecordSchema,
 } from './validators';
+import * as stubbed from './stubbed-api-service';
+
+const USE_STUBS =
+  String(
+    import.meta.env.VITE_USE_STUBS ?? import.meta.env.USE_STUBS ?? 'false',
+  ).toLowerCase() === 'true';
 
 /**
  * Authentication Service
  * Handles user login, registration, and auth-related API calls
  */
-export const authService = {
+const realAuthService = {
   login: async (credentials: LoginInput) => {
     try {
       const response = await apiClient.post('/auth/login', credentials);
@@ -53,7 +59,7 @@ export const authService = {
  * Portfolio Service
  * Handles portfolio-related API calls (positions, balances, etc.)
  */
-export const portfolioService = {
+const realPortfolioService = {
   getSummary: async () => {
     try {
       const response = await apiClient.get('/portfolio/summary');
@@ -71,7 +77,7 @@ export const portfolioService = {
  * Market Service
  * Handles market data API calls (stocks, prices, history, etc.)
  */
-export const marketService = {
+const realMarketService = {
   getStocks: async () => {
     try {
       const response = await apiClient.get('/market/stocks');
@@ -103,7 +109,7 @@ export const marketService = {
  * Orders Service
  * Handles order-related API calls (list, create, cancel, etc.)
  */
-export const ordersService = {
+const realOrdersService = {
   getPending: async () => {
     try {
       const response = await apiClient.get('/orders?status=PENDING');
@@ -131,7 +137,7 @@ export const ordersService = {
  * Trades Service
  * Handles trade-related API calls (list, history, etc.)
  */
-export const tradesService = {
+const realTradesService = {
   getRecent: async (limit: number = 8) => {
     try {
       const response = await apiClient.get(`/trades?limit=${limit}`);
@@ -144,3 +150,9 @@ export const tradesService = {
     }
   },
 };
+
+export const authService = USE_STUBS ? stubbed.authService : realAuthService;
+export const portfolioService = USE_STUBS ? stubbed.portfolioService : realPortfolioService;
+export const marketService = USE_STUBS ? stubbed.marketService : realMarketService;
+export const ordersService = USE_STUBS ? stubbed.ordersService : realOrdersService;
+export const tradesService = USE_STUBS ? stubbed.tradesService : realTradesService;
