@@ -5,8 +5,6 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authService, ordersService } from '../api-service';
-import type { LoginInput, RegisterInput } from '../validators';
-import type { CreateOrderInput } from '../validators/orders';
 
 /**
  * Hook for user login mutation
