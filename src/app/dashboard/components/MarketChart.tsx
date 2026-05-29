@@ -17,7 +17,7 @@ interface MarketChartProps {
 }
 
 export function MarketChart({ data, symbol }: MarketChartProps) {
-  const { theme } = useTheme();
+  useTheme();
   const styles = getComputedStyle(document.documentElement);
   const chartGrid =
     styles.getPropertyValue('--chart-grid').trim() || 'rgba(19, 35, 60, 0.08)';
