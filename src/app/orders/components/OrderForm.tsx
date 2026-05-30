@@ -23,6 +23,7 @@ interface OrderFormProps {
 
 export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [isLimitPriceFocused, setIsLimitPriceFocused] = useState(false);
   const orderMutation = useCreateOrderMutation();
   
   const form = useForm<FormValues>({
@@ -39,11 +40,20 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
   useEffect(() => {
     form.setValue('symbol', selectedSymbol);
-    form.setValue(
-      'limitPrice',
-      quotes.find((quote) => quote.symbol === selectedSymbol)?.close ?? undefined,
-    );
-  }, [form, quotes, selectedSymbol]);
+    const quote = quotes.find((q) => q.symbol === selectedSymbol);
+    if (quote) {
+      form.setValue('limitPrice', quote.close);
+    }
+  }, [selectedSymbol]);
+
+  useEffect(() => {
+    if (!isLimitPriceFocused) {
+      const quote = quotes.find((q) => q.symbol === selectedSymbol);
+      if (quote) {
+        form.setValue('limitPrice', quote.close);
+      }
+    }
+  }, [quotes, selectedSymbol, isLimitPriceFocused]);
 
   const handleSubmit = async (values: FormValues) => {
     setFeedbackMessage(null);
@@ -137,6 +147,8 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
             step="0.01"
             type="number"
             {...form.register('limitPrice', { valueAsNumber: true })}
+            onFocus={() => setIsLimitPriceFocused(true)}
+            onBlur={() => setIsLimitPriceFocused(false)}
           />
           {watchedLimitPrice && watchedLimitPrice > 0 ? (
             <small className="field-group__hint">
