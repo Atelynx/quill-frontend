@@ -15,18 +15,19 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
     const [isVisible, setIsVisible] = useState(false);
 
     return (
-      <label className="field-group" htmlFor={fieldId}>
-        <span className="field-group__label">{label}</span>
-        <div className="password-field">
+      <label className="grid gap-1" htmlFor={fieldId}>
+        <span className="font-semibold text-text">{label}</span>
+        <div className="relative">
           <input
             {...inputProps}
+            className="pr-[3.3rem]"
             id={fieldId}
             ref={ref}
             type={isVisible ? 'text' : 'password'}
           />
           <button
             aria-label={isVisible ? 'Ocultar contrasena' : 'Mostrar contrasena'}
-            className="password-toggle"
+            className="absolute right-2 top-1/2 -mt-5 h-10 w-10 -translate-y-1/2 rounded-full bg-transparent text-[var(--main-page-text-soft)]"
             onClick={() => setIsVisible((currentValue) => !currentValue)}
             type="button"
           >
