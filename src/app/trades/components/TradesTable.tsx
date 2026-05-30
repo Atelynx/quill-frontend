@@ -4,9 +4,11 @@ import { formatCurrency, formatDateTime } from '../../../shared/utils/format';
 
 interface TradesTableProps {
   trades: TradeRecord[];
+  currency: 'CLP' | 'USD';
+  rate: number;
 }
 
-export function TradesTable({ trades }: TradesTableProps) {
+export function TradesTable({ trades, currency, rate }: TradesTableProps) {
   if (!trades.length) {
     return (
       <EmptyState
@@ -40,12 +42,12 @@ export function TradesTable({ trades }: TradesTableProps) {
               </td>
               <td data-label="Cantidad">{trade.quantity}</td>
               <td data-label="Precio">
-                {formatCurrency(trade.executionPrice)}
+                {formatCurrency(trade.executionPrice, { currency, rate })}
               </td>
               <td data-label="Comision">
-                {formatCurrency(trade.commissionAmount)}
+                {formatCurrency(trade.commissionAmount, { currency, rate })}
               </td>
-              <td data-label="Neto">{formatCurrency(trade.netAmount)}</td>
+              <td data-label="Neto">{formatCurrency(trade.netAmount, { currency, rate })}</td>
             </tr>
           ))}
         </tbody>

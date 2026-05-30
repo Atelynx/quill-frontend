@@ -4,9 +4,11 @@ import { formatCurrency, formatDateTime } from '../../../shared/utils/format';
 
 interface OrdersTableProps {
   orders: OrderRecord[];
+  currency: 'CLP' | 'USD';
+  rate: number;
 }
 
-export function OrdersTable({ orders }: OrdersTableProps) {
+export function OrdersTable({ orders, currency, rate }: OrdersTableProps) {
   if (!orders.length) {
     return (
       <EmptyState
@@ -37,7 +39,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
                 {order.side === 'BUY' ? 'Compra' : 'Venta'}
               </td>
               <td data-label="Cantidad">{order.quantity}</td>
-              <td data-label="Limite">{formatCurrency(order.limitPrice)}</td>
+              <td data-label="Limite">{formatCurrency(order.limitPrice, { currency, rate })}</td>
               <td data-label="Estado">{order.status}</td>
               <td data-label="Creada">{formatDateTime(order.createdAt)}</td>
             </tr>

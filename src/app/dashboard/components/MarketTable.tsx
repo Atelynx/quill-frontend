@@ -6,6 +6,8 @@ interface MarketTableProps {
   selectedSymbol: string;
   onSelect: (symbol: string) => void;
   movementBySymbol: Record<string, 'up' | 'down' | 'steady'>;
+  currency: 'CLP' | 'USD';
+  rate: number;
 }
 
 export function MarketTable({
@@ -13,6 +15,8 @@ export function MarketTable({
   selectedSymbol,
   onSelect,
   movementBySymbol,
+  currency,
+  rate,
 }: MarketTableProps) {
   return (
     <div className="table-wrapper">
@@ -40,7 +44,7 @@ export function MarketTable({
                 }`}
                 data-label="Precio"
               >
-                {formatCurrency(quote.close)}
+                {formatCurrency(quote.close, { currency, rate })}
               </td>
               <td
                 className={

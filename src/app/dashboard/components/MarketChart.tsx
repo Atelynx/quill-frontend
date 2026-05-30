@@ -13,9 +13,11 @@ import { formatCurrency } from '../../../shared/utils/format';
 interface MarketChartProps {
   data: PricePoint[];
   symbol: string;
+  currency: 'CLP' | 'USD';
+  rate: number;
 }
 
-export function MarketChart({ data, symbol }: MarketChartProps) {
+export function MarketChart({ data, symbol, currency, rate }: MarketChartProps) {
   const styles = getComputedStyle(document.documentElement);
   const chartGrid =
     styles.getPropertyValue('--chart-grid').trim() || 'rgba(19, 35, 60, 0.08)';
@@ -54,7 +56,11 @@ export function MarketChart({ data, symbol }: MarketChartProps) {
           <YAxis
             axisLine={false}
             tick={{ fill: chartAxis, fontSize: 12 }}
-            tickFormatter={(value) => `$${value}`}
+            tickFormatter={(value) =>
+              currency === 'USD'
+                ? `$${(value / rate).toFixed(2)}`
+                : `$${Math.round(value).toLocaleString('es-CL')}`
+            }
             tickLine={false}
             width={80}
           />
@@ -67,7 +73,9 @@ export function MarketChart({ data, symbol }: MarketChartProps) {
               color: chartAxis,
             }}
             cursor={{ stroke: chartGrid, strokeDasharray: '4 4' }}
-            formatter={(value) => formatCurrency(Number(value ?? 0))}
+            formatter={(value) =>
+              formatCurrency(Number(value ?? 0), { currency, rate })
+            }
             labelFormatter={(value) =>
               `${symbol} · ${new Date(value).toLocaleString('es-CL')}`
             }

@@ -4,9 +4,11 @@ import { formatCurrency } from '../../../shared/utils/format';
 
 interface PortfolioTableProps {
   positions: PortfolioPosition[];
+  currency: 'CLP' | 'USD';
+  rate: number;
 }
 
-export function PortfolioTable({ positions }: PortfolioTableProps) {
+export function PortfolioTable({ positions, currency, rate }: PortfolioTableProps) {
   if (!positions.length) {
     return (
       <EmptyState
@@ -37,19 +39,19 @@ export function PortfolioTable({ positions }: PortfolioTableProps) {
               <td data-label="Cantidad">{position.quantity}</td>
               <td data-label="Reservadas">{position.reservedQuantity}</td>
               <td data-label="Costo promedio">
-                {formatCurrency(position.averageCost)}
+                {formatCurrency(position.averageCost, { currency, rate })}
               </td>
               <td data-label="Precio actual">
-                {formatCurrency(position.marketPrice)}
+                {formatCurrency(position.marketPrice, { currency, rate })}
               </td>
-              <td data-label="Valor">{formatCurrency(position.marketValue)}</td>
+              <td data-label="Valor">{formatCurrency(position.marketValue, { currency, rate })}</td>
               <td
                 className={
                   position.unrealizedProfitLoss >= 0 ? 'text-positive' : 'text-negative'
                 }
                 data-label="P/L"
               >
-                {formatCurrency(position.unrealizedProfitLoss)}
+                {formatCurrency(position.unrealizedProfitLoss, { currency, rate })}
               </td>
             </tr>
           ))}
