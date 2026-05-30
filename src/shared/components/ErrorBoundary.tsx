@@ -62,54 +62,26 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
       // Default error UI
       return (
-        <div
-          style={{
-            padding: '2rem',
-            margin: '1rem',
-            border: '1px solid #e53e3e',
-            borderRadius: '0.5rem',
-            backgroundColor: '#fff5f5',
-            color: '#c53030',
-          }}
-        >
-          <h2 style={{ marginTop: 0, marginBottom: '0.5rem' }}>
+        <div className="m-4 rounded-lg border border-red-600 bg-red-50 p-8 text-red-700">
+          <h2 className="mb-2 mt-0 text-lg font-bold">
             Oops! Algo salió mal
           </h2>
-          <p style={{ marginBottom: '1rem', fontSize: '0.875rem' }}>
+          <p className="mb-4 text-sm">
             Disculpa, encontramos un error inesperado en la aplicación.
           </p>
           {this.state.error && (
-            <details
-              style={{
-                fontSize: '0.75rem',
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-all',
-                padding: '0.5rem',
-                backgroundColor: '#fed7d7',
-                borderRadius: '0.25rem',
-                marginTop: '0.5rem',
-              }}
-            >
-              <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>
+            <details className="mt-2 whitespace-pre-wrap break-all rounded bg-red-200 p-2 text-xs">
+              <summary className="cursor-pointer font-bold">
                 Detalles del error (para desarrolladores)
               </summary>
-              <code style={{ display: 'block', marginTop: '0.5rem' }}>
+              <code className="mt-2 block">
                 {this.state.error.toString()}
               </code>
             </details>
           )}
           <button
+            className="mt-4 cursor-pointer rounded border-none bg-red-700 px-4 py-2 text-sm text-white"
             onClick={() => window.location.reload()}
-            style={{
-              marginTop: '1rem',
-              padding: '0.5rem 1rem',
-              backgroundColor: '#c53030',
-              color: 'white',
-              border: 'none',
-              borderRadius: '0.25rem',
-              cursor: 'pointer',
-              fontSize: '0.875rem',
-            }}
           >
             Recargar página
           </button>
