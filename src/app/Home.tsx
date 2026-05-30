@@ -1,4 +1,4 @@
-import PagesBar from '../components/Links.component'
+import PagesBar from '@/shared/components/PagesBar'
 
 function Home() {
   return (
