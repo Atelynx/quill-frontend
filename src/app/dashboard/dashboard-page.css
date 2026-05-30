@@ -1,5 +1,4 @@
 .hero-panel,
-.section-card,
 .summary-card {
   border-radius: var(--main-page-radius-xl);
   box-shadow: var(--main-page-shadow);
@@ -23,8 +22,7 @@
   max-width: 760px;
 }
 
-.hero-panel__content h2,
-.section-card__header h3 {
+.hero-panel__content h2 {
   margin: 0;
 }
 
@@ -106,23 +104,6 @@
   font-weight: 600;
 }
 
-.section-card {
-  background: linear-gradient(
-    180deg,
-    var(--main-page-surface-strong),
-    var(--main-page-surface)
-  );
-  padding: 1.25rem;
-}
-
-.section-card__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
 .dashboard-grid {
   display: grid;
   gap: 1rem;
@@ -159,7 +140,6 @@
   }
 
   .hero-panel,
-  .section-card,
   .summary-card {
     border-radius: var(--main-page-radius-lg);
   }
