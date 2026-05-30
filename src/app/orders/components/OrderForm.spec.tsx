@@ -79,6 +79,7 @@ describe('OrderForm', () => {
       expect(postMock).toHaveBeenCalledWith('/orders', {
         symbol: 'AAPL',
         side: 'BUY',
+        type: 'LIMIT',
         quantity: 3,
         limitPrice: 189.5,
       });

@@ -1,3 +1,32 @@
+# Quill Frontend Plan
+
+---
+
+## Feature: MARKET Orders (Instant Execution)
+
+**Branch:** `feat/instant-order-front`
+**Backend:** `feat/instant-order` — `POST /api/orders` now accepts optional `type: 'LIMIT' | 'MARKET'` (default `'LIMIT'`). MARKET orders execute instantly at the live price from Redis; `limitPrice` is optional.
+
+### Steps
+
+1. **`validators/orders.ts`** — Extend both schemas:
+   - `OrderRecordSchema`: add `type: z.enum(['LIMIT', 'MARKET']).default('LIMIT')`, make `limitPrice` optional
+   - `CreateOrderInputSchema`: add `type: z.enum(['LIMIT', 'MARKET']).default('LIMIT')`, make `limitPrice` optional
+
+2. **`types.ts`** — Update `OrderRecord` interface: add `type: 'LIMIT' | 'MARKET'`, make `limitPrice` optional
+
+3. **`OrderForm.tsx`** — Add LIMIT/MARKET toggle:
+   - When MARKET is selected: hide limitPrice input, show "Se ejecutara al precio actual de mercado"
+   - When LIMIT is selected: current behavior unchanged
+   - Update feedback message and help text per type
+
+4. **`OrdersTable.tsx`** — Add "Tipo" column with badge (Mercado / Limite), show `—` for MARKET limitPrice
+
+### Commit
+`feat: add MARKET order type selector and instant execution UI`
+
+---
+
 # Refactor Plan — Quill Frontend
 
 ## Goal
