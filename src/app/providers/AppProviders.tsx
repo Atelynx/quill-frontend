@@ -3,7 +3,6 @@ import { Provider } from 'react-redux';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { QueryClient } from '@tanstack/react-query';
 import { store } from '../../store/store';
-import { ThemeProvider } from '../../shared/theme/use-theme';
 import { AuthProvider } from '../auth/hooks/use-auth';
 
 const queryClient = new QueryClient({
@@ -19,9 +18,7 @@ export function AppProviders({ children }: PropsWithChildren) {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <AuthProvider>{children}</AuthProvider>
-        </ThemeProvider>
+        <AuthProvider>{children}</AuthProvider>
       </QueryClientProvider>
     </Provider>
   );
