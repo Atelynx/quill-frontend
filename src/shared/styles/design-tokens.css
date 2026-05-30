@@ -191,7 +191,6 @@ tbody tr:focus-visible {
 .field-help,
 .auth-footnote,
 .inline-note span,
-.section-card__header p,
 .app-header p,
 .sidebar-copy {
   color: var(--main-page-text-soft);
