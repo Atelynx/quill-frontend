@@ -6,6 +6,7 @@
  */
 
 import { apiClient } from './http';
+import { USE_STUBS } from './stub-mode';
 import {
   AuthResponseSchema,
   type LoginInput,
@@ -19,11 +20,6 @@ import {
   TradeRecordSchema,
 } from './validators';
 import * as stubbed from './stubbed-api-service';
-
-const USE_STUBS =
-  String(
-    import.meta.env.VITE_USE_STUBS ?? import.meta.env.USE_STUBS ?? 'false',
-  ).toLowerCase() === 'true';
 
 /**
  * Authentication Service

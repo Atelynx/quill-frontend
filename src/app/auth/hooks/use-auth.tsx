@@ -9,6 +9,7 @@ import {
   useLoginMutation,
   useRegisterMutation,
 } from '../../../shared/api/hooks';
+import { USE_STUBS } from '../../../shared/api/stub-mode';
 import type {
   AuthResponse,
   LoginInput,
@@ -18,9 +19,6 @@ import type {
 } from '../../../shared/api/validators';
 
 const STORAGE_KEY = 'quill_auth';
-const ENABLE_STUB_AUTH =
-  String(import.meta.env.VITE_USE_STUBS ?? import.meta.env.USE_STUBS ?? 'false').toLowerCase() ===
-  'true';
 const STUB_EMAIL = String(import.meta.env.VITE_STUB_EMAIL ?? 'demo@quill.cl').trim().toLowerCase();
 const STUB_PASSWORD = String(import.meta.env.VITE_STUB_PASSWORD ?? 'qwerty123');
 const STUB_FULL_NAME = 'Demo Quill';
@@ -87,7 +85,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   const login = async (input: LoginInput) => {
-    if (ENABLE_STUB_AUTH) {
+    if (USE_STUBS) {
       const isStubEmail = input.email.trim().toLowerCase() === STUB_EMAIL;
       const isStubPassword = input.password === STUB_PASSWORD;
 
@@ -106,7 +104,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   const register = async (input: RegisterInput) => {
-    if (ENABLE_STUB_AUTH) {
+    if (USE_STUBS) {
       return {
         message: 'Cuenta de prueba creada. Ahora puedes iniciar sesion.',
         email: input.email,

@@ -23,12 +23,9 @@ import { MarketTable } from "./components/MarketTable";
 import { SummaryCard } from "./components/SummaryCard";
 import "./dashboard-data-display.css";
 import "./dashboard-page.css";
+import { USE_STUBS } from "../../shared/api/stub-mode";
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL ?? "http://localhost:3000";
-const ENABLE_STUBS =
-  String(
-    import.meta.env.VITE_USE_STUBS ?? import.meta.env.USE_STUBS ?? "false",
-  ).toLowerCase() === "true";
 
 import {
   STUB_QUOTES,
@@ -78,7 +75,7 @@ export function DashboardPage() {
   }, [quotes]);
 
   useEffect(() => {
-    if (!ENABLE_STUBS) return;
+    if (!USE_STUBS) return;
 
     // Seed react-query cache with stub data so hooks return immediately
     queryClient.setQueryData(["market", "stocks"], STUB_QUOTES);
@@ -102,7 +99,7 @@ export function DashboardPage() {
   }, [queryClient]);
 
   useEffect(() => {
-    if (ENABLE_STUBS || quotes.length === 0) return;
+    if (USE_STUBS || quotes.length === 0) return;
 
     const socket = io(`${socketUrl}/realtime`, {
       transports: ["websocket"],
@@ -164,7 +161,7 @@ export function DashboardPage() {
     return () => {
       socket.disconnect();
     };
-  }, [ENABLE_STUBS, quotes.length > 0, queryClient, token]);
+  }, [USE_STUBS, quotes.length > 0, queryClient, token]);
 
   const portfolio = portfolioQuery.data as PortfolioSummary;
   const openOrders = ordersQuery.data as OrderRecord[] ?? [];

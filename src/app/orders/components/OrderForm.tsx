@@ -5,6 +5,7 @@ import { useCreateOrderMutation } from '../../../shared/api/hooks';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
 import { CreateOrderInputSchema } from '../../../shared/api/validators';
 import type { StockQuote } from '../../../shared/api/validators';
+import { USE_STUBS } from '../../../shared/api/stub-mode';
 
 type FormValues = {
   symbol: string;
@@ -21,6 +22,9 @@ interface OrderFormProps {
 export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const orderMutation = useCreateOrderMutation();
+  const readOnlyModeMessage = USE_STUBS
+    ? 'Modo demo activo: las ordenes estan deshabilitadas y esta pantalla es solo para visualizacion.'
+    : null;
   
   const form = useForm<FormValues>({
     resolver: zodResolver(CreateOrderInputSchema),
@@ -42,6 +46,11 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
   }, [form, quotes, selectedSymbol]);
 
   const handleSubmit = async (values: FormValues) => {
+    if (USE_STUBS) {
+      setFeedbackMessage(null);
+      return;
+    }
+
     setFeedbackMessage(null);
     try {
       await orderMutation.mutateAsync(values);
@@ -82,7 +91,7 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
 
       <label>
         Accion
-        <select {...form.register('symbol')}>
+        <select disabled={USE_STUBS} {...form.register('symbol')}>
           {quotes.map((quote) => (
             <option key={quote.symbol} value={quote.symbol}>
               {quote.symbol} · {quote.name}
@@ -93,7 +102,7 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
 
       <label>
         Tipo
-        <select {...form.register('side')}>
+        <select disabled={USE_STUBS} {...form.register('side')}>
           <option value="BUY">Compra limitada</option>
           <option value="SELL">Venta limitada</option>
         </select>
@@ -103,6 +112,7 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
         Cantidad
         <input
           type="number"
+          disabled={USE_STUBS}
           {...form.register('quantity', { valueAsNumber: true })}
         />
       </label>
@@ -112,6 +122,7 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
         <input
           step="0.01"
           type="number"
+          disabled={USE_STUBS}
           {...form.register('limitPrice', { valueAsNumber: true })}
         />
       </label>
@@ -121,6 +132,8 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
           ? 'La compra se ejecuta cuando el mercado cae al precio limite o por debajo.'
           : 'La venta se ejecuta cuando el mercado sube al precio limite o por encima.'}
       </p>
+
+      {readOnlyModeMessage ? <p className="form-error">{readOnlyModeMessage}</p> : null}
 
       {feedbackMessage ? <p className="form-success">{feedbackMessage}</p> : null}
       {orderMutation.isError ? (
@@ -134,10 +147,14 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
 
       <button
         className="primary-button"
-        disabled={orderMutation.isPending}
+        disabled={orderMutation.isPending || USE_STUBS}
         type="submit"
       >
-        {orderMutation.isPending ? 'Creando orden...' : 'Crear orden'}
+        {USE_STUBS
+          ? 'Ordenes deshabilitadas en demo'
+          : orderMutation.isPending
+            ? 'Creando orden...'
+            : 'Crear orden'}
       </button>
     </form>
   );

@@ -5,6 +5,7 @@ import {
   STUB_TRADES,
   buildStubHistory,
 } from '../../app/dashboard/stubs';
+import type { CreateOrderInput } from './validators';
 
 function delay(ms = 150) {
   return new Promise((res) => setTimeout(res, ms));
@@ -59,9 +60,11 @@ export const ordersService = {
     return STUB_ORDERS;
   },
 
-  create: async (order: any) => {
+  create: async (order: CreateOrderInput) => {
     await delay();
-    console.log('[STUB API] create order', order);
+    throw new Error(
+      'No se pueden crear ordenes en modo demo. Esta vista es solo para visualizacion.',
+    );
   },
 };
 
