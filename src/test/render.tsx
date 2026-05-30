@@ -1,8 +1,6 @@
-/* eslint-disable react-refresh/only-export-components */
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
 import type { ReactElement, PropsWithChildren } from 'react';
-import { ThemeProvider } from '../shared/theme/use-theme';
 
 function TestProviders({ children }: PropsWithChildren) {
   const queryClient = new QueryClient({
@@ -18,7 +16,7 @@ function TestProviders({ children }: PropsWithChildren) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>{children}</ThemeProvider>
+      {children}
     </QueryClientProvider>
   );
 }

@@ -8,7 +8,6 @@ import {
   YAxis,
 } from 'recharts';
 import type { PricePoint } from '../../../shared/api/types';
-import { useTheme } from '../../../shared/theme/use-theme';
 import { formatCurrency } from '../../../shared/utils/format';
 
 interface MarketChartProps {
@@ -17,7 +16,6 @@ interface MarketChartProps {
 }
 
 export function MarketChart({ data, symbol }: MarketChartProps) {
-  useTheme();
   const styles = getComputedStyle(document.documentElement);
   const chartGrid =
     styles.getPropertyValue('--chart-grid').trim() || 'rgba(19, 35, 60, 0.08)';

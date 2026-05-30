@@ -1,5 +1,5 @@
-import PagesBar from '../components/Links.component';
-import { Button } from '@/components/atoms/Button';
+import PagesBar from '@/shared/components/PagesBar';
+import { Button } from '@/shared/components/Button';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setTheme } from '@/store/slices/themeSlice';
 import { themes } from '@/styles/themes';

@@ -34,6 +34,7 @@ function applyThemeToDom(theme: ThemeName) {
 
   root.setAttribute('data-palette', theme);
   root.setAttribute('data-theme-mode', mode);
+  root.style.colorScheme = mode;
 
   Object.entries(palette).forEach(([key, value]) => {
     const cssVarName = `--color-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;

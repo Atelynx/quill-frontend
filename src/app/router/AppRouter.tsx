@@ -7,9 +7,9 @@ const AuthPage = lazy(() =>
 const DashboardPage = lazy(() =>
   import('../dashboard/DashboardPage').then((module) => ({ default: module.DashboardPage })),
 );
-const Home = lazy(() => import('../Home'));
-const NotFound = lazy(() => import('../NotFound'));
-const TestPage = lazy(() => import('../TestPage'));
+const Home = lazy(() => import('../home/Home'));
+const NotFound = lazy(() => import('../not-found/NotFound'));
+const TestPage = lazy(() => import('../test/TestPage'));
 
 function ProtectedRoute({ element }: { element: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
