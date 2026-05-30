@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useCreateOrderMutation } from '../../../shared/api/hooks';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
@@ -23,7 +23,7 @@ interface OrderFormProps {
 
 export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
-  const [isLimitPriceFocused, setIsLimitPriceFocused] = useState(false);
+  const limitPriceUserTouched = useRef(false);
   const orderMutation = useCreateOrderMutation();
   
   const form = useForm<FormValues>({
@@ -44,16 +44,17 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
     if (quote) {
       form.setValue('limitPrice', quote.close);
     }
+    limitPriceUserTouched.current = false;
   }, [selectedSymbol]);
 
   useEffect(() => {
-    if (!isLimitPriceFocused) {
+    if (!limitPriceUserTouched.current) {
       const quote = quotes.find((q) => q.symbol === selectedSymbol);
       if (quote) {
         form.setValue('limitPrice', quote.close);
       }
     }
-  }, [quotes, selectedSymbol, isLimitPriceFocused]);
+  }, [quotes]);
 
   const handleSubmit = async (values: FormValues) => {
     setFeedbackMessage(null);
@@ -77,6 +78,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
     }
   };
 
+  const { onChange: limitPriceOnChange, ...limitPriceRest } = form.register('limitPrice', { valueAsNumber: true });
   const currentQuote = quotes.find((quote) => quote.symbol === selectedSymbol);
   const selectedSide = useWatch({
     control: form.control,
@@ -146,9 +148,11 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
           <input
             step="0.01"
             type="number"
-            {...form.register('limitPrice', { valueAsNumber: true })}
-            onFocus={() => setIsLimitPriceFocused(true)}
-            onBlur={() => setIsLimitPriceFocused(false)}
+            onChange={(e) => {
+              limitPriceUserTouched.current = true;
+              limitPriceOnChange(e);
+            }}
+            {...limitPriceRest}
           />
           {watchedLimitPrice && watchedLimitPrice > 0 ? (
             <small className="field-group__hint">
