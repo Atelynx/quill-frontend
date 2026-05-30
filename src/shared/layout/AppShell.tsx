@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react';
 import { useAuth } from '../../app/auth/hooks/use-auth';
-import { ThemeToggle } from '../components/ThemeToggle';
+import { ThemeToggle, CurrencySelector } from '../components';
 import './app-shell.css';
 
 interface AppShellProps extends PropsWithChildren {
@@ -49,6 +49,7 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
 
           <div className="header-actions">
             <ThemeToggle />
+            <CurrencySelector />
             <button className="secondary-button" onClick={logout} type="button">
               Cerrar sesion
             </button>
