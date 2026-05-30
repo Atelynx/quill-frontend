@@ -38,6 +38,7 @@ import {
   buildStubHistory,
 } from "./stubs";
 import type { PortfolioSummary } from "@/shared/api/types";
+import { useForexDispatch } from "@/shared/hooks/useForexRate";
 
 export function DashboardPage() {
   const queryClient = useQueryClient();
@@ -47,6 +48,7 @@ export function DashboardPage() {
     Record<string, "up" | "down" | "steady">
   >({});
   const [selectedSymbol, setSelectedSymbol] = useState("AAPL");
+  const { handleForexUpdate } = useForexDispatch();
 
   // Use custom hooks for data fetching
   const portfolioQuery = usePortfolioSummary();
@@ -113,12 +115,17 @@ export function DashboardPage() {
       for (const q of quotes) {
         socket.emit("subscribe", { topic: q.symbol });
       }
+      socket.emit("subscribe", { topic: "USDCLP", type: "forex" });
     });
 
     socket.on("price_update", (update) => {
-
-      
       const { symbol, price, dayChangePercentage } = update;
+
+      if (symbol === "USDCLP") {
+        handleForexUpdate(update);
+        return;
+      }
+
       const previousPrice = previousPricesRef.current[symbol];
 
       if (previousPrice === undefined || previousPrice === price) {
@@ -155,10 +162,13 @@ export function DashboardPage() {
               createdAt: new Date().toISOString(),
             };
             return [...currentPoints.slice(-23), nextPoint];
-            
           },
         );
       }
+    });
+
+    socket.on("connect_error", () => {
+      console.error("[ForexRate] WebSocket connection error — using static rate");
     });
 
     return () => {
