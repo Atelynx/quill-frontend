@@ -72,6 +72,10 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
     control: form.control,
     name: 'limitPrice',
   });
+  const watchedQuantity = useWatch({
+    control: form.control,
+    name: 'quantity',
+  });
 
   const handleSubmit = async (values: FormValues) => {
     setFeedbackMessage(null);
@@ -129,6 +133,28 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
   };
 
   const investAmountValue = investAmount === '' ? 0 : Number(investAmount);
+
+  const sharesCostPreview = (() => {
+    if (buyMode !== 'shares' || !watchedQuantity || watchedQuantity < 1) return null;
+
+    const price =
+      orderType === 'MARKET'
+        ? (currentQuote?.close ?? 0)
+        : (watchedLimitPrice ?? 0);
+
+    if (price <= 0) return null;
+
+    const totalCost = watchedQuantity * price;
+    return (
+      <p className="field-help">
+        Costo total estimado: {formatBothCurrencies(totalCost, rate)}
+        <br />
+        <small>
+          ({watchedQuantity} acciones &times; {formatCurrency(price, { currency: 'CLP' })} c/u)
+        </small>
+      </p>
+    );
+  })();
 
   const calculatedPreview = (() => {
     if (buyMode !== 'amount' || investAmountValue <= 0) return null;
@@ -241,6 +267,8 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
           />
         </label>
       )}
+
+      {sharesCostPreview}
 
       {orderType === 'LIMIT' ? (
         <label>
