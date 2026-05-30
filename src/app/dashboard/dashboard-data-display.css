@@ -9,8 +9,7 @@
 }
 
 .market-pulse-card,
-.inline-note,
-.empty-state {
+.inline-note {
   padding: 1rem;
   background: linear-gradient(
     180deg,
@@ -123,23 +122,6 @@ tbody tr.is-selected {
 
 .price-cell--down {
   color: var(--main-page-danger);
-}
-
-.empty-state {
-  text-align: left;
-  display: grid;
-  gap: 0.4rem;
-}
-
-.empty-state__icon {
-  width: 2.25rem;
-  height: 2.25rem;
-  color: var(--main-page-accent-strong);
-}
-
-.empty-state h4 {
-  margin: 0;
-  color: var(--color-text);
 }
 
 @media (max-width: 1180px) {

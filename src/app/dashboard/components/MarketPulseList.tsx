@@ -3,9 +3,11 @@ import { formatCurrency, formatPercentage } from '../../../shared/utils/format';
 
 interface MarketPulseListProps {
   quotes: StockQuote[];
+  currency: 'CLP' | 'USD';
+  rate: number;
 }
 
-export function MarketPulseList({ quotes }: MarketPulseListProps) {
+export function MarketPulseList({ quotes, currency, rate }: MarketPulseListProps) {
   return (
     <div className="market-pulse-list">
       {quotes.map((quote) => (
@@ -15,7 +17,7 @@ export function MarketPulseList({ quotes }: MarketPulseListProps) {
             <strong>{quote.name}</strong>
           </div>
           <div>
-            <b>{formatCurrency(quote.close)}</b>
+            <b>{formatCurrency(quote.close, { currency, rate })}</b>
             <small
               className={
                 quote.dayChangePercentage >= 0 ? 'text-positive' : 'text-negative'

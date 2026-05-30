@@ -5,6 +5,7 @@ import { useCreateOrderMutation } from '../../../shared/api/hooks';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
 import { CreateOrderInputSchema } from '../../../shared/api/validators';
 import type { StockQuote } from '../../../shared/api/validators';
+import { formatBothCurrencies, formatCurrency } from '../../../shared/utils/format';
 
 type FormValues = {
   symbol: string;
@@ -15,10 +16,11 @@ type FormValues = {
 
 interface OrderFormProps {
   quotes: StockQuote[];
+  rate: number;
   selectedSymbol: string;
 }
 
-export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
+export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const orderMutation = useCreateOrderMutation();
   
@@ -65,6 +67,10 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
     control: form.control,
     name: 'side',
   });
+  const watchedLimitPrice = useWatch({
+    control: form.control,
+    name: 'limitPrice',
+  });
 
   return (
     <form
@@ -75,7 +81,7 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
         <strong>Precio actual</strong>
         <span>
           {currentQuote
-            ? `${currentQuote.symbol} · ${currentQuote.close.toFixed(2)} USD`
+            ? `${currentQuote.symbol} · ${formatBothCurrencies(currentQuote.close, rate)}`
             : 'Selecciona una accion para continuar.'}
         </span>
       </div>
@@ -108,12 +114,17 @@ export function OrderForm({ quotes, selectedSymbol }: OrderFormProps) {
       </label>
 
       <label>
-        Precio limite
+        Precio limite (CLP)
         <input
           step="0.01"
           type="number"
           {...form.register('limitPrice', { valueAsNumber: true })}
         />
+        {watchedLimitPrice > 0 ? (
+          <small className="field-group__hint">
+            ≈ {formatCurrency(watchedLimitPrice, { currency: 'USD', rate })}
+          </small>
+        ) : null}
       </label>
 
       <p className="field-help">

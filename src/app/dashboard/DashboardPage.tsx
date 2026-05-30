@@ -38,6 +38,8 @@ import {
   buildStubHistory,
 } from "./stubs";
 import type { PortfolioSummary } from "@/shared/api/types";
+import { useForexDispatch } from "@/shared/hooks/useForexRate";
+import { useAppSelector } from "@/store/hooks";
 
 export function DashboardPage() {
   const queryClient = useQueryClient();
@@ -47,6 +49,10 @@ export function DashboardPage() {
     Record<string, "up" | "down" | "steady">
   >({});
   const [selectedSymbol, setSelectedSymbol] = useState("AAPL");
+  const { handleForexUpdate } = useForexDispatch();
+  const { preferredCurrency: currency, usdclpRate: rate } = useAppSelector(
+    (state) => state.currency,
+  );
 
   // Use custom hooks for data fetching
   const portfolioQuery = usePortfolioSummary();
@@ -113,12 +119,17 @@ export function DashboardPage() {
       for (const q of quotes) {
         socket.emit("subscribe", { topic: q.symbol });
       }
+      socket.emit("subscribe", { topic: "USDCLP", type: "forex" });
     });
 
     socket.on("price_update", (update) => {
-
-      
       const { symbol, price, dayChangePercentage } = update;
+
+      if (symbol === "USDCLP") {
+        handleForexUpdate(update);
+        return;
+      }
+
       const previousPrice = previousPricesRef.current[symbol];
 
       if (previousPrice === undefined || previousPrice === price) {
@@ -155,10 +166,13 @@ export function DashboardPage() {
               createdAt: new Date().toISOString(),
             };
             return [...currentPoints.slice(-23), nextPoint];
-            
           },
         );
       }
+    });
+
+    socket.on("connect_error", () => {
+      console.error("[ForexRate] WebSocket connection error — using static rate");
     });
 
     return () => {
@@ -179,22 +193,22 @@ export function DashboardPage() {
     return [
       {
         label: "Saldo disponible",
-        value: formatCurrency(portfolio.availableBalance),
+        value: formatCurrency(portfolio.availableBalance, { currency, rate }),
         tone: "neutral" as const,
       },
       {
         label: "Capital invertido",
-        value: formatCurrency(portfolio.investedValue),
+        value: formatCurrency(portfolio.investedValue, { currency, rate }),
         tone: "neutral" as const,
       },
       {
         label: "Patrimonio total",
-        value: formatCurrency(portfolio.totalEquity),
+        value: formatCurrency(portfolio.totalEquity, { currency, rate }),
         tone: "positive" as const,
       },
       {
         label: "Resultado no realizado",
-        value: formatCurrency(portfolio.unrealizedProfitLoss),
+        value: formatCurrency(portfolio.unrealizedProfitLoss, { currency, rate }),
         tone:
           portfolio.unrealizedProfitLoss >= 0
             ? ("positive" as const)
@@ -271,7 +285,7 @@ export function DashboardPage() {
         title="Movimiento destacado del mercado"
         description="Estas acciones muestran la variacion diaria mas visible del simulador."
       >
-        <MarketPulseList quotes={topMovers} />
+        <MarketPulseList quotes={topMovers} currency={currency} rate={rate} />
       </SectionCard>
 
       <div className="dashboard-grid dashboard-grid--wide">
@@ -281,18 +295,28 @@ export function DashboardPage() {
             selectedQuote
               ? `Precio actual ${formatCurrency(
                   selectedQuote.close,
+                  { currency, rate },
                 )}. Selecciona otra accion en la tabla para cambiar la vista.`
               : "Selecciona una accion para revisar su evolucion."
           }
         >
-          <MarketChart data={historyQuery.data as PricePoint[] ?? []} symbol={activeSymbol} />
+          <MarketChart
+            currency={currency}
+            data={historyQuery.data as PricePoint[] ?? []}
+            rate={rate}
+            symbol={activeSymbol}
+          />
         </SectionCard>
 
         <SectionCard
           title="Nueva orden limitada"
           description="Define el precio al que quieres entrar o salir. Quill la ejecutara automaticamente cuando el mercado llegue a ese valor."
         >
-          <OrderForm quotes={quotes} selectedSymbol={activeSymbol} />
+          <OrderForm
+            quotes={quotes}
+            rate={rate}
+            selectedSymbol={activeSymbol}
+          />
         </SectionCard>
       </div>
 
@@ -302,9 +326,11 @@ export function DashboardPage() {
           description="Haz clic en una accion para enfocarte en su grafica y preparar una orden."
         >
           <MarketTable
+            currency={currency}
             movementBySymbol={movementBySymbol}
             onSelect={setSelectedSymbol}
             quotes={quotes}
+            rate={rate}
             selectedSymbol={activeSymbol}
           />
         </SectionCard>
@@ -340,7 +366,11 @@ export function DashboardPage() {
         title="Portafolio"
         description="Tus posiciones activas, costo promedio y valor de mercado actual."
       >
-        <PortfolioTable positions={portfolio?.positions ?? []} />
+        <PortfolioTable
+          currency={currency}
+          positions={portfolio?.positions ?? []}
+          rate={rate}
+        />
       </SectionCard>
 
       <div className="dashboard-grid dashboard-grid--balanced">
@@ -348,14 +378,22 @@ export function DashboardPage() {
           title="Ordenes abiertas"
           description="Quedaran aqui mientras esperan que el precio cumpla tu condicion."
         >
-          <OrdersTable orders={openOrders} />
+          <OrdersTable
+            currency={currency}
+            orders={openOrders}
+            rate={rate}
+          />
         </SectionCard>
 
         <SectionCard
           title="Operaciones recientes"
           description="Registro de compras y ventas ya ejecutadas por el motor del simulador."
         >
-          <TradesTable trades={recentTrades} />
+          <TradesTable
+            currency={currency}
+            rate={rate}
+            trades={recentTrades}
+          />
         </SectionCard>
       </div>
     </AppShell>

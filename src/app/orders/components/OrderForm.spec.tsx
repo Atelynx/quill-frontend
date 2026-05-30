@@ -43,13 +43,13 @@ describe('OrderForm', () => {
     const user = userEvent.setup();
 
     renderWithProviders(
-      <OrderForm quotes={quotes} selectedSymbol={quotes[0].symbol} />,
+      <OrderForm quotes={quotes} rate={950} selectedSymbol={quotes[0].symbol} />,
     );
 
     await user.clear(screen.getByLabelText('Cantidad'));
     await user.type(screen.getByLabelText('Cantidad'), '0');
-    await user.clear(screen.getByLabelText('Precio limite'));
-    await user.type(screen.getByLabelText('Precio limite'), '0');
+    await user.clear(screen.getByLabelText('Precio limite (CLP)'));
+    await user.type(screen.getByLabelText('Precio limite (CLP)'), '0');
     await user.click(screen.getByRole('button', { name: 'Crear orden' }));
 
     await waitFor(() => {
@@ -66,13 +66,13 @@ describe('OrderForm', () => {
     });
 
     renderWithProviders(
-      <OrderForm quotes={quotes} selectedSymbol={quotes[0].symbol} />,
+      <OrderForm quotes={quotes} rate={950} selectedSymbol={quotes[0].symbol} />,
     );
 
     await user.clear(screen.getByLabelText('Cantidad'));
     await user.type(screen.getByLabelText('Cantidad'), '3');
-    await user.clear(screen.getByLabelText('Precio limite'));
-    await user.type(screen.getByLabelText('Precio limite'), '189.5');
+    await user.clear(screen.getByLabelText('Precio limite (CLP)'));
+    await user.type(screen.getByLabelText('Precio limite (CLP)'), '189.5');
     await user.click(screen.getByRole('button', { name: 'Crear orden' }));
 
     await waitFor(() => {

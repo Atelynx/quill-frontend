@@ -2,8 +2,7 @@ import { useEffect } from 'react';
 import { useAppSelector } from '@/store/hooks';
 import { AppRouter } from './app/router/AppRouter';
 import { ErrorBoundary } from './shared/components/ErrorBoundary';
-import './app/main-page-forms.css';
-import './app/main-page-primitives.css';
+import '@/shared/styles/design-tokens.css';
 
 function App() {
   const { currentTheme } = useAppSelector((state) => state.theme);

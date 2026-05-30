@@ -8,11 +8,16 @@ interface SectionCardProps extends PropsWithChildren {
 
 export function SectionCard({ title, description, actions, children }: SectionCardProps) {
   return (
-    <section className="section-card">
-      <div className="section-card__header">
+    <section
+      className="rounded-[var(--main-page-radius-xl)] border border-text/14 p-5 shadow-[var(--main-page-shadow)] backdrop-blur-lg"
+      style={{
+        background: 'linear-gradient(180deg, var(--main-page-surface-strong), var(--main-page-surface))',
+      }}
+    >
+      <div className="mb-4 flex items-start justify-between gap-4">
         <div>
-          <h3>{title}</h3>
-          {description ? <p>{description}</p> : null}
+          <h3 className="m-0 text-text">{title}</h3>
+          {description ? <p className="m-0 text-[var(--main-page-text-soft)]">{description}</p> : null}
         </div>
         {actions}
       </div>

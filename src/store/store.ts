@@ -2,11 +2,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import themeReducer from './slices/themeSlice';
 import accessibilityReducer from './slices/accessibilitySlice';
+import currencyReducer from './slices/currencySlice';
 
 export const store = configureStore({
   reducer: {
     theme: themeReducer,
     accessibility: accessibilityReducer,
+    currency: currencyReducer,
   },
 });
 
