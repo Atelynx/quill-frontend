@@ -1,9 +1,28 @@
-export function formatCurrency(value: number) {
-  return new Intl.NumberFormat('es-CL', {
+export interface FormatCurrencyOptions {
+  currency?: 'CLP' | 'USD';
+  rate?: number;
+}
+
+export function formatCurrency(value: number, opts?: FormatCurrencyOptions) {
+  const currency = opts?.currency ?? 'CLP';
+  const rate = opts?.rate ?? 950;
+
+  const displayValue = currency === 'USD' ? value / rate : value;
+
+  const formatted = new Intl.NumberFormat('es-CL', {
     style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 2,
-  }).format(value);
+    currency,
+    minimumFractionDigits: currency === 'CLP' ? 0 : 2,
+    maximumFractionDigits: currency === 'CLP' ? 0 : 2,
+  }).format(displayValue);
+
+  return formatted;
+}
+
+export function formatBothCurrencies(clpValue: number, rate: number) {
+  const clp = formatCurrency(clpValue, { currency: 'CLP' });
+  const usd = formatCurrency(clpValue, { currency: 'USD', rate });
+  return `${clp} (${usd})`;
 }
 
 export function formatPercentage(value: number) {
