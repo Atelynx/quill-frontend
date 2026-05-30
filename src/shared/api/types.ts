@@ -85,8 +85,9 @@ export interface OrderRecord {
   _id: string;
   symbol: string;
   side: 'BUY' | 'SELL';
+  type: 'LIMIT' | 'MARKET';
   quantity: number;
-  limitPrice: number;
+  limitPrice?: number;
   status: 'PENDING' | 'EXECUTED' | 'CANCELLED';
   executionPrice?: number;
   commissionAmount?: number;

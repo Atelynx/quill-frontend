@@ -25,6 +25,7 @@ export function OrdersTable({ orders, currency, rate }: OrdersTableProps) {
           <tr>
             <th>Accion</th>
             <th>Lado</th>
+            <th>Modalidad</th>
             <th>Cantidad</th>
             <th>Limite</th>
             <th>Estado</th>
@@ -38,8 +39,15 @@ export function OrdersTable({ orders, currency, rate }: OrdersTableProps) {
               <td data-label="Lado">
                 {order.side === 'BUY' ? 'Compra' : 'Venta'}
               </td>
+              <td data-label="Modalidad">
+                {order.type === 'MARKET' ? 'Mercado' : 'Limite'}
+              </td>
               <td data-label="Cantidad">{order.quantity}</td>
-              <td data-label="Limite">{formatCurrency(order.limitPrice, { currency, rate })}</td>
+              <td data-label="Limite">
+                {order.type === 'MARKET' || order.limitPrice == null
+                  ? '—'
+                  : formatCurrency(order.limitPrice, { currency, rate })}
+              </td>
               <td data-label="Estado">{order.status}</td>
               <td data-label="Creada">{formatDateTime(order.createdAt)}</td>
             </tr>

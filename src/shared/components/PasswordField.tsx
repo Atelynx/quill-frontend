@@ -15,8 +15,8 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
     const [isVisible, setIsVisible] = useState(false);
 
     return (
-      <label className="grid gap-1" htmlFor={fieldId}>
-        <span className="font-semibold text-text">{label}</span>
+      <label className="field-group" htmlFor={fieldId}>
+        <span className="field-group__label">{label}</span>
         <div className="relative">
           <input
             {...inputProps}
