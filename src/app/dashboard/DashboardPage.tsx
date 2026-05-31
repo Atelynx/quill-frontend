@@ -16,13 +16,14 @@ import { useAuth } from "../auth/hooks/use-auth";
 import type { OrderRecord, PricePoint, StockQuote, TradeRecord } from "../../shared/api/validators";
 import { SectionCard } from "../../shared/components/SectionCard";
 import { AppShell } from "../../shared/layout/AppShell";
+import { gradient } from "../../shared/design-system/surfaces";
+import { loadingScreen, heroPanelContent, heroPanelMeta, heroChip, heroChipSecondary, summaryGrid, dashboardGridWide, dashboardGridBalanced, guideList } from "../../shared/design-system/layout";
+import { eyebrow } from "../../shared/design-system/typography";
 import { formatCurrency } from "../../shared/utils/format";
 import { MarketChart } from "./components/MarketChart";
 import { MarketPulseList } from "./components/MarketPulseList";
 import { MarketTable } from "./components/MarketTable";
 import { SummaryCard } from "./components/SummaryCard";
-import "./dashboard-data-display.css";
-import "./dashboard-page.css";
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL ?? "http://localhost:3000";
 const ENABLE_STUBS =
@@ -240,7 +241,7 @@ export function DashboardPage() {
     ordersQuery.isLoading ||
     tradesQuery.isLoading
   ) {
-    return <div className="loading-screen">Cargando datos de Quill...</div>;
+    return <div className={loadingScreen}>Cargando datos de Quill...</div>;
   }
 
   return (
@@ -248,10 +249,10 @@ export function DashboardPage() {
       title="Panel principal"
       subtitle="Lee el mercado, registra ordenes y sigue tu aprendizaje con una vista equilibrada y clara."
     >
-      <section className="hero-panel">
-        <div className="hero-panel__content">
-          <p className="eyebrow">Quill en tiempo real</p>
-          <h2>
+      <section className={`${gradient.heroPanel} flex justify-between gap-4 rounded-[var(--main-page-radius-xl)] border border-[var(--main-page-border)] p-[1.3rem] shadow-[var(--main-page-shadow)] backdrop-blur-xl max-[820px]:flex-col max-[820px]:items-stretch`}>
+        <div className={heroPanelContent}>
+          <p className={eyebrow}>Quill en tiempo real</p>
+          <h2 className="m-0">
             {selectedQuote
               ? `${selectedQuote.name} (${selectedQuote.symbol})`
               : "Mercado en seguimiento"}
@@ -262,15 +263,15 @@ export function DashboardPage() {
             portafolio.
           </p>
         </div>
-        <div className="hero-panel__meta">
-          <span className="hero-chip">Marca principal: Quill</span>
-          <span className="hero-chip hero-chip--secondary">
+        <div className={heroPanelMeta}>
+          <span className={heroChip}>Marca principal: Quill</span>
+          <span className={`${heroChip} ${heroChipSecondary}`}>
             Equipo desarrollador: Atelynx
           </span>
         </div>
       </section>
 
-      <div className="summary-grid">
+      <div className={summaryGrid}>
         {summaryCards.map((card) => (
           <SummaryCard
             key={card.label}
@@ -288,7 +289,7 @@ export function DashboardPage() {
         <MarketPulseList quotes={topMovers} currency={currency} rate={rate} />
       </SectionCard>
 
-      <div className="dashboard-grid dashboard-grid--wide">
+      <div className={dashboardGridWide}>
         <SectionCard
           title={`Mercado activo | ${activeSymbol}`}
           description={
@@ -320,7 +321,7 @@ export function DashboardPage() {
         </SectionCard>
       </div>
 
-      <div className="dashboard-grid dashboard-grid--balanced">
+      <div className={dashboardGridBalanced}>
         <SectionCard
           title="Mercado disponible"
           description="Haz clic en una accion para enfocarte en su grafica y preparar una orden."
@@ -339,20 +340,20 @@ export function DashboardPage() {
           title="Como leer este panel"
           description="Ayudas rapidas para usuarios que recien comienzan."
         >
-          <div className="guide-list">
-            <article>
-              <strong>Saldo disponible</strong>
+          <div className={guideList}>
+            <article className="rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-[0.95rem_1rem] shadow-[var(--main-page-shadow-soft)] [background:var(--gradient-pulse-card)]">
+              <strong className="mb-[0.3rem] block">Saldo disponible</strong>
               <p>Es el capital que aun puedes usar para nuevas ordenes.</p>
             </article>
-            <article>
-              <strong>Orden limitada</strong>
+            <article className="rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-[0.95rem_1rem] shadow-[var(--main-page-shadow-soft)] [background:var(--gradient-pulse-card)]">
+              <strong className="mb-[0.3rem] block">Orden limitada</strong>
               <p>
                 No se ejecuta al instante: espera hasta que el mercado alcance
                 tu precio objetivo.
               </p>
             </article>
-            <article>
-              <strong>Resultado no realizado</strong>
+            <article className="rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-[0.95rem_1rem] shadow-[var(--main-page-shadow-soft)] [background:var(--gradient-pulse-card)]">
+              <strong className="mb-[0.3rem] block">Resultado no realizado</strong>
               <p>
                 Muestra la ganancia o perdida estimada de posiciones que aun no
                 has vendido.
@@ -373,7 +374,7 @@ export function DashboardPage() {
         />
       </SectionCard>
 
-      <div className="dashboard-grid dashboard-grid--balanced">
+      <div className={dashboardGridBalanced}>
         <SectionCard
           title="Ordenes abiertas"
           description="Quedaran aqui mientras esperan que el precio cumpla tu condicion."
