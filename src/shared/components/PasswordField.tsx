@@ -1,7 +1,7 @@
 import { forwardRef, useId, useState } from 'react';
 import type { InputHTMLAttributes } from 'react';
 import { fieldGroup } from '@/shared/design-system/layout';
-import { fieldLabel, hint, fieldError } from '@/shared/design-system/typography';
+import { fieldLabel, hint as hintClass, fieldError } from '@/shared/design-system/typography';
 import { inputBase } from '@/shared/design-system/forms';
 
 interface PasswordFieldProps
@@ -43,7 +43,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
             </svg>
           </button>
         </div>
-        {hint ? <small className={hint}>{hint}</small> : null}
+        {hint ? <small className={hintClass}>{hint}</small> : null}
         {error ? <span className={fieldError}>{error}</span> : null}
       </label>
     );

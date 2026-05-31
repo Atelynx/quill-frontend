@@ -10,7 +10,7 @@ import { useAuth } from '../hooks/use-auth';
 import { button, surface, gradient } from '../../../shared/design-system/surfaces';
 import { eyebrow, fieldLabel, fieldError } from '../../../shared/design-system/typography';
 import { authGrid, authTopbar, authHero, authCard, authTabs, authTabButton, authTabActive, authStatusStack, heroMetrics, heroMetricCard, formGrid, fieldGroup } from '../../../shared/design-system/layout';
-import { inputBase, successMessage, errorMessage } from '../../../shared/design-system/forms';
+import { inputBase, successMessage as successMsgClass, errorMessage as errorMsgClass } from '../../../shared/design-system/forms';
 
 const loginSchema = z.object({
   email: z.string().email('Ingresa un correo valido.'),
@@ -170,9 +170,9 @@ export function AuthPage() {
 
         <div className={authStatusStack} aria-live="polite">
           {successMessage ? (
-            <p className={successMessage}>{successMessage}</p>
+            <p className={successMsgClass}>{successMessage}</p>
           ) : null}
-          {errorMessage ? <p className={errorMessage}>{errorMessage}</p> : null}
+          {errorMessage ? <p className={errorMsgClass}>{errorMessage}</p> : null}
         </div>
 
         {mode === 'login' ? (

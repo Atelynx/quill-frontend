@@ -1,6 +1,8 @@
 import type { PropsWithChildren } from 'react';
 import { useAuth } from '../../app/auth/hooks/use-auth';
 import { ThemeToggle, CurrencySelector } from '../components';
+import { button } from '../design-system/surfaces';
+import { eyebrow } from '../design-system/typography';
 import './app-shell.css';
 
 interface AppShellProps extends PropsWithChildren {
@@ -15,9 +17,9 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
     <div className="app-shell">
       <aside className="app-sidebar">
         <div className="brand-block">
-          <p className="eyebrow">Atelynx</p>
+          <p className={eyebrow}>Atelynx</p>
           <h2>Quill</h2>
-          <p className="sidebar-copy">
+          <p className="text-[var(--main-page-inverse-text-soft)]">
             Simulador educativo de inversion para practicar decisiones con datos
             dinamicos, comisiones y ordenes limite.
           </p>
@@ -42,7 +44,7 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
       <div className="app-content">
         <header className="app-header">
           <div>
-            <p className="eyebrow">Plataforma Quill</p>
+            <p className={eyebrow}>Plataforma Quill</p>
             <h1>{title}</h1>
             <p>{subtitle}</p>
           </div>
@@ -50,7 +52,7 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
           <div className="header-actions">
             <ThemeToggle />
             <CurrencySelector />
-            <button className="secondary-button" onClick={logout} type="button">
+            <button className={`${button.base} ${button.secondary}`} onClick={logout} type="button">
               Cerrar sesion
             </button>
           </div>
