@@ -19,6 +19,16 @@
   --main-page-radius-lg: 22px;
   --main-page-radius-md: 16px;
   --main-page-transition: 180ms ease;
+  --main-page-surface-strong: color-mix(in srgb, var(--color-background) 96%, var(--color-primary) 4%);
+  --main-page-accent-shadow: color-mix(in srgb, var(--color-accent) 24%, transparent);
+  --main-page-input-inset: color-mix(in srgb, white 35%, transparent);
+  --gradient-primary-button: linear-gradient(135deg, var(--color-accent), var(--main-page-accent-strong));
+  --gradient-secondary-button: linear-gradient(180deg, var(--main-page-surface), var(--main-page-surface-soft));
+  --gradient-hero: linear-gradient(160deg, color-mix(in srgb, var(--color-primary) 76%, black 24%), color-mix(in srgb, var(--color-accent) 56%, black 44%));
+  --gradient-card-surface: linear-gradient(180deg, var(--main-page-surface-strong), var(--main-page-surface-soft));
+  --gradient-tab-active: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 78%, black 22%), color-mix(in srgb, var(--color-accent) 66%, black 34%));
+  --gradient-tab-inactive: linear-gradient(180deg, var(--main-page-surface), var(--main-page-surface-soft));
+  --gradient-metric-surface: linear-gradient(180deg, var(--main-page-inverse-surface-strong), var(--main-page-inverse-surface));
   --main-page-inverse-surface: color-mix(in srgb, white 12%, transparent);
   --main-page-inverse-surface-strong: color-mix(in srgb, white 18%, transparent);
   --main-page-inverse-border: color-mix(in srgb, white 18%, transparent);
