@@ -1,3 +1,5 @@
+import { surface, gradient } from '../design-system/surfaces';
+
 interface EmptyStateProps {
   title: string;
   description: string;
@@ -5,11 +7,7 @@ interface EmptyStateProps {
 
 export function EmptyState({ title, description }: EmptyStateProps) {
   return (
-    <div
-      className="grid gap-1 rounded-[var(--main-page-radius-md)] border border-text/14 p-4 text-left shadow-[var(--main-page-shadow-soft)]"
-      style={{
-        background: 'linear-gradient(180deg, var(--main-page-surface-soft), var(--main-page-surface))',
-      }}
+    <div className={`${surface.md} ${gradient.pulseCard} grid gap-1 p-4 text-left`}
     >
       <div
         aria-hidden="true"
