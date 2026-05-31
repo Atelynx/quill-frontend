@@ -23,9 +23,11 @@ interface OrderFormProps {
 
 export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [buyMode, setBuyMode] = useState<'shares' | 'amount'>('shares');
+  const [investAmount, setInvestAmount] = useState<string>('');
   const limitPriceUserTouched = useRef(false);
   const orderMutation = useCreateOrderMutation();
-  
+
   const form = useForm<FormValues>({
     resolver: zodResolver(CreateOrderInputSchema),
     defaultValues: {
@@ -56,28 +58,6 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
     }
   }, [quotes]);
 
-  const handleSubmit = async (values: FormValues) => {
-    setFeedbackMessage(null);
-    try {
-      await orderMutation.mutateAsync(values);
-      setFeedbackMessage(
-        values.type === 'MARKET'
-          ? 'Orden ejecutada al precio de mercado.'
-          : 'Orden registrada. Quedara pendiente hasta que el mercado cumpla la condicion.',
-      );
-      form.reset({
-        symbol: selectedSymbol,
-        side: 'BUY',
-        type: 'LIMIT',
-        quantity: 1,
-        limitPrice:
-          quotes.find((quote) => quote.symbol === selectedSymbol)?.close ?? undefined,
-      });
-    } catch (error) {
-      console.error('[OrderForm] Error submitting order:', error);
-    }
-  };
-
   const { onChange: limitPriceOnChange, ...limitPriceRest } = form.register('limitPrice', { valueAsNumber: true });
   const currentQuote = quotes.find((quote) => quote.symbol === selectedSymbol);
   const selectedSide = useWatch({
@@ -92,6 +72,124 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
     control: form.control,
     name: 'limitPrice',
   });
+  const watchedQuantity = useWatch({
+    control: form.control,
+    name: 'quantity',
+  });
+
+  const handleSubmit = async (values: FormValues) => {
+    setFeedbackMessage(null);
+    try {
+      let submitValues = { ...values };
+
+      if (buyMode === 'amount') {
+        const price =
+          orderType === 'MARKET'
+            ? (currentQuote?.close ?? 0)
+            : (values.limitPrice ?? 0);
+
+        if (price <= 0) {
+          setFeedbackMessage('Precio invalido. Verifica los datos.');
+          return;
+        }
+
+        const calculatedQty = Math.floor(Number(investAmount) / price);
+        if (calculatedQty < 1) {
+          setFeedbackMessage(
+            'El monto ingresado no es suficiente para comprar al menos 1 accion.',
+          );
+          return;
+        }
+
+        submitValues.quantity = calculatedQty;
+      }
+
+      await orderMutation.mutateAsync(submitValues);
+      setFeedbackMessage(
+        values.type === 'MARKET'
+          ? 'Orden ejecutada al precio de mercado.'
+          : 'Orden registrada. Quedara pendiente hasta que el mercado cumpla la condicion.',
+      );
+      form.reset({
+        symbol: selectedSymbol,
+        side: 'BUY',
+        type: 'LIMIT',
+        quantity: 1,
+        limitPrice:
+          quotes.find((quote) => quote.symbol === selectedSymbol)?.close ?? undefined,
+      });
+      setInvestAmount('');
+    } catch (error) {
+      console.error('[OrderForm] Error submitting order:', error);
+    }
+  };
+
+  const handleModeToggle = (mode: 'shares' | 'amount') => {
+    setBuyMode(mode);
+    form.setValue('quantity', 1);
+    if (mode === 'amount') {
+      setInvestAmount('');
+    }
+  };
+
+  const investAmountValue = investAmount === '' ? 0 : Number(investAmount);
+
+  const sharesCostPreview = (() => {
+    if (buyMode !== 'shares' || !watchedQuantity || watchedQuantity < 1) return null;
+
+    const price =
+      orderType === 'MARKET'
+        ? (currentQuote?.close ?? 0)
+        : (watchedLimitPrice ?? 0);
+
+    if (price <= 0) return null;
+
+    const totalCost = watchedQuantity * price;
+    return (
+      <p className="field-help">
+        Costo total estimado: {formatBothCurrencies(totalCost, rate)}
+        <br />
+        <small>
+          ({watchedQuantity} acciones &times; {formatCurrency(price, { currency: 'CLP' })} c/u)
+        </small>
+      </p>
+    );
+  })();
+
+  const calculatedPreview = (() => {
+    if (buyMode !== 'amount' || investAmountValue <= 0) return null;
+
+    const price =
+      orderType === 'MARKET'
+        ? (currentQuote?.close ?? 0)
+        : (watchedLimitPrice ?? 0);
+
+    if (price <= 0) return null;
+
+    const calculatedQty = Math.floor(investAmountValue / price);
+
+    if (calculatedQty < 1) {
+      return (
+        <p className="field-help" style={{ color: 'var(--main-page-danger)' }}>
+          Monto insuficiente. Debe ser al menos{' '}
+          {formatCurrency(price, { currency: 'CLP' })} para comprar 1 accion.
+        </p>
+      );
+    }
+
+    const totalCost = calculatedQty * price;
+    return (
+      <p className="field-help">
+        &asymp; {calculatedQty} acciones &middot; Costo estimado:{' '}
+        {formatBothCurrencies(totalCost, rate)}
+        <br />
+        <small>
+          ({formatCurrency(totalCost, { currency: 'CLP' })} / {calculatedQty}{' '}
+          acciones &times; {formatCurrency(price, { currency: 'CLP' })} c/u)
+        </small>
+      </p>
+    );
+  })();
 
   return (
     <form
@@ -134,13 +232,43 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
         </select>
       </label>
 
-      <label>
-        Cantidad
-        <input
-          type="number"
-          {...form.register('quantity', { valueAsNumber: true })}
-        />
-      </label>
+      <div className="buy-mode-toggle">
+        <button
+          type="button"
+          className={buyMode === 'shares' ? 'primary-button' : 'secondary-button'}
+          onClick={() => handleModeToggle('shares')}
+        >
+          Por cantidad
+        </button>
+        <button
+          type="button"
+          className={buyMode === 'amount' ? 'primary-button' : 'secondary-button'}
+          onClick={() => handleModeToggle('amount')}
+        >
+          Por monto
+        </button>
+      </div>
+
+      {buyMode === 'shares' ? (
+        <label>
+          Cantidad
+          <input
+            type="number"
+            {...form.register('quantity', { valueAsNumber: true })}
+          />
+        </label>
+      ) : (
+        <label>
+          Monto a invertir (CLP)
+          <input
+            type="number"
+            value={investAmount}
+            onChange={(e) => setInvestAmount(e.target.value)}
+          />
+        </label>
+      )}
+
+      {sharesCostPreview}
 
       {orderType === 'LIMIT' ? (
         <label>
@@ -161,6 +289,8 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
           ) : null}
         </label>
       ) : null}
+
+      {calculatedPreview}
 
       <p className="field-help">
         {orderType === 'MARKET'
