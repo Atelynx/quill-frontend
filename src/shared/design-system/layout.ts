@@ -24,6 +24,30 @@ export const heroMetricCard = 'p-4 bg-[var(--gradient-metric-surface)] border bo
 
 export const loadingScreen = 'min-h-screen grid place-items-center text-[var(--main-page-text-soft)]'
 
+export const heroPanelContent = 'max-w-[760px]'
+
+export const heroPanelMeta = 'flex flex-wrap content-start gap-[0.6rem]'
+
+export const heroChip = 'inline-flex items-center px-3 py-[0.45rem] rounded-full text-[0.9rem] bg-[var(--main-page-accent-soft)] text-[var(--main-page-accent-strong)] border border-[color-mix(in_srgb,var(--color-accent)_22%,_transparent)]'
+
+export const heroChipSecondary = 'bg-[var(--main-page-surface-muted)] text-[var(--main-page-text-soft)] border-[var(--main-page-border)]'
+
+export const summaryGrid = 'grid grid-cols-5 gap-[0.9rem] max-[1180px]:grid-cols-2 max-[720px]:grid-cols-1'
+
+export const dashboardGrid = 'grid gap-4'
+
+export const dashboardGridWide = 'grid grid-cols-[minmax(0,_1.45fr)_minmax(320px,_0.9fr)] gap-4 max-[1180px]:grid-cols-2 max-[720px]:grid-cols-1'
+
+export const dashboardGridBalanced = 'grid grid-cols-2 gap-4 max-[1180px]:grid-cols-2 max-[720px]:grid-cols-1'
+
+export const marketPulseGrid = 'grid grid-cols-3 gap-[0.8rem] max-[1180px]:grid-cols-2 max-[720px]:grid-cols-1'
+
+export const guideList = 'grid gap-[0.8rem]'
+
+export const summaryCardPositive = 'border-[color-mix(in_srgb,var(--color-accent)_20%,_transparent)]'
+
+export const summaryCardNegative = 'border-[rgba(181,58,38,0.22)]'
+
 export const buyModeToggle = 'flex gap-2'
 
 export const buyModeButton = 'flex-1 min-h-[42px] px-4 py-2.5 text-[0.92rem]'
