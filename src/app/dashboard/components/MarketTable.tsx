@@ -21,7 +21,6 @@ const movementColor: Record<string, string> = {
 
 export function MarketTable({
   quotes,
-  selectedSymbol,
   onSelect,
   movementBySymbol,
   currency,
