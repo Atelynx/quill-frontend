@@ -12,6 +12,15 @@ export const cssVars = {
     muted: '--main-page-surface-muted',
     strong: '--main-page-surface-strong',
   },
+  gradient: {
+    primaryButton: '--gradient-primary-button',
+    secondaryButton: '--gradient-secondary-button',
+    hero: '--gradient-hero',
+    cardSurface: '--gradient-card-surface',
+    tabActive: '--gradient-tab-active',
+    tabInactive: '--gradient-tab-inactive',
+    metricSurface: '--gradient-metric-surface',
+  },
   border: {
     default: '--main-page-border',
     strong: '--main-page-border-strong',

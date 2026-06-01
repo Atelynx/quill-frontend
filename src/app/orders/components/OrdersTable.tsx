@@ -1,6 +1,8 @@
 import { EmptyState } from '../../../shared/components/EmptyState';
 import type { OrderRecord } from '../../../shared/api/types';
 import { formatCurrency, formatDateTime } from '../../../shared/utils/format';
+import { surface } from '../../../shared/design-system/surfaces';
+import '../../../shared/design-system/table.css';
 
 interface OrdersTableProps {
   orders: OrderRecord[];
@@ -19,37 +21,37 @@ export function OrdersTable({ orders, currency, rate }: OrdersTableProps) {
   }
 
   return (
-    <div className="table-wrapper">
-      <table>
+    <div className={`${surface.tableWrapper} responsive-table`}>
+      <table className="w-full min-w-[640px] border-separate border-spacing-0">
         <thead>
           <tr>
-            <th>Accion</th>
-            <th>Lado</th>
-            <th>Modalidad</th>
-            <th>Cantidad</th>
-            <th>Limite</th>
-            <th>Estado</th>
-            <th>Creada</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Accion</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Lado</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Modalidad</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Cantidad</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Limite</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Estado</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Creada</th>
           </tr>
         </thead>
         <tbody>
           {orders.map((order) => (
-            <tr key={order._id}>
-              <td data-label="Accion">{order.symbol}</td>
-              <td data-label="Lado">
+            <tr key={order._id} className="border-b border-[var(--main-page-border)] transition-colors duration-[var(--main-page-transition)]">
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Accion">{order.symbol}</td>
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Lado">
                 {order.side === 'BUY' ? 'Compra' : 'Venta'}
               </td>
-              <td data-label="Modalidad">
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Modalidad">
                 {order.type === 'MARKET' ? 'Mercado' : 'Limite'}
               </td>
-              <td data-label="Cantidad">{order.quantity}</td>
-              <td data-label="Limite">
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Cantidad">{order.quantity}</td>
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Limite">
                 {order.type === 'MARKET' || order.limitPrice == null
                   ? '—'
                   : formatCurrency(order.limitPrice, { currency, rate })}
               </td>
-              <td data-label="Estado">{order.status}</td>
-              <td data-label="Creada">{formatDateTime(order.createdAt)}</td>
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Estado">{order.status}</td>
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Creada">{formatDateTime(order.createdAt)}</td>
             </tr>
           ))}
         </tbody>

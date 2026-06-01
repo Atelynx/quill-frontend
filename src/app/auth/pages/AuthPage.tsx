@@ -7,7 +7,10 @@ import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
 import { PasswordField } from '../../../shared/components/PasswordField';
 import { ThemeToggle } from '../../../shared/components/ThemeToggle';
 import { useAuth } from '../hooks/use-auth';
-import '../auth-page.css';
+import { button, surface, gradient } from '../../../shared/design-system/surfaces';
+import { eyebrow, fieldLabel, fieldError } from '../../../shared/design-system/typography';
+import { authGrid, authTopbar, authHero, authCard, authTabs, authTabButton, authTabActive, authStatusStack, heroMetrics, heroMetricCard, formGrid, fieldGroup } from '../../../shared/design-system/layout';
+import { inputBase, successMessage as successMsgClass, errorMessage as errorMsgClass } from '../../../shared/design-system/forms';
 
 const loginSchema = z.object({
   email: z.string().email('Ingresa un correo valido.'),
@@ -103,47 +106,47 @@ export function AuthPage() {
   });
 
   return (
-    <main className="auth-page">
-      <div className="auth-topbar">
-        <div className="auth-brand-lockup">
-          <p className="eyebrow">Atelynx presenta</p>
-          <h2>Quill</h2>
+    <main className={authGrid}>
+      <div className={authTopbar}>
+        <div>
+          <p className={eyebrow}>Atelynx presenta</p>
+          <h2 className="mt-[0.15rem] text-[1.3rem] m-0">Quill</h2>
         </div>
         <ThemeToggle />
       </div>
 
-      <section className="auth-hero">
+      <section className={`${surface.xl} ${gradient.hero} ${authHero}`}>
         <div>
-          <p className="eyebrow">Simulador educativo</p>
-          <h1>Aprende a invertir entendiendo cada decision.</h1>
-          <p className="lead">
+          <p className={eyebrow}>Simulador educativo</p>
+          <h1 className="my-4 text-[clamp(2.3rem,4vw,4.5rem)] leading-[0.95]">Aprende a invertir entendiendo cada decision.</h1>
+          <p className="m-0 text-[1.08rem] text-[var(--main-page-inverse-text-soft)]">
             Quill combina mercado simulado, ordenes limite, comisiones y
             portafolio para practicar con una experiencia clara, seria y sin
             dinero real.
           </p>
         </div>
 
-        <div className="hero-metrics">
-          <article>
-            <strong>Registro seguro y directo</strong>
-            <span>Crea tu cuenta y entra manualmente cuando estes listo.</span>
+        <div className={heroMetrics}>
+          <article className={heroMetricCard}>
+            <strong className="text-[var(--main-page-inverse-text-soft)]">Registro seguro y directo</strong>
+            <span className="block mt-1 text-[var(--main-page-inverse-text-muted)]">Crea tu cuenta y entra manualmente cuando estes listo.</span>
           </article>
-          <article>
-            <strong>Mercado con actividad</strong>
-            <span>Precios, graficas y actualizaciones con sensacion de flujo.</span>
+          <article className={heroMetricCard}>
+            <strong className="text-[var(--main-page-inverse-text-soft)]">Mercado con actividad</strong>
+            <span className="block mt-1 text-[var(--main-page-inverse-text-muted)]">Precios, graficas y actualizaciones con sensacion de flujo.</span>
           </article>
-          <article>
-            <strong>Aprendizaje guiado</strong>
-            <span>Quill explica lo importante sin llenar la pantalla de ruido.</span>
+          <article className={heroMetricCard}>
+            <strong className="text-[var(--main-page-inverse-text-soft)]">Aprendizaje guiado</strong>
+            <span className="block mt-1 text-[var(--main-page-inverse-text-muted)]">Quill explica lo importante sin llenar la pantalla de ruido.</span>
           </article>
         </div>
       </section>
 
-      <section className="auth-card">
-        <div className="auth-tabs" role="tablist" aria-label="Cambiar formulario">
+      <section className={`${surface.xl} ${gradient.card} ${authCard}`}>
+        <div className={authTabs} role="tablist" aria-label="Cambiar formulario">
           <button
             aria-selected={mode === 'login'}
-            className={mode === 'login' ? 'is-active' : ''}
+            className={`${authTabButton} ${mode === 'login' ? authTabActive : ''}`}
             onClick={() => {
               setErrorMessage(null);
               setMode('login');
@@ -154,7 +157,7 @@ export function AuthPage() {
           </button>
           <button
             aria-selected={mode === 'register'}
-            className={mode === 'register' ? 'is-active' : ''}
+            className={`${authTabButton} ${mode === 'register' ? authTabActive : ''}`}
             onClick={() => {
               setErrorMessage(null);
               setMode('register');
@@ -165,19 +168,19 @@ export function AuthPage() {
           </button>
         </div>
 
-        <div className="auth-status-stack" aria-live="polite">
+        <div className={authStatusStack} aria-live="polite">
           {successMessage ? (
-            <p className="form-success">{successMessage}</p>
+            <p className={successMsgClass}>{successMessage}</p>
           ) : null}
-          {errorMessage ? <p className="form-error">{errorMessage}</p> : null}
+          {errorMessage ? <p className={errorMsgClass}>{errorMessage}</p> : null}
         </div>
 
         {mode === 'login' ? (
-          <form className="auth-form" onSubmit={handleLogin}>
-            <label className="field-group">
-              <span className="field-group__label">Correo</span>
-              <input type="email" {...loginForm.register('email')} />
-              <span className="field-group__error">
+          <form className={formGrid} onSubmit={handleLogin}>
+            <label className={fieldGroup}>
+              <span className={fieldLabel}>Correo</span>
+              <input className={inputBase} type="email" {...loginForm.register('email')} />
+              <span className={fieldError}>
                 {loginForm.formState.errors.email?.message}
               </span>
             </label>
@@ -190,7 +193,7 @@ export function AuthPage() {
             />
 
             <button
-              className="primary-button"
+              className={`${button.base} ${button.primary}`}
               disabled={loginForm.formState.isSubmitting}
               type="submit"
             >
@@ -198,19 +201,19 @@ export function AuthPage() {
             </button>
           </form>
         ) : (
-          <form className="auth-form" onSubmit={handleRegister}>
-            <label className="field-group">
-              <span className="field-group__label">Nombre completo</span>
-              <input type="text" {...registerForm.register('fullName')} />
-              <span className="field-group__error">
+          <form className={formGrid} onSubmit={handleRegister}>
+            <label className={fieldGroup}>
+              <span className={fieldLabel}>Nombre completo</span>
+              <input className={inputBase} type="text" {...registerForm.register('fullName')} />
+              <span className={fieldError}>
                 {registerForm.formState.errors.fullName?.message}
               </span>
             </label>
 
-            <label className="field-group">
-              <span className="field-group__label">Correo</span>
-              <input type="email" {...registerForm.register('email')} />
-              <span className="field-group__error">
+            <label className={fieldGroup}>
+              <span className={fieldLabel}>Correo</span>
+              <input className={inputBase} type="email" {...registerForm.register('email')} />
+              <span className={fieldError}>
                 {registerForm.formState.errors.email?.message}
               </span>
             </label>
@@ -230,7 +233,7 @@ export function AuthPage() {
             />
 
             <button
-              className="primary-button"
+              className={`${button.base} ${button.primary}`}
               disabled={registerForm.formState.isSubmitting}
               type="submit"
             >
@@ -241,7 +244,7 @@ export function AuthPage() {
           </form>
         )}
 
-        <p className="auth-footnote">
+        <p className="mt-4 text-[0.95rem] text-[var(--main-page-text-soft)]">
           Quill no usa dinero real. El acceso al dashboard requiere iniciar
           sesion manualmente despues de crear tu cuenta.
         </p>

@@ -1,6 +1,9 @@
 import { EmptyState } from '../../../shared/components/EmptyState';
 import type { PortfolioPosition } from '../../../shared/api/types';
 import { formatCurrency } from '../../../shared/utils/format';
+import { surface } from '../../../shared/design-system/surfaces';
+import { textPositive, textNegative } from '../../../shared/design-system/typography';
+import '../../../shared/design-system/table.css';
 
 interface PortfolioTableProps {
   positions: PortfolioPosition[];
@@ -19,36 +22,34 @@ export function PortfolioTable({ positions, currency, rate }: PortfolioTableProp
   }
 
   return (
-    <div className="table-wrapper">
-      <table>
+    <div className={`${surface.tableWrapper} responsive-table`}>
+      <table className="w-full min-w-[640px] border-separate border-spacing-0">
         <thead>
           <tr>
-            <th>Accion</th>
-            <th>Cantidad</th>
-            <th>Reservadas</th>
-            <th>Costo promedio</th>
-            <th>Precio actual</th>
-            <th>Valor</th>
-            <th>P/L</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Accion</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Cantidad</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Reservadas</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Costo promedio</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Precio actual</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Valor</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">P/L</th>
           </tr>
         </thead>
         <tbody>
           {positions.map((position) => (
-            <tr key={position.symbol}>
-              <td data-label="Accion">{position.symbol}</td>
-              <td data-label="Cantidad">{position.quantity}</td>
-              <td data-label="Reservadas">{position.reservedQuantity}</td>
-              <td data-label="Costo promedio">
+            <tr key={position.symbol} className="border-b border-[var(--main-page-border)] transition-colors duration-[var(--main-page-transition)]">
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Accion">{position.symbol}</td>
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Cantidad">{position.quantity}</td>
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Reservadas">{position.reservedQuantity}</td>
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Costo promedio">
                 {formatCurrency(position.averageCost, { currency, rate })}
               </td>
-              <td data-label="Precio actual">
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Precio actual">
                 {formatCurrency(position.marketPrice, { currency, rate })}
               </td>
-              <td data-label="Valor">{formatCurrency(position.marketValue, { currency, rate })}</td>
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Valor">{formatCurrency(position.marketValue, { currency, rate })}</td>
               <td
-                className={
-                  position.unrealizedProfitLoss >= 0 ? 'text-positive' : 'text-negative'
-                }
+                className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] ${position.unrealizedProfitLoss >= 0 ? textPositive : textNegative}`}
                 data-label="P/L"
               >
                 {formatCurrency(position.unrealizedProfitLoss, { currency, rate })}

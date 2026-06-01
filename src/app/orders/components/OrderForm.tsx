@@ -6,6 +6,10 @@ import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
 import { CreateOrderInputSchema } from '../../../shared/api/validators';
 import type { StockQuote } from '../../../shared/api/validators';
 import { formatBothCurrencies, formatCurrency } from '../../../shared/utils/format';
+import { button } from '../../../shared/design-system/surfaces';
+import { hint as hintClass } from '../../../shared/design-system/typography';
+import { formGrid, buyModeToggle, buyModeButton } from '../../../shared/design-system/layout';
+import { inputBase, successMessage, errorMessage } from '../../../shared/design-system/forms';
 
 type FormValues = {
   symbol: string;
@@ -146,7 +150,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
     const totalCost = watchedQuantity * price;
     return (
-      <p className="field-help">
+      <p className={hintClass}>
         Costo total estimado: {formatBothCurrencies(totalCost, rate)}
         <br />
         <small>
@@ -170,7 +174,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
     if (calculatedQty < 1) {
       return (
-        <p className="field-help" style={{ color: 'var(--main-page-danger)' }}>
+        <p className={hintClass} style={{ color: 'var(--main-page-danger)' }}>
           Monto insuficiente. Debe ser al menos{' '}
           {formatCurrency(price, { currency: 'CLP' })} para comprar 1 accion.
         </p>
@@ -179,7 +183,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
     const totalCost = calculatedQty * price;
     return (
-      <p className="field-help">
+      <p className={hintClass}>
         &asymp; {calculatedQty} acciones &middot; Costo estimado:{' '}
         {formatBothCurrencies(totalCost, rate)}
         <br />
@@ -193,12 +197,12 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
   return (
     <form
-      className="order-form"
+      className={formGrid}
       onSubmit={form.handleSubmit(handleSubmit)}
     >
-      <div className="inline-note">
+      <div>
         <strong>Precio actual</strong>
-        <span>
+        <span className={hintClass}>
           {currentQuote
             ? `${currentQuote.symbol} · ${formatBothCurrencies(currentQuote.close, rate)}`
             : 'Selecciona una accion para continuar.'}
@@ -207,7 +211,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
       <label>
         Accion
-        <select {...form.register('symbol')}>
+        <select className={inputBase} {...form.register('symbol')}>
           {quotes.map((quote) => (
             <option key={quote.symbol} value={quote.symbol}>
               {quote.symbol} · {quote.name}
@@ -218,7 +222,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
       <label>
         Tipo
-        <select {...form.register('side')}>
+        <select className={inputBase} {...form.register('side')}>
           <option value="BUY">Compra</option>
           <option value="SELL">Venta</option>
         </select>
@@ -226,23 +230,23 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
       <label>
         Modalidad
-        <select {...form.register('type')}>
+        <select className={inputBase} {...form.register('type')}>
           <option value="LIMIT">Limite</option>
           <option value="MARKET">Mercado</option>
         </select>
       </label>
 
-      <div className="buy-mode-toggle">
+      <div className={buyModeToggle}>
         <button
           type="button"
-          className={buyMode === 'shares' ? 'primary-button' : 'secondary-button'}
+          className={`${button.base} ${buyModeButton} ${buyMode === 'shares' ? button.primary : button.secondary}`}
           onClick={() => handleModeToggle('shares')}
         >
           Por cantidad
         </button>
         <button
           type="button"
-          className={buyMode === 'amount' ? 'primary-button' : 'secondary-button'}
+          className={`${button.base} ${buyModeButton} ${buyMode === 'amount' ? button.primary : button.secondary}`}
           onClick={() => handleModeToggle('amount')}
         >
           Por monto
@@ -253,6 +257,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
         <label>
           Cantidad
           <input
+            className={inputBase}
             type="number"
             {...form.register('quantity', { valueAsNumber: true })}
           />
@@ -261,6 +266,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
         <label>
           Monto a invertir (CLP)
           <input
+            className={inputBase}
             type="number"
             value={investAmount}
             onChange={(e) => setInvestAmount(e.target.value)}
@@ -274,6 +280,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
         <label>
           Precio limite (CLP)
           <input
+            className={inputBase}
             step="0.01"
             type="number"
             onChange={(e) => {
@@ -283,7 +290,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
             {...limitPriceRest}
           />
           {watchedLimitPrice && watchedLimitPrice > 0 ? (
-            <small className="field-group__hint">
+            <small className={hintClass}>
               ≈ {formatCurrency(watchedLimitPrice, { currency: 'USD', rate })}
             </small>
           ) : null}
@@ -292,7 +299,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
       {calculatedPreview}
 
-      <p className="field-help">
+      <p className={hintClass}>
         {orderType === 'MARKET'
           ? 'La orden se ejecutara de inmediato al precio actual del mercado.'
           : selectedSide === 'BUY'
@@ -300,9 +307,9 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
             : 'La venta se ejecuta cuando el mercado sube al precio limite o por encima.'}
       </p>
 
-      {feedbackMessage ? <p className="form-success">{feedbackMessage}</p> : null}
+      {feedbackMessage ? <p className={successMessage}>{feedbackMessage}</p> : null}
       {orderMutation.isError ? (
-        <p className="form-error">
+        <p className={errorMessage}>
           {getApiErrorMessage(
             orderMutation.error,
             'No fue posible registrar la orden.',
@@ -311,7 +318,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
       ) : null}
 
       <button
-        className="primary-button"
+        className={`${button.base} ${button.primary}`}
         disabled={orderMutation.isPending}
         type="submit"
       >

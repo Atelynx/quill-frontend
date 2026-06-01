@@ -1,5 +1,7 @@
 import type { StockQuote } from '../../../shared/api/types';
 import { formatCurrency, formatPercentage } from '../../../shared/utils/format';
+import { marketPulseGrid } from '../../../shared/design-system/layout';
+import { textPositive, textNegative } from '../../../shared/design-system/typography';
 
 interface MarketPulseListProps {
   quotes: StockQuote[];
@@ -9,20 +11,16 @@ interface MarketPulseListProps {
 
 export function MarketPulseList({ quotes, currency, rate }: MarketPulseListProps) {
   return (
-    <div className="market-pulse-list">
+    <div className={marketPulseGrid}>
       {quotes.map((quote) => (
-        <article className="market-pulse-card" key={quote.symbol}>
+        <article key={quote.symbol} className="flex justify-between gap-4 rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-4 shadow-[var(--main-page-shadow-soft)] [background:var(--gradient-pulse-card)]">
           <div>
-            <span>{quote.symbol}</span>
-            <strong>{quote.name}</strong>
+            <span className="block text-[var(--main-page-text-muted)]">{quote.symbol}</span>
+            <strong className="mt-[0.2rem] block">{quote.name}</strong>
           </div>
           <div>
-            <b>{formatCurrency(quote.close, { currency, rate })}</b>
-            <small
-              className={
-                quote.dayChangePercentage >= 0 ? 'text-positive' : 'text-negative'
-              }
-            >
+            <b className="block">{formatCurrency(quote.close, { currency, rate })}</b>
+            <small className={`mt-[0.28rem] block font-semibold ${quote.dayChangePercentage >= 0 ? textPositive : textNegative}`}>
               {formatPercentage(quote.dayChangePercentage)}
             </small>
           </div>

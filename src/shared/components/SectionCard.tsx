@@ -1,4 +1,5 @@
 import type { PropsWithChildren, ReactNode } from 'react';
+import { surface, gradient } from '../design-system/surfaces';
 
 interface SectionCardProps extends PropsWithChildren {
   title: string;
@@ -8,12 +9,7 @@ interface SectionCardProps extends PropsWithChildren {
 
 export function SectionCard({ title, description, actions, children }: SectionCardProps) {
   return (
-    <section
-      className="rounded-[var(--main-page-radius-xl)] border border-text/14 p-5 shadow-[var(--main-page-shadow)] backdrop-blur-lg"
-      style={{
-        background: 'linear-gradient(180deg, var(--main-page-surface-strong), var(--main-page-surface))',
-      }}
-    >
+    <section className={`${surface.xl} ${gradient.card} p-5`}>
       <div className="mb-4 flex items-start justify-between gap-4">
         <div>
           <h3 className="m-0 text-text">{title}</h3>

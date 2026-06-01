@@ -1,5 +1,8 @@
 import { forwardRef, useId, useState } from 'react';
 import type { InputHTMLAttributes } from 'react';
+import { fieldGroup } from '@/shared/design-system/layout';
+import { fieldLabel, hint as hintClass, fieldError } from '@/shared/design-system/typography';
+import { inputBase } from '@/shared/design-system/forms';
 
 interface PasswordFieldProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
@@ -15,23 +18,23 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
     const [isVisible, setIsVisible] = useState(false);
 
     return (
-      <label className="field-group" htmlFor={fieldId}>
-        <span className="field-group__label">{label}</span>
+      <label className={fieldGroup} htmlFor={fieldId}>
+        <span className={fieldLabel}>{label}</span>
         <div className="relative">
           <input
             {...inputProps}
-            className="pr-[3.3rem]"
+            className={`${inputBase} pr-[3.3rem]`}
             id={fieldId}
             ref={ref}
             type={isVisible ? 'text' : 'password'}
           />
           <button
             aria-label={isVisible ? 'Ocultar contrasena' : 'Mostrar contrasena'}
-            className="absolute right-2 top-1/2 -mt-5 h-10 w-10 -translate-y-1/2 rounded-full bg-transparent text-[var(--main-page-text-soft)]"
+            className="absolute right-2 top-1/2 h-10 w-10 -translate-y-1/2 rounded-full bg-transparent text-[var(--main-page-text-soft)]"
             onClick={() => setIsVisible((currentValue) => !currentValue)}
             type="button"
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
+            <svg className="fill-current" viewBox="0 0 24 24" aria-hidden="true">
               {isVisible ? (
                 <path d="M3.7 4.9a1 1 0 0 1 1.4 0l14 14a1 1 0 0 1-1.4 1.4l-2.6-2.6A11.9 11.9 0 0 1 12 18.5c-5.2 0-9.3-4.3-10.5-5.8a1.1 1.1 0 0 1 0-1.4c.8-.9 2.6-2.9 5-4.3L3.7 6.3a1 1 0 0 1 0-1.4Zm6 6 4.3 4.3a3.5 3.5 0 0 1-4.3-4.3Zm2.3-5.4c5.2 0 9.3 4.3 10.5 5.8.3.4.3 1 0 1.4a17 17 0 0 1-3.5 3.2L16.8 14a5.5 5.5 0 0 0-6.8-6.8L8 5.5c1.2-.4 2.6-.7 4-.7Z" />
               ) : (
@@ -40,8 +43,8 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
             </svg>
           </button>
         </div>
-        {hint ? <small className="field-group__hint">{hint}</small> : null}
-        {error ? <span className="field-group__error">{error}</span> : null}
+        {hint ? <small className={hintClass}>{hint}</small> : null}
+        {error ? <span className={fieldError}>{error}</span> : null}
       </label>
     );
   },

@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setCurrency } from '@/store/slices/currencySlice';
+import { button } from '@/shared/design-system/surfaces';
 import type { Currency } from '@/store/slices/currencySlice';
 
 const currencies: { value: Currency; label: string }[] = [
@@ -21,7 +22,7 @@ export function CurrencySelector() {
 
   return (
     <button
-      className="theme-toggle"
+      className={button.themeToggle}
       onClick={cycleCurrency}
       type="button"
       aria-label={`Moneda actual: ${preferredCurrency}. Cambiar moneda.`}
