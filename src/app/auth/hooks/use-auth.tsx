@@ -10,6 +10,7 @@ import {
   useRegisterMutation,
 } from '../../../shared/api/hooks';
 import type {
+  AuthResponse,
   LoginInput,
   RegisterResponse,
   RegisterInput,
