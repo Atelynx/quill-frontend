@@ -186,7 +186,7 @@ export function DashboardPage() {
         tone: "neutral" as const,
       },
     ];
-  }, [openOrders.length, portfolio]);
+  }, [currency, openOrders.length, portfolio, rate]);
 
   const topMovers = useMemo(
     () =>

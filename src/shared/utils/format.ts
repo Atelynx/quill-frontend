@@ -9,12 +9,14 @@ export function formatCurrency(value: number, opts?: FormatCurrencyOptions) {
 
   const displayValue = currency === 'USD' ? value / rate : value;
 
-  const formatted = new Intl.NumberFormat('es-CL', {
-    style: 'currency',
-    currency,
+  const formattedNumber = new Intl.NumberFormat('es-CL', {
     minimumFractionDigits: currency === 'CLP' ? 0 : 2,
     maximumFractionDigits: currency === 'CLP' ? 0 : 2,
   }).format(displayValue);
+
+  const formatted = currency === 'CLP'
+    ? `$${formattedNumber}`
+    : `USD ${formattedNumber}`;
 
   return formatted;
 }
