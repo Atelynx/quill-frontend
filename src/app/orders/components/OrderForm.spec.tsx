@@ -2,6 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithProviders } from '../../../test/render';
+import * as stubMode from '../../../shared/api/stub-mode';
 import { OrderForm } from './OrderForm';
 
 const { postMock } = vi.hoisted(() => ({
@@ -181,5 +182,24 @@ describe('OrderForm', () => {
     await waitFor(() => {
       expect(postMock).not.toHaveBeenCalled();
     });
+  });
+
+  it('deshabilita el formulario en modo demo', async () => {
+    const stubModeSpy = vi.spyOn(stubMode, 'isStubMode').mockReturnValue(true);
+
+    renderWithProviders(
+      <OrderForm quotes={quotes} rate={950} selectedSymbol={quotes[0].symbol} />,
+    );
+
+    expect(screen.getByText(/modo demo/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Modo demo' })).toBeDisabled();
+
+    expect(screen.getByLabelText('Accion')).toBeDisabled();
+    expect(screen.getByLabelText('Tipo')).toBeDisabled();
+    expect(screen.getByLabelText('Modalidad')).toBeDisabled();
+
+    expect(postMock).not.toHaveBeenCalled();
+
+    stubModeSpy.mockRestore();
   });
 });
