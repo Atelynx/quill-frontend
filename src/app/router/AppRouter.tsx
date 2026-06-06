@@ -8,6 +8,15 @@ const AuthPage = lazy(() =>
 const DashboardPage = lazy(() =>
   import('../dashboard/DashboardPage').then((module) => ({ default: module.DashboardPage })),
 );
+const SettingsPage = lazy(() =>
+  import('../settings/pages/SettingsPage').then((module) => ({ default: module.SettingsPage })),
+);
+const WatchlistPage = lazy(() =>
+  import('../watchlist/pages/WatchlistPage').then((module) => ({ default: module.WatchlistPage })),
+);
+const FriendsPage = lazy(() =>
+  import('../friends/pages/FriendsPage').then((module) => ({ default: module.FriendsPage })),
+);
 const NotFound = lazy(() => import('../not-found/NotFound'));
 
 function ProtectedRoute({ element }: { element: React.ReactNode }) {
@@ -30,6 +39,18 @@ export function AppRouter() {
         {
           path: '/dashboard',
           element: <ProtectedRoute element={<DashboardPage />} />,
+        },
+        {
+          path: '/settings',
+          element: <ProtectedRoute element={<SettingsPage />} />,
+        },
+        {
+          path: '/watchlist',
+          element: <ProtectedRoute element={<WatchlistPage />} />,
+        },
+        {
+          path: '/friends',
+          element: <ProtectedRoute element={<FriendsPage />} />,
         },
         { path: '/', element: <Navigate to="/auth" replace /> },
         { path: '*', element: <NotFound /> },

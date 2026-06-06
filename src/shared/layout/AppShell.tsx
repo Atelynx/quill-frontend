@@ -1,4 +1,5 @@
 import type { PropsWithChildren } from 'react';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../app/auth/hooks/use-auth';
 import { ThemeToggle, CurrencySelector } from '../components';
 import { button, surface, gradient } from '../design-system/surfaces';
@@ -29,6 +30,57 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
           <strong className="block">{user?.fullName}</strong>
           <small className="block text-[var(--main-page-inverse-text-soft)]">{user?.email}</small>
         </div>
+
+        <nav className="flex flex-col gap-2">
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) =>
+              `rounded-[var(--main-page-radius-md)] px-4 py-2.5 text-white transition-colors ${
+                isActive
+                  ? 'bg-white/10 font-semibold'
+                  : 'text-[var(--main-page-inverse-text-soft)] hover:bg-white/5'
+              }`
+            }
+          >
+            Dashboard
+          </NavLink>
+          <NavLink
+            to="/watchlist"
+            className={({ isActive }) =>
+              `rounded-[var(--main-page-radius-md)] px-4 py-2.5 text-white transition-colors ${
+                isActive
+                  ? 'bg-white/10 font-semibold'
+                  : 'text-[var(--main-page-inverse-text-soft)] hover:bg-white/5'
+              }`
+            }
+          >
+            Seguimiento
+          </NavLink>
+          <NavLink
+            to="/friends"
+            className={({ isActive }) =>
+              `rounded-[var(--main-page-radius-md)] px-4 py-2.5 text-white transition-colors ${
+                isActive
+                  ? 'bg-white/10 font-semibold'
+                  : 'text-[var(--main-page-inverse-text-soft)] hover:bg-white/5'
+              }`
+            }
+          >
+            Amigos
+          </NavLink>
+          <NavLink
+            to="/settings"
+            className={({ isActive }) =>
+              `rounded-[var(--main-page-radius-md)] px-4 py-2.5 text-white transition-colors ${
+                isActive
+                  ? 'bg-white/10 font-semibold'
+                  : 'text-[var(--main-page-inverse-text-soft)] hover:bg-white/5'
+              }`
+            }
+          >
+            Configuracion
+          </NavLink>
+        </nav>
 
         <div className={`${surface.inverseCard} p-4 text-white`}>
           <span className={sidebarLabel}>Enfoque de Quill</span>
