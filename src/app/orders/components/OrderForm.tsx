@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useCreateOrderMutation } from '../../../shared/api/hooks';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
+import { isStubMode } from '../../../shared/api/stub-mode';
 import { CreateOrderInputSchema } from '../../../shared/api/validators';
 import type { StockQuote } from '../../../shared/api/validators';
 import { formatBothCurrencies, formatCurrency } from '../../../shared/utils/format';
@@ -31,6 +32,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
   const [investAmount, setInvestAmount] = useState<string>('');
   const limitPriceUserTouched = useRef(false);
   const orderMutation = useCreateOrderMutation();
+  const demoMode = isStubMode();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(CreateOrderInputSchema),
@@ -83,6 +85,12 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
   const handleSubmit = async (values: FormValues) => {
     setFeedbackMessage(null);
+
+    if (demoMode) {
+      setFeedbackMessage('La creacion de ordenes esta deshabilitada en modo demo.');
+      return;
+    }
+
     try {
       let submitValues = { ...values };
 
@@ -200,6 +208,12 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
       className={formGrid}
       onSubmit={form.handleSubmit(handleSubmit)}
     >
+      {demoMode ? (
+        <p className={hintClass}>
+          Estás en modo demo. Puedes revisar el formulario, pero crear órdenes está deshabilitado.
+        </p>
+      ) : null}
+
       <div>
         <strong>Precio actual</strong>
         <span className={hintClass}>
@@ -211,7 +225,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
       <label>
         Accion
-        <select className={inputBase} {...form.register('symbol')}>
+        <select className={inputBase} disabled={demoMode} {...form.register('symbol')}>
           {quotes.map((quote) => (
             <option key={quote.symbol} value={quote.symbol}>
               {quote.symbol} · {quote.name}
@@ -222,7 +236,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
       <label>
         Tipo
-        <select className={inputBase} {...form.register('side')}>
+        <select className={inputBase} disabled={demoMode} {...form.register('side')}>
           <option value="BUY">Compra</option>
           <option value="SELL">Venta</option>
         </select>
@@ -230,7 +244,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
       <label>
         Modalidad
-        <select className={inputBase} {...form.register('type')}>
+        <select className={inputBase} disabled={demoMode} {...form.register('type')}>
           <option value="LIMIT">Limite</option>
           <option value="MARKET">Mercado</option>
         </select>
@@ -240,6 +254,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
         <button
           type="button"
           className={`${button.base} ${buyModeButton} ${buyMode === 'shares' ? button.primary : button.secondary}`}
+          disabled={demoMode}
           onClick={() => handleModeToggle('shares')}
         >
           Por cantidad
@@ -247,6 +262,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
         <button
           type="button"
           className={`${button.base} ${buyModeButton} ${buyMode === 'amount' ? button.primary : button.secondary}`}
+          disabled={demoMode}
           onClick={() => handleModeToggle('amount')}
         >
           Por monto
@@ -258,6 +274,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
           Cantidad
           <input
             className={inputBase}
+            disabled={demoMode}
             type="number"
             {...form.register('quantity', { valueAsNumber: true })}
           />
@@ -267,6 +284,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
           Monto a invertir (CLP)
           <input
             className={inputBase}
+            disabled={demoMode}
             type="number"
             value={investAmount}
             onChange={(e) => setInvestAmount(e.target.value)}
@@ -281,6 +299,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
           Precio limite (CLP)
           <input
             className={inputBase}
+            disabled={demoMode}
             step="0.01"
             type="number"
             onChange={(e) => {
@@ -319,10 +338,10 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
       <button
         className={`${button.base} ${button.primary}`}
-        disabled={orderMutation.isPending}
+        disabled={orderMutation.isPending || demoMode}
         type="submit"
       >
-        {orderMutation.isPending ? 'Creando orden...' : 'Crear orden'}
+        {demoMode ? 'Modo demo' : orderMutation.isPending ? 'Creando orden...' : 'Crear orden'}
       </button>
     </form>
   );

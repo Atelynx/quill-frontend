@@ -21,6 +21,7 @@ const movementColor: Record<string, string> = {
 
 export function MarketTable({
   quotes,
+  selectedSymbol,
   onSelect,
   movementBySymbol,
   currency,
@@ -38,14 +39,18 @@ export function MarketTable({
           </tr>
         </thead>
         <tbody>
-          {quotes.map((quote) => (
+          {quotes.map((quote) => {
+            const isSelected = quote.symbol === selectedSymbol;
+
+            return (
             <tr
               key={quote.symbol}
               onClick={() => onSelect(quote.symbol)}
-              className="border-b border-[var(--main-page-border)] transition-colors duration-[var(--main-page-transition)] hover:bg-[color-mix(in_srgb,var(--color-accent)_8%,_transparent)] [&.is-selected]:bg-[color-mix(in_srgb,var(--color-accent)_8%,_transparent)]"
+              aria-selected={isSelected}
+              className={`border-b border-[var(--main-page-border)] transition-colors duration-[var(--main-page-transition)] hover:bg-[color-mix(in_srgb,var(--color-accent)_8%,_transparent)] ${isSelected ? 'bg-[color-mix(in_srgb,var(--color-accent)_10%,_transparent)] shadow-[inset_4px_0_0_var(--color-accent)]' : ''}`}
             >
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Simbolo">{quote.symbol}</td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Empresa">{quote.name}</td>
+              <td className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] ${isSelected ? 'font-semibold text-[var(--color-accent)]' : ''}`} data-label="Simbolo">{quote.symbol}</td>
+              <td className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] ${isSelected ? 'font-semibold' : ''}`} data-label="Empresa">{quote.name}</td>
               <td
                 className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] transition-all duration-[var(--main-page-transition)] ${movementColor[movementBySymbol[quote.symbol] ?? 'steady']}`}
                 data-label="Precio"
@@ -59,7 +64,8 @@ export function MarketTable({
                 {formatPercentage(quote.dayChangePercentage)}
               </td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
     </div>

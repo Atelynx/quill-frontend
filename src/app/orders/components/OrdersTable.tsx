@@ -31,7 +31,7 @@ export function OrdersTable({ orders, currency, rate }: OrdersTableProps) {
             <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Cantidad</th>
             <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Limite</th>
             <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Estado</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Creada</th>
+            <th className="whitespace-nowrap p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Creada</th>
           </tr>
         </thead>
         <tbody>
@@ -51,7 +51,7 @@ export function OrdersTable({ orders, currency, rate }: OrdersTableProps) {
                   : formatCurrency(order.limitPrice, { currency, rate })}
               </td>
               <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Estado">{order.status}</td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Creada">{formatDateTime(order.createdAt)}</td>
+              <td className="whitespace-nowrap p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Creada">{formatDateTime(order.createdAt)}</td>
             </tr>
           ))}
         </tbody>

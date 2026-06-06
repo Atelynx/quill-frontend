@@ -18,14 +18,6 @@ import type {
 } from '../../../shared/api/validators';
 
 const STORAGE_KEY = 'quill_auth';
-const ENABLE_STUB_AUTH =
-  String(import.meta.env.VITE_USE_STUBS ?? import.meta.env.USE_STUBS ?? 'false').toLowerCase() ===
-  'true';
-const STUB_EMAIL = String(import.meta.env.VITE_STUB_EMAIL ?? 'demo@quill.cl').trim().toLowerCase();
-const STUB_PASSWORD = String(import.meta.env.VITE_STUB_PASSWORD ?? 'qwerty123');
-const STUB_FULL_NAME = 'Demo Quill';
-const STUB_USER_ID = 'stub-user-1';
-const STUB_AVAILABLE_BALANCE = 2000000;
 
 interface AuthContextValue {
   user: UserProfile | null;
@@ -39,19 +31,6 @@ interface AuthContextValue {
 interface StoredAuthState {
   token: string;
   user: UserProfile;
-}
-
-function createStubSession(): AuthResponse {
-  return {
-    accessToken: `stub-token-${Date.now()}`,
-    user: {
-      id: STUB_USER_ID,
-      fullName: STUB_FULL_NAME,
-      email: STUB_EMAIL,
-      availableBalance: Number.isFinite(STUB_AVAILABLE_BALANCE) ? STUB_AVAILABLE_BALANCE : 2000000,
-      reservedBalance: 0,
-    },
-  };
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -87,32 +66,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   const login = async (input: LoginInput) => {
-    if (ENABLE_STUB_AUTH) {
-      const isStubEmail = input.email.trim().toLowerCase() === STUB_EMAIL;
-      const isStubPassword = input.password === STUB_PASSWORD;
-
-      if (!isStubEmail || !isStubPassword) {
-        throw new Error(
-          `Credenciales de prueba invalidas. Usa ${STUB_EMAIL} / ${STUB_PASSWORD}.`,
-        );
-      }
-
-      persistSession(createStubSession());
-      return;
-    }
-
     const response = await loginMutation.mutateAsync(input);
     persistSession(response);
   };
 
   const register = async (input: RegisterInput) => {
-    if (ENABLE_STUB_AUTH) {
-      return {
-        message: 'Cuenta de prueba creada. Ahora puedes iniciar sesion.',
-        email: input.email,
-      };
-    }
-
     return await registerMutation.mutateAsync(input);
   };
 

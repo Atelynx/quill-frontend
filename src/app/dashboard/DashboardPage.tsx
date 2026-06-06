@@ -24,23 +24,12 @@ import { MarketChart } from "./components/MarketChart";
 import { MarketPulseList } from "./components/MarketPulseList";
 import { MarketTable } from "./components/MarketTable";
 import { SummaryCard } from "./components/SummaryCard";
-
-const socketUrl = import.meta.env.VITE_SOCKET_URL ?? "http://localhost:3000";
-const ENABLE_STUBS =
-  String(
-    import.meta.env.VITE_USE_STUBS ?? import.meta.env.USE_STUBS ?? "false",
-  ).toLowerCase() === "true";
-
-import {
-  STUB_QUOTES,
-  STUB_PORTFOLIO,
-  STUB_ORDERS,
-  STUB_TRADES,
-  buildStubHistory,
-} from "./stubs";
+import { isStubMode } from "@/shared/api/stub-mode";
 import type { PortfolioSummary } from "@/shared/api/types";
 import { useForexDispatch } from "@/shared/hooks/useForexRate";
 import { useAppSelector } from "@/store/hooks";
+
+const socketUrl = import.meta.env.VITE_SOCKET_URL ?? "http://localhost:3000";
 
 export function DashboardPage() {
   const queryClient = useQueryClient();
@@ -85,31 +74,7 @@ export function DashboardPage() {
   }, [quotes]);
 
   useEffect(() => {
-    if (!ENABLE_STUBS) return;
-
-    // Seed react-query cache with stub data so hooks return immediately
-    queryClient.setQueryData(["market", "stocks"], STUB_QUOTES);
-    queryClient.setQueryData(["market-stocks"], STUB_QUOTES); // legacy key compatibility
-    queryClient.setQueryData(["portfolio", "summary"], STUB_PORTFOLIO);
-    queryClient.setQueryData(["orders", "pending"], STUB_ORDERS);
-    queryClient.setQueryData(["trades", "recent", 8], STUB_TRADES);
-
-    for (const q of STUB_QUOTES) {
-      const history = buildStubHistory(q.symbol, 24);
-      queryClient.setQueryData(["market", "history", q.symbol, 24], history);
-      queryClient.setQueryData(["market-history", q.symbol], history); // legacy key
-      previousPricesRef.current[q.symbol] = q.close;
-    }
-
-    setMovementBySymbol(
-      Object.fromEntries(
-        STUB_QUOTES.map((q) => [q.symbol, "steady"]),
-      ) as Record<string, "up" | "down" | "steady">,
-    );
-  }, [queryClient]);
-
-  useEffect(() => {
-    if (ENABLE_STUBS || quotes.length === 0) return;
+    if (isStubMode() || quotes.length === 0) return;
 
     const socket = io(`${socketUrl}/realtime`, {
       transports: ["websocket"],
@@ -179,7 +144,7 @@ export function DashboardPage() {
     return () => {
       socket.disconnect();
     };
-  }, [ENABLE_STUBS, quotes.length > 0, queryClient, token]);
+  }, [quotes.length > 0, queryClient, token]);
 
   const portfolio = portfolioQuery.data as PortfolioSummary;
   const openOrders = ordersQuery.data as OrderRecord[] ?? [];
@@ -221,7 +186,7 @@ export function DashboardPage() {
         tone: "neutral" as const,
       },
     ];
-  }, [openOrders.length, portfolio]);
+  }, [currency, openOrders.length, portfolio, rate]);
 
   const topMovers = useMemo(
     () =>
