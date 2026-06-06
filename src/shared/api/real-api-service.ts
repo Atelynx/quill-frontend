@@ -10,6 +10,16 @@ import {
   OrderRecordSchema,
   type CreateOrderInput,
   TradeRecordSchema,
+  type UpdateProfileInput,
+  type ChangeEmailInput,
+  type ChangePasswordInput,
+  UserProfileSchema,
+  WatchlistResponseSchema,
+  type AddWatchlistInput,
+  FriendSchema,
+  FriendRequestSchema,
+  type FriendActionInput,
+  MessageResponseSchema,
 } from './validators';
 
 export const authService = {
@@ -98,6 +108,126 @@ export const tradesService = {
       return TradeRecordSchema.array().parse(response.data);
     } catch (error) {
       console.error('[API] Recent trades fetch failed:', error);
+      throw error;
+    }
+  },
+};
+
+export const usersService = {
+  getProfile: async () => {
+    try {
+      const response = await apiClient.get('/users/me');
+      return UserProfileSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Profile fetch failed:', error);
+      throw error;
+    }
+  },
+
+  updateProfile: async (data: UpdateProfileInput) => {
+    try {
+      const response = await apiClient.patch('/users/me', data);
+      return UserProfileSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Profile update failed:', error);
+      throw error;
+    }
+  },
+
+  changeEmail: async (data: ChangeEmailInput) => {
+    try {
+      await apiClient.patch('/users/me/email', data);
+    } catch (error) {
+      console.error('[API] Email change failed:', error);
+      throw error;
+    }
+  },
+
+  changePassword: async (data: ChangePasswordInput) => {
+    try {
+      await apiClient.patch('/users/me/password', data);
+    } catch (error) {
+      console.error('[API] Password change failed:', error);
+      throw error;
+    }
+  },
+
+  getWatchlist: async () => {
+    try {
+      const response = await apiClient.get('/users/me/watchlist');
+      return StockQuoteSchema.array().parse(response.data);
+    } catch (error) {
+      console.error('[API] Watchlist fetch failed:', error);
+      throw error;
+    }
+  },
+
+  addToWatchlist: async (data: AddWatchlistInput) => {
+    try {
+      const response = await apiClient.post('/users/me/watchlist', data);
+      return WatchlistResponseSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Watchlist add failed:', error);
+      throw error;
+    }
+  },
+
+  removeFromWatchlist: async (symbol: string) => {
+    try {
+      const response = await apiClient.delete(`/users/me/watchlist/${symbol}`);
+      return WatchlistResponseSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Watchlist remove failed:', error);
+      throw error;
+    }
+  },
+
+  getFriends: async () => {
+    try {
+      const response = await apiClient.get('/users/me/friends');
+      return FriendSchema.array().parse(response.data);
+    } catch (error) {
+      console.error('[API] Friends fetch failed:', error);
+      throw error;
+    }
+  },
+
+  getFriendRequests: async () => {
+    try {
+      const response = await apiClient.get('/users/me/friends/requests');
+      return FriendRequestSchema.array().parse(response.data);
+    } catch (error) {
+      console.error('[API] Friend requests fetch failed:', error);
+      throw error;
+    }
+  },
+
+  sendFriendRequest: async (userId: string) => {
+    try {
+      const response = await apiClient.post(`/users/me/friends/${userId}`);
+      return MessageResponseSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Send friend request failed:', error);
+      throw error;
+    }
+  },
+
+  respondToFriendRequest: async (userId: string, data: FriendActionInput) => {
+    try {
+      const response = await apiClient.patch(`/users/me/friends/${userId}`, data);
+      return MessageResponseSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Friend request response failed:', error);
+      throw error;
+    }
+  },
+
+  removeFriend: async (userId: string) => {
+    try {
+      const response = await apiClient.delete(`/users/me/friends/${userId}`);
+      return MessageResponseSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Remove friend failed:', error);
       throw error;
     }
   },
