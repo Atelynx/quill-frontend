@@ -26,6 +26,7 @@ interface AuthContextValue {
   login: (input: LoginInput) => Promise<void>;
   register: (input: RegisterInput) => Promise<RegisterResponse>;
   logout: () => void;
+  updateUser: (updates: Partial<UserProfile>) => void;
 }
 
 interface StoredAuthState {
@@ -79,6 +80,20 @@ export function AuthProvider({ children }: PropsWithChildren) {
     setAuthState(null);
   };
 
+  const updateUser = (updates: Partial<UserProfile>) => {
+    setAuthState((current) => {
+      if (!current) return current;
+
+      const nextState = {
+        ...current,
+        user: { ...current.user, ...updates },
+      };
+
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+      return nextState;
+    });
+  };
+
   const value: AuthContextValue = {
     user: authState?.user ?? null,
     token: authState?.token ?? null,
@@ -86,6 +101,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     login,
     register,
     logout,
+    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

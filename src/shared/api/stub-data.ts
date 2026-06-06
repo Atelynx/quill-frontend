@@ -14,9 +14,29 @@ export const STUB_AUTH_RESPONSE: AuthResponse = {
     id: 'stub-user-1',
     fullName: 'Demo Quill',
     email: 'demo@quill.cl',
+    username: 'demo_quill',
+    watchlist: ['AAPL', 'TSLA'],
     availableBalance: 2_000_000,
     reservedBalance: 0,
   },
+};
+
+export const STUB_USER_PROFILE: {
+  id: string;
+  fullName: string;
+  email: string;
+  username: string;
+  watchlist: string[];
+  availableBalance: number;
+  reservedBalance: number;
+} = {
+  id: 'stub-user-1',
+  fullName: 'Demo Quill',
+  email: 'demo@quill.cl',
+  username: 'demo_quill',
+  watchlist: ['AAPL', 'TSLA'],
+  availableBalance: 2_000_000,
+  reservedBalance: 0,
 };
 
 export const STUB_REGISTER_RESPONSE: RegisterResponse = {
@@ -177,6 +197,35 @@ export const STUB_TRADES: TradeRecord[] = [
     commissionAmount: 2.2,
     netAmount: 968.8,
     executedAt: new Date(Date.now() - 1000 * 60 * 4).toISOString(),
+  },
+];
+
+export const STUB_FRIENDS = [
+  {
+    _id: 'friend-1',
+    fullName: 'Maria Garcia',
+    email: 'maria@example.com',
+    username: 'maria_g',
+  },
+  {
+    _id: 'friend-2',
+    fullName: 'Carlos Lopez',
+    email: 'carlos@example.com',
+    username: 'carlos_l',
+  },
+];
+
+export const STUB_FRIEND_REQUESTS = [
+  {
+    _id: 'request-1',
+    from: {
+      _id: 'user-3',
+      fullName: 'Ana Torres',
+      email: 'ana@example.com',
+      username: 'ana_t',
+    },
+    status: 'pending' as const,
+    createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
   },
 ];
 

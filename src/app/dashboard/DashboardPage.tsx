@@ -11,6 +11,8 @@ import {
   usePendingOrders,
   useRecentTrades,
   useStockHistory,
+  useAddToWatchlistMutation,
+  useRemoveFromWatchlistMutation,
 } from "../../shared/api/hooks";
 import { useAuth } from "../auth/hooks/use-auth";
 import type { OrderRecord, PricePoint, StockQuote, TradeRecord } from "../../shared/api/validators";
@@ -33,7 +35,9 @@ const socketUrl = import.meta.env.VITE_SOCKET_URL ?? "http://localhost:3000";
 
 export function DashboardPage() {
   const queryClient = useQueryClient();
-  const { token } = useAuth();
+  const { token, user, updateUser } = useAuth();
+  const addWatchlistMutation = useAddToWatchlistMutation();
+  const removeWatchlistMutation = useRemoveFromWatchlistMutation();
   const previousPricesRef = useRef<Record<string, number>>({});
   const [movementBySymbol, setMovementBySymbol] = useState<
     Record<string, "up" | "down" | "steady">
@@ -200,6 +204,18 @@ export function DashboardPage() {
     [quotes],
   );
 
+  const handleToggleWatchlist = async (symbol: string) => {
+    const inWatchlist = user?.watchlist?.includes(symbol) ?? false;
+
+    if (inWatchlist) {
+      const result = await removeWatchlistMutation.mutateAsync(symbol);
+      updateUser({ watchlist: result.watchlist });
+    } else {
+      const result = await addWatchlistMutation.mutateAsync({ symbols: [symbol] });
+      updateUser({ watchlist: result.watchlist });
+    }
+  };
+
   if (
     portfolioQuery.isLoading ||
     marketQuery.isLoading ||
@@ -298,6 +314,8 @@ export function DashboardPage() {
             quotes={quotes}
             rate={rate}
             selectedSymbol={activeSymbol}
+            watchlist={user?.watchlist}
+            onToggleWatchlist={handleToggleWatchlist}
           />
         </SectionCard>
 

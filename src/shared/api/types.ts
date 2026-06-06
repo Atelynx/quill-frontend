@@ -2,6 +2,8 @@ export interface UserProfile {
   id: string;
   fullName: string;
   email: string;
+  username?: string;
+  watchlist?: string[];
   availableBalance: number;
   reservedBalance: number;
 }
@@ -14,6 +16,7 @@ export interface AuthResponse {
 export interface RegisterResponse {
   message: string;
   email: string;
+  username?: string;
 }
 
 export interface LoginInput {
@@ -23,6 +26,7 @@ export interface LoginInput {
 
 export interface RegisterInput extends LoginInput {
   fullName: string;
+  username?: string;
 }
 
 export interface StockQuote {

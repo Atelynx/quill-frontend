@@ -5,7 +5,7 @@
 
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { portfolioService, marketService, ordersService, tradesService } from '../api-service';
+import { portfolioService, marketService, ordersService, tradesService, usersService } from '../api-service';
 
 /**
  * Hook to fetch portfolio summary
@@ -95,6 +95,86 @@ export function useRecentTrades(limit: number = 8) {
  * Hook to fetch stock price history
  * Depends on symbol parameter, refetches when symbol changes
  */
+/**
+ * Hook to fetch user profile
+ */
+export function useProfile() {
+  const query = useQuery({
+    queryKey: ['profile'],
+    queryFn: usersService.getProfile,
+    staleTime: 60000,
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('[Query] Profile fetch failed:', query.error);
+    }
+  }, [query.error]);
+
+  return query;
+}
+
+/**
+ * Hook to fetch watchlist with live stock data
+ */
+export function useWatchlist() {
+  const query = useQuery({
+    queryKey: ['watchlist'],
+    queryFn: usersService.getWatchlist,
+    staleTime: 10000,
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('[Query] Watchlist fetch failed:', query.error);
+    }
+  }, [query.error]);
+
+  return query;
+}
+
+/**
+ * Hook to fetch friends list
+ */
+export function useFriends() {
+  const query = useQuery({
+    queryKey: ['friends'],
+    queryFn: usersService.getFriends,
+    staleTime: 30000,
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('[Query] Friends fetch failed:', query.error);
+    }
+  }, [query.error]);
+
+  return query;
+}
+
+/**
+ * Hook to fetch incoming friend requests
+ */
+export function useFriendRequests() {
+  const query = useQuery({
+    queryKey: ['friends', 'requests'],
+    queryFn: usersService.getFriendRequests,
+    staleTime: 15000,
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('[Query] Friend requests fetch failed:', query.error);
+    }
+  }, [query.error]);
+
+  return query;
+}
+
 export function useStockHistory(symbol: string, limit: number = 24) {
   const query = useQuery({
     queryKey: ['market', 'history', symbol, limit],
