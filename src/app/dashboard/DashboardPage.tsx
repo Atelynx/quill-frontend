@@ -240,7 +240,7 @@ export function DashboardPage() {
           </h2>
           <p>
             El mercado mock actualiza precios y ordenes periodicamente para que
-            practiques lectura de contexto, entradas con limite y gestion del
+            practiques lectura de contexto, entradas con limite y gestión del
             portafolio.
           </p>
         </div>

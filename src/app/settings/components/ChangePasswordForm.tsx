@@ -13,17 +13,17 @@ import { successMessage as successMsgClass, errorMessage as errorMsgClass } from
 
 const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, 'Tu contrasena actual es obligatoria.'),
+    currentPassword: z.string().min(1, 'Tu contraseña actual es obligatoria.'),
     newPassword: z
       .string()
-      .min(8, 'La nueva contrasena debe tener al menos 8 caracteres.'),
+      .min(8, 'La nueva contraseña debe tener al menos 8 caracteres.'),
     confirmPassword: z
       .string()
-      .min(8, 'Confirma la contrasena con al menos 8 caracteres.'),
+      .min(8, 'Confirma la contraseña con al menos 8 caracteres.'),
   })
   .refine((values) => values.newPassword === values.confirmPassword, {
     path: ['confirmPassword'],
-    message: 'Las contrasenas deben coincidir.',
+    message: 'Las contraseñas deben coincidir.',
   });
 
 type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
@@ -47,7 +47,7 @@ export function ChangePasswordForm() {
         currentPassword: values.currentPassword,
         newPassword: values.newPassword,
       });
-      setSuccessMessage('Contrasena actualizada. Inicia sesion de nuevo.');
+      setSuccessMessage('contraseña actualizada. Inicia sesión de nuevo.');
       setTimeout(() => {
         logout();
         navigate('/auth', { replace: true });
@@ -64,28 +64,28 @@ export function ChangePasswordForm() {
       ) : null}
       {mutation.isError ? (
         <p className={errorMsgClass}>
-          {getApiErrorMessage(mutation.error, 'No se pudo cambiar la contrasena.')}
+          {getApiErrorMessage(mutation.error, 'No se pudo cambiar la contraseña.')}
         </p>
       ) : null}
 
       <PasswordField
         error={formState.errors.currentPassword?.message}
-        hint="Tu contrasena actual para confirmar tu identidad."
-        label="Contrasena actual"
+        hint="Tu contraseña actual para confirmar tu identidad."
+        label="contraseña actual"
         {...register('currentPassword')}
       />
 
       <PasswordField
         error={formState.errors.newPassword?.message}
         hint="Debe tener al menos 8 caracteres."
-        label="Nueva contrasena"
+        label="Nueva contraseña"
         {...register('newPassword')}
       />
 
       <PasswordField
         error={formState.errors.confirmPassword?.message}
-        hint="Debe coincidir con la nueva contrasena."
-        label="Confirmar nueva contrasena"
+        hint="Debe coincidir con la nueva contraseña."
+        label="Confirmar nueva contraseña"
         {...register('confirmPassword')}
       />
 
@@ -93,7 +93,7 @@ export function ChangePasswordForm() {
         disabled={formState.isSubmitting}
         type="submit"
       >
-        {formState.isSubmitting ? 'Cambiando...' : 'Cambiar contrasena'}
+        {formState.isSubmitting ? 'Cambiando...' : 'Cambiar contraseña'}
       </Button>
     </form>
   );

@@ -29,7 +29,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
             type={isVisible ? 'text' : 'password'}
           />
           <button
-            aria-label={isVisible ? 'Ocultar contrasena' : 'Mostrar contrasena'}
+            aria-label={isVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
             className="absolute right-2 top-1/2 h-10 w-10 -translate-y-1/2 rounded-full bg-transparent text-[var(--main-page-text-soft)]"
             onClick={() => setIsVisible((currentValue) => !currentValue)}
             type="button"

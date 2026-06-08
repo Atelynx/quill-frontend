@@ -20,7 +20,7 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
           <p className={eyebrow}>Atelynx</p>
           <h2 className="mb-2 mt-[0.2rem] text-[2rem]">Quill</h2>
           <p className="text-[var(--main-page-inverse-text-soft)]">
-            Simulador educativo de inversion para practicar decisiones con datos
+            Simulador educativo de inversion para practicar decisiónes con datos
             dinamicos, comisiones y ordenes limite.
           </p>
         </div>
@@ -104,7 +104,7 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
             <ThemeToggle />
             <CurrencySelector />
             <button className={`${button.base} ${button.secondary}`} onClick={logout} type="button">
-              Cerrar sesion
+              Cerrar sesión
             </button>
           </div>
         </header>

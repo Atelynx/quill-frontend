@@ -63,7 +63,7 @@ export function FriendsPage() {
 
   if (friendsLoading || requestsLoading) {
     return (
-      <AppShell title="Amigos" subtitle="Gestiona tus amigos.">
+      <AppShell title="Amigos" subtitle="gestióna tus amigos.">
         <div className={loadingScreen}>Cargando amigos...</div>
       </AppShell>
     );

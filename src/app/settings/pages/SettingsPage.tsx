@@ -16,7 +16,7 @@ export function SettingsPage() {
   return (
     <AppShell
       title="Configuracion de perfil"
-      subtitle="Administra tu informacion personal, correo y contrasena."
+      subtitle="Administra tu informacion personal, correo y contraseña."
     >
       <ProfileInfoSection user={user} />
 
@@ -34,14 +34,14 @@ export function SettingsPage() {
 
       <SectionCard
         title="Cambiar correo"
-        description="Recibiras un aviso. Despues de cambiar el correo tendras que iniciar sesion de nuevo."
+        description="Recibiras un aviso. Despues de cambiar el correo tendras que iniciar sesión de nuevo."
       >
         <ChangeEmailForm />
       </SectionCard>
 
       <SectionCard
-        title="Cambiar contrasena"
-        description="Usa una contrasena segura. Despues de cambiarla tendras que iniciar sesion de nuevo."
+        title="Cambiar contraseña"
+        description="Usa una contraseña segura. Despues de cambiarla tendras que iniciar sesión de nuevo."
       >
         <ChangePasswordForm />
       </SectionCard>

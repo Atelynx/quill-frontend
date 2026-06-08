@@ -14,7 +14,7 @@ import { inputBase, successMessage as successMsgClass, errorMessage as errorMsgC
 
 const loginSchema = z.object({
   email: z.string().email('Ingresa un correo valido.'),
-  password: z.string().min(8, 'La contrasena debe tener al menos 8 caracteres.'),
+  password: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres.'),
 });
 
 const registerSchema = z
@@ -23,14 +23,14 @@ const registerSchema = z
     email: z.string().email('Ingresa un correo valido.'),
     password: z
       .string()
-      .min(8, 'La contrasena debe tener al menos 8 caracteres.'),
+      .min(8, 'La contraseña debe tener al menos 8 caracteres.'),
     confirmPassword: z
       .string()
-      .min(8, 'Confirma la contrasena con al menos 8 caracteres.'),
+      .min(8, 'Confirma la contraseña con al menos 8 caracteres.'),
   })
   .refine((values) => values.password === values.confirmPassword, {
     path: ['confirmPassword'],
-    message: 'Las contrasenas deben coincidir.',
+    message: 'Las contraseñas deben coincidir.',
   });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -73,7 +73,7 @@ export function AuthPage() {
       setErrorMessage(
         getApiErrorMessage(
           error,
-          'No fue posible iniciar sesion. Revisa tus credenciales.',
+          'No fue posible iniciar sesión. Revisa tus credenciales.',
         ),
       );
     }
@@ -118,7 +118,7 @@ export function AuthPage() {
       <section className={`${surface.xl} ${gradient.hero} ${authHero}`}>
         <div>
           <p className={eyebrow}>Simulador educativo</p>
-          <h1 className="my-4 text-[clamp(2.3rem,4vw,4.5rem)] leading-[0.95]">Aprende a invertir entendiendo cada decision.</h1>
+          <h1 className="my-4 text-[clamp(2.3rem,4vw,4.5rem)] leading-[0.95]">Aprende a invertir entendiendo cada decisión.</h1>
           <p className="m-0 text-[1.08rem] text-[var(--main-page-inverse-text-soft)]">
             Quill combina mercado simulado, ordenes limite, comisiones y
             portafolio para practicar con una experiencia clara, seria y sin
@@ -133,7 +133,7 @@ export function AuthPage() {
           </article>
           <article className={heroMetricCard}>
             <strong className="text-[var(--main-page-inverse-text-soft)]">Mercado con actividad</strong>
-            <span className="block mt-1 text-[var(--main-page-inverse-text-muted)]">Precios, graficas y actualizaciones con sensacion de flujo.</span>
+            <span className="block mt-1 text-[var(--main-page-inverse-text-muted)]">Precios, gráficas y actualizaciones con sensación de flujo.</span>
           </article>
           <article className={heroMetricCard}>
             <strong className="text-[var(--main-page-inverse-text-soft)]">Aprendizaje guiado</strong>
@@ -153,7 +153,7 @@ export function AuthPage() {
             }}
             type="button"
           >
-            Iniciar sesion
+            Iniciar sesión
           </button>
           <button
             aria-selected={mode === 'register'}
@@ -187,8 +187,8 @@ export function AuthPage() {
 
             <PasswordField
               error={loginForm.formState.errors.password?.message}
-              hint="Usa la contrasena con la que creaste tu cuenta."
-              label="Contrasena"
+              hint="Usa la contraseña con la que creaste tu cuenta."
+              label="contraseña"
               {...loginForm.register('password')}
             />
 
@@ -221,14 +221,14 @@ export function AuthPage() {
             <PasswordField
               error={registerForm.formState.errors.password?.message}
               hint="Usa al menos 8 caracteres."
-              label="Contrasena"
+              label="contraseña"
               {...registerForm.register('password')}
             />
 
             <PasswordField
               error={registerForm.formState.errors.confirmPassword?.message}
-              hint="Debe coincidir exactamente con la contrasena principal."
-              label="Confirmar contrasena"
+              hint="Debe coincidir exactamente con la contraseña principal."
+              label="Confirmar contraseña"
               {...registerForm.register('confirmPassword')}
             />
 
@@ -246,7 +246,7 @@ export function AuthPage() {
 
         <p className="mt-4 text-[0.95rem] text-[var(--main-page-text-soft)]">
           Quill no usa dinero real. El acceso al dashboard requiere iniciar
-          sesion manualmente despues de crear tu cuenta.
+          sesión manualmente después de crear tu cuenta.
         </p>
       </section>
     </main>

@@ -14,7 +14,7 @@ import { inputBase, successMessage as successMsgClass, errorMessage as errorMsgC
 
 const changeEmailSchema = z.object({
   newEmail: z.string().email('Ingresa un correo valido.'),
-  currentPassword: z.string().min(1, 'Tu contrasena actual es obligatoria.'),
+  currentPassword: z.string().min(1, 'Tu contraseña actual es obligatoria.'),
 });
 
 type ChangeEmailFormValues = z.infer<typeof changeEmailSchema>;
@@ -33,7 +33,7 @@ export function ChangeEmailForm() {
     try {
       setSuccessMessage(null);
       await mutation.mutateAsync(values);
-      setSuccessMessage('Correo actualizado. Inicia sesion de nuevo.');
+      setSuccessMessage('Correo actualizado. Inicia sesión de nuevo.');
       setTimeout(() => {
         logout();
         navigate('/auth', { replace: true });
@@ -64,8 +64,8 @@ export function ChangeEmailForm() {
 
       <PasswordField
         error={formState.errors.currentPassword?.message}
-        hint="Confirma tu identidad con tu contrasena actual."
-        label="Contrasena actual"
+        hint="Confirma tu identidad con tu contraseña actual."
+        label="contraseña actual"
         {...register('currentPassword')}
       />
 
