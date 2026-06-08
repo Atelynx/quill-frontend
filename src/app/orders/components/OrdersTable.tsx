@@ -1,6 +1,7 @@
 import { EmptyState } from '../../../shared/components/EmptyState';
 import type { OrderRecord } from '../../../shared/api/types';
-import { formatCurrency, formatDateTime } from '../../../shared/utils/format';
+import { formatDateTime } from '../../../shared/utils/format';
+import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
 import { surface } from '../../../shared/design-system/surfaces';
 import '../../../shared/design-system/table.css';
 
@@ -48,7 +49,7 @@ export function OrdersTable({ orders, currency, rate }: OrdersTableProps) {
               <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Limite">
                 {order.type === 'MARKET' || order.limitPrice == null
                   ? '—'
-                  : formatCurrency(order.limitPrice, { currency, rate })}
+                  : <AnimatedCurrency value={order.limitPrice} currency={currency} rate={rate} />}
               </td>
               <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Estado">{order.status}</td>
               <td className="whitespace-nowrap p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Creada">{formatDateTime(order.createdAt)}</td>

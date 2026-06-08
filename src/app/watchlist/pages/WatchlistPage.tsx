@@ -7,7 +7,8 @@ import { EmptyState } from '../../../shared/components/EmptyState';
 import { Button } from '../../../shared/components/Button';
 import { loadingScreen } from '../../../shared/design-system/layout';
 import { surface } from '../../../shared/design-system/surfaces';
-import { formatCurrency, formatPercentage } from '../../../shared/utils/format';
+import { formatPercentage } from '../../../shared/utils/format';
+import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
 import { textPositive, textNegative } from '../../../shared/design-system/typography';
 import { useAppSelector } from '../../../store/hooks';
 import type { StockQuote } from '../../../shared/api/validators';
@@ -86,7 +87,7 @@ export function WatchlistPage() {
                       {stock.name}
                     </td>
                     <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="Precio">
-                      {formatCurrency(stock.close, { currency, rate })}
+                      <AnimatedCurrency value={stock.close} currency={currency} rate={rate} />
                     </td>
                     <td className={`p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] ${stock.dayChangePercentage >= 0 ? textPositive : textNegative}`} data-label="Variacion">
                       {formatPercentage(stock.dayChangePercentage)}
@@ -134,7 +135,7 @@ export function WatchlistPage() {
                       {stock.name}
                     </td>
                     <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="Precio">
-                      {formatCurrency(stock.close, { currency, rate })}
+                      <AnimatedCurrency value={stock.close} currency={currency} rate={rate} />
                     </td>
                     <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="">
                       <Button

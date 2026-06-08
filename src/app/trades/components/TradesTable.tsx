@@ -1,6 +1,7 @@
 import { EmptyState } from '../../../shared/components/EmptyState';
 import type { TradeRecord } from '../../../shared/api/types';
-import { formatCurrency, formatDateTime } from '../../../shared/utils/format';
+import { formatDateTime } from '../../../shared/utils/format';
+import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
 import { surface } from '../../../shared/design-system/surfaces';
 import '../../../shared/design-system/table.css';
 
@@ -44,12 +45,12 @@ export function TradesTable({ trades, currency, rate }: TradesTableProps) {
               </td>
               <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Cantidad">{trade.quantity}</td>
               <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Precio">
-                {formatCurrency(trade.executionPrice, { currency, rate })}
+                <AnimatedCurrency value={trade.executionPrice} currency={currency} rate={rate} />
               </td>
               <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Comision">
-                {formatCurrency(trade.commissionAmount, { currency, rate })}
+                <AnimatedCurrency value={trade.commissionAmount} currency={currency} rate={rate} />
               </td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Neto">{formatCurrency(trade.netAmount, { currency, rate })}</td>
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Neto"><AnimatedCurrency value={trade.netAmount} currency={currency} rate={rate} /></td>
             </tr>
           ))}
         </tbody>

@@ -1,5 +1,6 @@
 import type { StockQuote } from '../../../shared/api/types';
-import { formatCurrency, formatPercentage } from '../../../shared/utils/format';
+import { formatPercentage } from '../../../shared/utils/format';
+import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
 import { marketPulseGrid } from '../../../shared/design-system/layout';
 import { textPositive, textNegative } from '../../../shared/design-system/typography';
 
@@ -19,7 +20,7 @@ export function MarketPulseList({ quotes, currency, rate }: MarketPulseListProps
             <strong className="mt-[0.2rem] block">{quote.name}</strong>
           </div>
           <div>
-            <b className="block">{formatCurrency(quote.close, { currency, rate })}</b>
+            <b className="block"><AnimatedCurrency value={quote.close} currency={currency} rate={rate} /></b>
             <small className={`mt-[0.28rem] block font-semibold ${quote.dayChangePercentage >= 0 ? textPositive : textNegative}`}>
               {formatPercentage(quote.dayChangePercentage)}
             </small>

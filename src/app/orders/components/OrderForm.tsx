@@ -6,7 +6,7 @@ import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
 import { isStubMode } from '../../../shared/api/stub-mode';
 import { CreateOrderInputSchema } from '../../../shared/api/validators';
 import type { StockQuote } from '../../../shared/api/validators';
-import { formatBothCurrencies, formatCurrency } from '../../../shared/utils/format';
+import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
 import { button } from '../../../shared/design-system/surfaces';
 import { hint as hintClass } from '../../../shared/design-system/typography';
 import { formGrid, buyModeToggle, buyModeButton } from '../../../shared/design-system/layout';
@@ -159,10 +159,10 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
     const totalCost = watchedQuantity * price;
     return (
       <p className={hintClass}>
-        Costo total estimado: {formatBothCurrencies(totalCost, rate)}
+        Costo total estimado: <AnimatedCurrency value={totalCost} /> (<AnimatedCurrency value={totalCost} currency="USD" rate={rate} />)
         <br />
         <small>
-          ({watchedQuantity} acciones &times; {formatCurrency(price, { currency: 'CLP' })} c/u)
+          ({watchedQuantity} acciones &times; <AnimatedCurrency value={price} /> c/u)
         </small>
       </p>
     );
@@ -184,7 +184,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
       return (
         <p className={hintClass} style={{ color: 'var(--main-page-danger)' }}>
           Monto insuficiente. Debe ser al menos{' '}
-          {formatCurrency(price, { currency: 'CLP' })} para comprar 1 accion.
+          <AnimatedCurrency value={price} /> para comprar 1 accion.
         </p>
       );
     }
@@ -193,11 +193,11 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
     return (
       <p className={hintClass}>
         &asymp; {calculatedQty} acciones &middot; Costo estimado:{' '}
-        {formatBothCurrencies(totalCost, rate)}
+        <AnimatedCurrency value={totalCost} /> (<AnimatedCurrency value={totalCost} currency="USD" rate={rate} />)
         <br />
         <small>
-          ({formatCurrency(totalCost, { currency: 'CLP' })} / {calculatedQty}{' '}
-          acciones &times; {formatCurrency(price, { currency: 'CLP' })} c/u)
+          (<AnimatedCurrency value={totalCost} /> / {calculatedQty}{' '}
+          acciones &times; <AnimatedCurrency value={price} /> c/u)
         </small>
       </p>
     );
@@ -218,7 +218,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
         <strong>Precio actual</strong>
         <span className={hintClass}>
           {currentQuote
-            ? `${currentQuote.symbol} · ${formatBothCurrencies(currentQuote.close, rate)}`
+            ? <>{currentQuote.symbol} · <AnimatedCurrency value={currentQuote.close} /> (<AnimatedCurrency value={currentQuote.close} currency="USD" rate={rate} />)</>
             : 'Selecciona una accion para continuar.'}
         </span>
       </div>
@@ -310,7 +310,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
           />
           {watchedLimitPrice && watchedLimitPrice > 0 ? (
             <small className={hintClass}>
-              ≈ {formatCurrency(watchedLimitPrice, { currency: 'USD', rate })}
+              ≈ <AnimatedCurrency value={watchedLimitPrice} currency="USD" rate={rate} />
             </small>
           ) : null}
         </label>
