@@ -5,6 +5,7 @@ import {
   useRespondToFriendRequestMutation,
   useRemoveFriendMutation,
 } from '../../../shared/api/hooks';
+import { labels, friends as friendsContent } from '../../../shared/content/strings';
 import { AppShell } from '../../../shared/layout/AppShell';
 import { SectionCard } from '../../../shared/components/SectionCard';
 import { EmptyState } from '../../../shared/components/EmptyState';
@@ -36,11 +37,11 @@ export function FriendsPage() {
       setSearchError(null);
       setSearchSuccess(null);
       await sendRequestMutation.mutateAsync(userIdInput.trim());
-      setSearchSuccess('Solicitud enviada correctamente.');
+      setSearchSuccess(friendsContent.search.success);
       setUserIdInput('');
     } catch (error) {
       setSearchError(
-        getApiErrorMessage(error, 'No se pudo enviar la solicitud.'),
+        getApiErrorMessage(error, friendsContent.search.error),
       );
     }
   };
@@ -63,31 +64,31 @@ export function FriendsPage() {
 
   if (friendsLoading || requestsLoading) {
     return (
-      <AppShell title="Amigos" subtitle="Gestiona tus amigos.">
-        <div className={loadingScreen}>Cargando amigos...</div>
+      <AppShell title={friendsContent.title} subtitle={friendsContent.subtitleShort}>
+        <div className={loadingScreen}>{friendsContent.loading}</div>
       </AppShell>
     );
   }
 
   return (
     <AppShell
-      title="Amigos"
-      subtitle="Conecta con otros usuarios de Quill."
+      title={friendsContent.title}
+      subtitle={friendsContent.subtitle}
     >
       <SectionCard
-        title="Agregar amigo"
-        description="Busca por ID de usuario para enviar una solicitud."
+        title={friendsContent.search.title}
+        description={friendsContent.search.description}
       >
         <div className={formGrid}>
           {searchError ? <p className={errorMsgClass}>{searchError}</p> : null}
           {searchSuccess ? <p className="rounded-[var(--main-page-radius-md)] px-4 py-3.5 text-[var(--main-page-accent-strong)] bg-[var(--main-page-accent-soft)] border border-[color-mix(in_srgb,_var(--color-accent)_22%,_transparent)]">{searchSuccess}</p> : null}
           <div className="flex gap-3 items-end">
             <label className={fieldGroup + ' flex-1'}>
-              <span className={fieldLabel}>ID de usuario</span>
+              <span className={fieldLabel}>{labels.field.userId}</span>
               <input
                 className={inputBase}
                 type="text"
-                placeholder="user_XXXXXX"
+                placeholder={labels.field.usernamePlaceholder}
                 value={userIdInput}
                 onChange={(e) => setUserIdInput(e.target.value)}
               />
@@ -96,7 +97,7 @@ export function FriendsPage() {
               onClick={handleSendRequest}
               disabled={sendRequestMutation.isPending || !userIdInput.trim()}
             >
-              {sendRequestMutation.isPending ? 'Enviando...' : 'Enviar solicitud'}
+              {sendRequestMutation.isPending ? labels.action.sending : labels.action.send}
             </Button>
           </div>
         </div>
@@ -104,25 +105,25 @@ export function FriendsPage() {
 
       {requestsList.length > 0 ? (
         <SectionCard
-          title="Solicitudes pendientes"
-          description={`${requestsList.length} solicitud(es) por revisar.`}
+          title={friendsContent.requests.title}
+          description={friendsContent.requests.count(requestsList.length)}
         >
           <div className={`${surface.tableWrapper} responsive-table`}>
             <table className="w-full min-w-[500px] border-separate border-spacing-0">
               <thead>
                 <tr>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Nombre</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Usuario</th>
+                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.name}</th>
+                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.user}</th>
                   <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]"></th>
                 </tr>
               </thead>
               <tbody>
                 {requestsList.map((req) => (
                   <tr key={req._id} className="border-b border-[var(--main-page-border)]">
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="Nombre">
+                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label={labels.table.name}>
                       {req.from.fullName}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] text-[var(--main-page-text-soft)]" data-label="Usuario">
+                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] text-[var(--main-page-text-soft)]" data-label={labels.table.user}>
                       {req.from.username ?? '—'}
                     </td>
                     <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="">
@@ -132,7 +133,7 @@ export function FriendsPage() {
                         onClick={() => handleAccept(req.from._id)}
                         disabled={respondMutation.isPending}
                       >
-                        Aceptar
+                        {labels.action.accept}
                       </Button>
                     </td>
                   </tr>
@@ -144,35 +145,35 @@ export function FriendsPage() {
       ) : null}
 
       <SectionCard
-        title="Tus amigos"
-        description={friendsList.length === 0 ? 'Aun no tienes amigos.' : `${friendsList.length} amigo(s)`}
+        title={friendsContent.list.title}
+        description={friendsList.length === 0 ? friendsContent.list.empty : friendsContent.list.count(friendsList.length)}
       >
         {friendsList.length === 0 ? (
           <EmptyState
-            title="Sin amigos"
-            description="Envia solicitudes a otros usuarios para empezar."
+            title={friendsContent.list.emptyTitle}
+            description={friendsContent.list.emptyDescription}
           />
         ) : (
           <div className={`${surface.tableWrapper} responsive-table`}>
             <table className="w-full min-w-[500px] border-separate border-spacing-0">
               <thead>
                 <tr>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Nombre</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Email</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Usuario</th>
+                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.name}</th>
+                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.email}</th>
+                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.user}</th>
                   <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]"></th>
                 </tr>
               </thead>
               <tbody>
                 {friendsList.map((friend) => (
                   <tr key={friend._id} className="border-b border-[var(--main-page-border)]">
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="Nombre">
+                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label={labels.table.name}>
                       {friend.fullName}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] text-[var(--main-page-text-soft)]" data-label="Email">
+                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] text-[var(--main-page-text-soft)]" data-label={labels.table.email}>
                       {friend.email}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] text-[var(--main-page-text-soft)]" data-label="Usuario">
+                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] text-[var(--main-page-text-soft)]" data-label={labels.table.user}>
                       {friend.username ?? '—'}
                     </td>
                     <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="">
@@ -182,7 +183,7 @@ export function FriendsPage() {
                         onClick={() => handleRemove(friend._id)}
                         disabled={removeMutation.isPending}
                       >
-                        Eliminar
+                        {labels.action.delete}
                       </Button>
                     </td>
                   </tr>

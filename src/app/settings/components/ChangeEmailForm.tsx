@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
 import { useChangeEmailMutation } from '../../../shared/api/hooks';
 import { useAuth } from '../../auth/hooks/use-auth';
+import { labels, settings } from '../../../shared/content/strings';
 import { PasswordField } from '../../../shared/components/PasswordField';
 import { Button } from '../../../shared/components/Button';
 import { fieldLabel, fieldError } from '../../../shared/design-system/typography';
@@ -14,7 +15,7 @@ import { inputBase, successMessage as successMsgClass, errorMessage as errorMsgC
 
 const changeEmailSchema = z.object({
   newEmail: z.string().email('Ingresa un correo valido.'),
-  currentPassword: z.string().min(1, 'Tu contrasena actual es obligatoria.'),
+  currentPassword: z.string().min(1, 'Tu contraseña actual es obligatoria.'),
 });
 
 type ChangeEmailFormValues = z.infer<typeof changeEmailSchema>;
@@ -33,7 +34,7 @@ export function ChangeEmailForm() {
     try {
       setSuccessMessage(null);
       await mutation.mutateAsync(values);
-      setSuccessMessage('Correo actualizado. Inicia sesion de nuevo.');
+      setSuccessMessage(settings.changeEmail.success);
       setTimeout(() => {
         logout();
         navigate('/auth', { replace: true });
@@ -50,12 +51,12 @@ export function ChangeEmailForm() {
       ) : null}
       {mutation.isError ? (
         <p className={errorMsgClass}>
-          {getApiErrorMessage(mutation.error, 'No se pudo cambiar el correo.')}
+          {getApiErrorMessage(mutation.error, settings.changeEmail.error)}
         </p>
       ) : null}
 
       <label className={fieldGroup}>
-        <span className={fieldLabel}>Nuevo correo</span>
+        <span className={fieldLabel}>{settings.changeEmail.newEmail}</span>
         <input className={inputBase} type="email" {...register('newEmail')} />
         <span className={fieldError}>
           {formState.errors.newEmail?.message}
@@ -64,8 +65,8 @@ export function ChangeEmailForm() {
 
       <PasswordField
         error={formState.errors.currentPassword?.message}
-        hint="Confirma tu identidad con tu contrasena actual."
-        label="Contrasena actual"
+        hint={settings.changeEmail.confirmHint}
+        label={labels.field.currentPassword}
         {...register('currentPassword')}
       />
 
@@ -73,7 +74,7 @@ export function ChangeEmailForm() {
         disabled={formState.isSubmitting}
         type="submit"
       >
-        {formState.isSubmitting ? 'Cambiando...' : 'Cambiar correo'}
+        {formState.isSubmitting ? labels.action.changingEmail : labels.action.changeEmail}
       </Button>
     </form>
   );

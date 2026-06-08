@@ -58,7 +58,7 @@ describe('OrderForm', () => {
     });
   });
 
-  it('envia la orden valida y muestra confirmacion', async () => {
+  it('envia la orden valida y muestra confirmación', async () => {
     const user = userEvent.setup();
     postMock.mockResolvedValue({
       data: {

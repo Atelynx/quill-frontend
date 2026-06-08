@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setCurrency } from '@/store/slices/currencySlice';
+import { currencySelector } from '@/shared/content/strings';
 import { button } from '@/shared/design-system/surfaces';
 import type { Currency } from '@/store/slices/currencySlice';
 
@@ -25,7 +26,7 @@ export function CurrencySelector() {
       className={button.themeToggle}
       onClick={cycleCurrency}
       type="button"
-      aria-label={`Moneda actual: ${preferredCurrency}. Cambiar moneda.`}
+      aria-label={currencySelector.ariaLabel(preferredCurrency)}
     >
       <span>{preferredCurrency}</span>
     </button>
