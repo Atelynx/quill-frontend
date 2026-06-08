@@ -15,13 +15,12 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
 
   return (
     <div className="grid min-h-screen grid-cols-[minmax(240px,280px)_1fr] max-[1180px]:grid-cols-1">
-      <aside className={`${gradient.sidebar} flex flex-col gap-4 p-6 text-white max-[1180px]:order-2 max-[720px]:p-4`}>
+      <aside className={`${gradient.sidebar} sticky top-0 flex h-screen self-start flex-col gap-4 overflow-y-auto p-6 text-white max-[1180px]:order-2 max-[720px]:p-4`}>
         <div>
           <p className={eyebrow}>Atelynx</p>
           <h2 className="mb-2 mt-[0.2rem] text-[2rem]">Quill</h2>
           <p className="text-[var(--main-page-inverse-text-soft)]">
-            Simulador educativo de inversion para practicar decisiones con datos
-            dinamicos, comisiones y ordenes limite.
+            Simulador educativo de inversion para practicar decisiones con datos dinamicos, comisiones y ordenes limite.
           </p>
         </div>
 
@@ -82,14 +81,14 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
           </NavLink>
         </nav>
 
-        <div className={`${surface.inverseCard} p-4 text-white`}>
+        {/* <div className={`${surface.inverseCard} p-4 text-white`}>
           <span className={sidebarLabel}>Enfoque de Quill</span>
           <ul className="m-0 grid gap-[0.55rem] pl-4 text-[var(--main-page-inverse-text-soft)]">
             <li>Practica sin riesgo financiero real.</li>
             <li>Observa como se ejecuta una orden limite.</li>
             <li>Aprende leyendo tu portafolio y tus operaciones.</li>
           </ul>
-        </div>
+        </div> */}
       </aside>
 
       <div className="p-6 max-[720px]:p-4">
