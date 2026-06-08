@@ -1,6 +1,6 @@
 import type { UserProfile } from '../../../shared/api/validators';
 import { surface, gradient } from '../../../shared/design-system/surfaces';
-import { formatCurrency } from '../../../shared/utils/format';
+import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
 
 interface ProfileInfoSectionProps {
   user: UserProfile;
@@ -30,7 +30,7 @@ export function ProfileInfoSection({ user }: ProfileInfoSectionProps) {
         <div className="rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-4">
           <span className="block text-[0.85rem] text-[var(--main-page-text-soft)]">Saldo disponible</span>
           <strong className="block mt-1 text-[var(--color-accent)]">
-            {formatCurrency(user.availableBalance)}
+            <AnimatedCurrency value={user.availableBalance} />
           </strong>
         </div>
       </div>

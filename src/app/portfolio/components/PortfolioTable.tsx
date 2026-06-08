@@ -1,6 +1,6 @@
 import { EmptyState } from '../../../shared/components/EmptyState';
 import type { PortfolioPosition } from '../../../shared/api/types';
-import { formatCurrency } from '../../../shared/utils/format';
+import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
 import { surface } from '../../../shared/design-system/surfaces';
 import { textPositive, textNegative } from '../../../shared/design-system/typography';
 import '../../../shared/design-system/table.css';
@@ -42,17 +42,17 @@ export function PortfolioTable({ positions, currency, rate }: PortfolioTableProp
               <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Cantidad">{position.quantity}</td>
               <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Reservadas">{position.reservedQuantity}</td>
               <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Costo promedio">
-                {formatCurrency(position.averageCost, { currency, rate })}
+                <AnimatedCurrency value={position.averageCost} currency={currency} rate={rate} />
               </td>
               <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Precio actual">
-                {formatCurrency(position.marketPrice, { currency, rate })}
+                <AnimatedCurrency value={position.marketPrice} currency={currency} rate={rate} />
               </td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Valor">{formatCurrency(position.marketValue, { currency, rate })}</td>
+              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Valor"><AnimatedCurrency value={position.marketValue} currency={currency} rate={rate} /></td>
               <td
                 className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] ${position.unrealizedProfitLoss >= 0 ? textPositive : textNegative}`}
                 data-label="P/L"
               >
-                {formatCurrency(position.unrealizedProfitLoss, { currency, rate })}
+                <AnimatedCurrency value={position.unrealizedProfitLoss} currency={currency} rate={rate} />
               </td>
             </tr>
           ))}

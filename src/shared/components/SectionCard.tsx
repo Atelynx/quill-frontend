@@ -3,7 +3,7 @@ import { surface, gradient } from '../design-system/surfaces';
 
 interface SectionCardProps extends PropsWithChildren {
   title: string;
-  description?: string;
+  description?: ReactNode;
   actions?: ReactNode;
 }
 

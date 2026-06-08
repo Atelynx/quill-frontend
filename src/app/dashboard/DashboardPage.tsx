@@ -21,7 +21,7 @@ import { AppShell } from "../../shared/layout/AppShell";
 import { gradient } from "../../shared/design-system/surfaces";
 import { loadingScreen, heroPanelContent, heroPanelMeta, heroChip, heroChipSecondary, summaryGrid, dashboardGridWide, dashboardGridBalanced, guideList } from "../../shared/design-system/layout";
 import { eyebrow } from "../../shared/design-system/typography";
-import { formatCurrency } from "../../shared/utils/format";
+import { AnimatedCurrency } from "../../shared/components/AnimatedCurrency";
 import { MarketChart } from "./components/MarketChart";
 import { MarketPulseList } from "./components/MarketPulseList";
 import { MarketTable } from "./components/MarketTable";
@@ -163,22 +163,30 @@ export function DashboardPage() {
     return [
       {
         label: "Saldo disponible",
-        value: formatCurrency(portfolio.availableBalance, { currency, rate }),
+        value: portfolio.availableBalance,
+        currency,
+        rate,
         tone: "neutral" as const,
       },
       {
         label: "Capital invertido",
-        value: formatCurrency(portfolio.investedValue, { currency, rate }),
+        value: portfolio.investedValue,
+        currency,
+        rate,
         tone: "neutral" as const,
       },
       {
         label: "Patrimonio total",
-        value: formatCurrency(portfolio.totalEquity, { currency, rate }),
+        value: portfolio.totalEquity,
+        currency,
+        rate,
         tone: "positive" as const,
       },
       {
         label: "Resultado no realizado",
-        value: formatCurrency(portfolio.unrealizedProfitLoss, { currency, rate }),
+        value: portfolio.unrealizedProfitLoss,
+        currency,
+        rate,
         tone:
           portfolio.unrealizedProfitLoss >= 0
             ? ("positive" as const)
@@ -186,7 +194,7 @@ export function DashboardPage() {
       },
       {
         label: "Ordenes abiertas",
-        value: `${openOrders.length}`,
+        value: openOrders.length,
         tone: "neutral" as const,
       },
     ];
@@ -259,6 +267,8 @@ export function DashboardPage() {
             label={card.label}
             tone={card.tone}
             value={card.value}
+            currency={card.currency}
+            rate={card.rate}
           />
         ))}
       </div>
@@ -275,10 +285,7 @@ export function DashboardPage() {
           title={`Mercado activo | ${activeSymbol}`}
           description={
             selectedQuote
-              ? `Precio actual ${formatCurrency(
-                  selectedQuote.close,
-                  { currency, rate },
-                )}. Selecciona otra accion en la tabla para cambiar la vista.`
+              ? <>Precio actual <AnimatedCurrency value={selectedQuote.close} currency={currency} rate={rate} />. Selecciona otra accion en la tabla para cambiar la vista.</>
               : "Selecciona una accion para revisar su evolucion."
           }
         >

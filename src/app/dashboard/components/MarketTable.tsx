@@ -1,5 +1,6 @@
 import type { StockQuote } from '../../../shared/api/types';
-import { formatCurrency, formatPercentage } from '../../../shared/utils/format';
+import { formatPercentage } from '../../../shared/utils/format';
+import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
 import { surface } from '../../../shared/design-system/surfaces';
 import { textPositive, textNegative } from '../../../shared/design-system/typography';
 import '../../../shared/design-system/table.css';
@@ -82,7 +83,7 @@ export function MarketTable({
                 className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] transition-all duration-[var(--main-page-transition)] ${movementColor[movementBySymbol[quote.symbol] ?? 'steady']}`}
                 data-label="Precio"
               >
-                {formatCurrency(quote.close, { currency, rate })}
+                <AnimatedCurrency value={quote.close} currency={currency} rate={rate} />
               </td>
               <td
                 className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] ${quote.dayChangePercentage >= 0 ? textPositive : textNegative}`}
