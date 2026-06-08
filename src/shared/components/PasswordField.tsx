@@ -1,5 +1,6 @@
 import { forwardRef, useId, useState } from 'react';
 import type { InputHTMLAttributes } from 'react';
+import { labels } from '@/shared/content/strings';
 import { fieldGroup } from '@/shared/design-system/layout';
 import { fieldLabel, hint as hintClass, fieldError } from '@/shared/design-system/typography';
 import { inputBase } from '@/shared/design-system/forms';
@@ -29,7 +30,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
             type={isVisible ? 'text' : 'password'}
           />
           <button
-            aria-label={isVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+            aria-label={isVisible ? labels.password.hide : labels.password.show}
             className="absolute right-2 top-1/2 h-10 w-10 -translate-y-1/2 rounded-full bg-transparent text-[var(--main-page-text-soft)]"
             onClick={() => setIsVisible((currentValue) => !currentValue)}
             type="button"

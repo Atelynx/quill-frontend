@@ -8,6 +8,7 @@ import { Button } from '../../../shared/components/Button';
 import { loadingScreen } from '../../../shared/design-system/layout';
 import { surface } from '../../../shared/design-system/surfaces';
 import { formatCurrency, formatPercentage } from '../../../shared/utils/format';
+import { labels, watchlist } from '../../../shared/content/strings';
 import { textPositive, textNegative } from '../../../shared/design-system/typography';
 import { useAppSelector } from '../../../store/hooks';
 import type { StockQuote } from '../../../shared/api/validators';
@@ -32,8 +33,8 @@ export function WatchlistPage() {
 
   if (watchlistLoading || marketLoading) {
     return (
-      <AppShell title="Lista de seguimiento" subtitle="Tus acciones favoritas.">
-        <div className={loadingScreen}>Cargando lista de seguimiento...</div>
+      <AppShell title={watchlist.title} subtitle={watchlist.subtitle}>
+        <div className={loadingScreen}>{watchlist.loading}</div>
       </AppShell>
     );
   }
@@ -52,43 +53,43 @@ export function WatchlistPage() {
 
   return (
     <AppShell
-      title="Lista de seguimiento"
-      subtitle="Acciones que sigues de cerca."
+      title={watchlist.title}
+      subtitle={watchlist.subtitleDetail}
     >
       <SectionCard
-        title="Tus favoritos"
-        description={stocks.length === 0 ? 'Agrega acciones desde el panel principal.' : `${stocks.length} acciones en seguimiento`}
+        title={watchlist.favorites.title}
+        description={stocks.length === 0 ? watchlist.favorites.emptyHint : watchlist.counter(stocks.length)}
       >
         {stocks.length === 0 ? (
           <EmptyState
-            title="Sin seguimiento"
-            description="Selecciona acciones como favoritas desde la tabla del mercado en el Dashboard."
+            title={watchlist.empty.title}
+            description={watchlist.empty.description}
           />
         ) : (
           <div className={`${surface.tableWrapper} responsive-table`}>
             <table className="w-full min-w-[640px] border-separate border-spacing-0">
               <thead>
                 <tr>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Simbolo</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Empresa</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Precio</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Variacion</th>
+                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.symbol}</th>
+                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.company}</th>
+                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.price}</th>
+                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.variation}</th>
                   <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]"></th>
                 </tr>
               </thead>
               <tbody>
                 {stocks.map((stock) => (
                   <tr key={stock.symbol} className="border-b border-[var(--main-page-border)]">
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] font-semibold" data-label="Simbolo">
+                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] font-semibold" data-label={labels.table.symbol}>
                       {stock.symbol}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="Empresa">
+                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label={labels.table.company}>
                       {stock.name}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="Precio">
+                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label={labels.table.price}>
                       {formatCurrency(stock.close, { currency, rate })}
                     </td>
-                    <td className={`p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] ${stock.dayChangePercentage >= 0 ? textPositive : textNegative}`} data-label="Variacion">
+                    <td className={`p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] ${stock.dayChangePercentage >= 0 ? textPositive : textNegative}`} data-label={labels.table.variation}>
                       {formatPercentage(stock.dayChangePercentage)}
                     </td>
                     <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="">
@@ -98,7 +99,7 @@ export function WatchlistPage() {
                         onClick={() => handleRemove(stock.symbol)}
                         disabled={removeMutation.isPending}
                       >
-                        Quitar
+                        {labels.action.remove}
                       </Button>
                     </td>
                   </tr>
@@ -111,29 +112,29 @@ export function WatchlistPage() {
 
       {availableStocks.length > 0 ? (
         <SectionCard
-          title="Agregar acciones"
-          description="Acciones disponibles que no estas siguiendo."
+          title={watchlist.addSection.title}
+          description={watchlist.addSection.description}
         >
           <div className={`${surface.tableWrapper} responsive-table`}>
             <table className="w-full min-w-[640px] border-separate border-spacing-0">
               <thead>
                 <tr>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Simbolo</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Empresa</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Precio</th>
+                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.symbol}</th>
+                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.company}</th>
+                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.price}</th>
                   <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]"></th>
                 </tr>
               </thead>
               <tbody>
                 {availableStocks.map((stock) => (
                   <tr key={stock.symbol} className="border-b border-[var(--main-page-border)]">
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] font-semibold" data-label="Simbolo">
+                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] font-semibold" data-label={labels.table.symbol}>
                       {stock.symbol}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="Empresa">
+                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label={labels.table.company}>
                       {stock.name}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="Precio">
+                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label={labels.table.price}>
                       {formatCurrency(stock.close, { currency, rate })}
                     </td>
                     <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="">
@@ -143,7 +144,7 @@ export function WatchlistPage() {
                         onClick={() => handleAdd(stock.symbol)}
                         disabled={addMutation.isPending}
                       >
-                        Agregar
+                        {labels.action.add}
                       </Button>
                     </td>
                   </tr>

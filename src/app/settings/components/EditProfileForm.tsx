@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
 import { useUpdateProfileMutation } from '../../../shared/api/hooks';
 import { useAuth } from '../../auth/hooks/use-auth';
+import { labels, settings } from '../../../shared/content/strings';
 import { Button } from '../../../shared/components/Button';
 import { fieldLabel, fieldError } from '../../../shared/design-system/typography';
 import { formGrid, fieldGroup } from '../../../shared/design-system/layout';
@@ -44,16 +45,16 @@ export function EditProfileForm({ defaultValues }: EditProfileFormProps) {
   return (
     <form className={formGrid} onSubmit={onSubmit}>
       {mutation.isSuccess ? (
-        <p className={successMsgClass}>Perfil actualizado correctamente.</p>
+        <p className={successMsgClass}>{settings.editProfile.success}</p>
       ) : null}
       {mutation.isError ? (
         <p className={errorMsgClass}>
-          {getApiErrorMessage(mutation.error, 'No se pudo actualizar el perfil.')}
+          {getApiErrorMessage(mutation.error, settings.editProfile.error)}
         </p>
       ) : null}
 
       <label className={fieldGroup}>
-        <span className={fieldLabel}>Nombre completo</span>
+        <span className={fieldLabel}>{labels.field.fullName}</span>
         <input className={inputBase} type="text" {...register('fullName')} />
         <span className={fieldError}>
           {formState.errors.fullName?.message}
@@ -61,11 +62,11 @@ export function EditProfileForm({ defaultValues }: EditProfileFormProps) {
       </label>
 
       <label className={fieldGroup}>
-        <span className={fieldLabel}>Nombre de usuario</span>
+        <span className={fieldLabel}>{labels.field.username}</span>
         <input
           className={inputBase}
           type="text"
-          placeholder="user_XXXXXX"
+          placeholder={labels.field.usernamePlaceholder}
           {...register('username')}
         />
         <span className={fieldError}>
@@ -77,7 +78,7 @@ export function EditProfileForm({ defaultValues }: EditProfileFormProps) {
         disabled={formState.isSubmitting}
         type="submit"
       >
-        {formState.isSubmitting ? 'Guardando...' : 'Guardar cambios'}
+        {formState.isSubmitting ? labels.action.saving : labels.action.save}
       </Button>
     </form>
   );

@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
+import { labels, auth } from '../../../shared/content/strings';
 import { PasswordField } from '../../../shared/components/PasswordField';
 import { ThemeToggle } from '../../../shared/components/ThemeToggle';
 import { useAuth } from '../hooks/use-auth';
@@ -73,7 +74,7 @@ export function AuthPage() {
       setErrorMessage(
         getApiErrorMessage(
           error,
-          'No fue posible iniciar sesión. Revisa tus credenciales.',
+          auth.login.error,
         ),
       );
     }
@@ -99,7 +100,7 @@ export function AuthPage() {
       setErrorMessage(
         getApiErrorMessage(
           error,
-          'No fue posible crear tu cuenta. Verifica los datos.',
+          auth.register.error,
         ),
       );
     }
@@ -109,41 +110,33 @@ export function AuthPage() {
     <main className={authGrid}>
       <div className={authTopbar}>
         <div>
-          <p className={eyebrow}>Atelynx presenta</p>
-          <h2 className="mt-[0.15rem] text-[1.3rem] m-0">Quill</h2>
+          <p className={eyebrow}>{auth.hero.eyebrow}</p>
+          <h2 className="mt-[0.15rem] text-[1.3rem] m-0">{auth.hero.title}</h2>
         </div>
         <ThemeToggle />
       </div>
 
       <section className={`${surface.xl} ${gradient.hero} ${authHero}`}>
         <div>
-          <p className={eyebrow}>Simulador educativo</p>
-          <h1 className="my-4 text-[clamp(2.3rem,4vw,4.5rem)] leading-[0.95]">Aprende a invertir entendiendo cada decisión.</h1>
+          <p className={eyebrow}>{auth.hero.subtitle}</p>
+          <h1 className="my-4 text-[clamp(2.3rem,4vw,4.5rem)] leading-[0.95]">{auth.hero.headline}</h1>
           <p className="m-0 text-[1.08rem] text-[var(--main-page-inverse-text-soft)]">
-            Quill combina mercado simulado, ordenes limite, comisiones y
-            portafolio para practicar con una experiencia clara, seria y sin
-            dinero real.
+            {auth.hero.description}
           </p>
         </div>
 
         <div className={heroMetrics}>
-          <article className={heroMetricCard}>
-            <strong className="text-[var(--main-page-inverse-text-soft)]">Registro seguro y directo</strong>
-            <span className="block mt-1 text-[var(--main-page-inverse-text-muted)]">Crea tu cuenta y entra manualmente cuando estes listo.</span>
-          </article>
-          <article className={heroMetricCard}>
-            <strong className="text-[var(--main-page-inverse-text-soft)]">Mercado con actividad</strong>
-            <span className="block mt-1 text-[var(--main-page-inverse-text-muted)]">Precios, gráficas y actualizaciones con sensación de flujo.</span>
-          </article>
-          <article className={heroMetricCard}>
-            <strong className="text-[var(--main-page-inverse-text-soft)]">Aprendizaje guiado</strong>
-            <span className="block mt-1 text-[var(--main-page-inverse-text-muted)]">Quill explica lo importante sin llenar la pantalla de ruido.</span>
-          </article>
+          {auth.hero.metrics.map((metric) => (
+            <article key={metric.title} className={heroMetricCard}>
+              <strong className="text-[var(--main-page-inverse-text-soft)]">{metric.title}</strong>
+              <span className="block mt-1 text-[var(--main-page-inverse-text-muted)]">{metric.text}</span>
+            </article>
+          ))}
         </div>
       </section>
 
       <section className={`${surface.xl} ${gradient.card} ${authCard}`}>
-        <div className={authTabs} role="tablist" aria-label="Cambiar formulario">
+        <div className={authTabs} role="tablist" aria-label={auth.tabAriaLabel}>
           <button
             aria-selected={mode === 'login'}
             className={`${authTabButton} ${mode === 'login' ? authTabActive : ''}`}
@@ -153,7 +146,7 @@ export function AuthPage() {
             }}
             type="button"
           >
-            Iniciar sesión
+            {labels.action.login}
           </button>
           <button
             aria-selected={mode === 'register'}
@@ -164,7 +157,7 @@ export function AuthPage() {
             }}
             type="button"
           >
-            Crear cuenta
+            {labels.action.register}
           </button>
         </div>
 
@@ -178,7 +171,7 @@ export function AuthPage() {
         {mode === 'login' ? (
           <form className={formGrid} onSubmit={handleLogin}>
             <label className={fieldGroup}>
-              <span className={fieldLabel}>Correo</span>
+              <span className={fieldLabel}>{auth.login.emailLabel}</span>
               <input className={inputBase} type="email" {...loginForm.register('email')} />
               <span className={fieldError}>
                 {loginForm.formState.errors.email?.message}
@@ -187,8 +180,8 @@ export function AuthPage() {
 
             <PasswordField
               error={loginForm.formState.errors.password?.message}
-              hint="Usa la contraseña con la que creaste tu cuenta."
-              label="contraseña"
+              hint={auth.login.passwordHint}
+              label={auth.login.passwordLabel}
               {...loginForm.register('password')}
             />
 
@@ -197,13 +190,13 @@ export function AuthPage() {
               disabled={loginForm.formState.isSubmitting}
               type="submit"
             >
-              {loginForm.formState.isSubmitting ? 'Ingresando...' : 'Entrar a Quill'}
+              {loginForm.formState.isSubmitting ? labels.action.loggingIn : labels.action.enterQuill}
             </button>
           </form>
         ) : (
           <form className={formGrid} onSubmit={handleRegister}>
             <label className={fieldGroup}>
-              <span className={fieldLabel}>Nombre completo</span>
+              <span className={fieldLabel}>{labels.field.fullName}</span>
               <input className={inputBase} type="text" {...registerForm.register('fullName')} />
               <span className={fieldError}>
                 {registerForm.formState.errors.fullName?.message}
@@ -211,7 +204,7 @@ export function AuthPage() {
             </label>
 
             <label className={fieldGroup}>
-              <span className={fieldLabel}>Correo</span>
+              <span className={fieldLabel}>{auth.register.emailLabel}</span>
               <input className={inputBase} type="email" {...registerForm.register('email')} />
               <span className={fieldError}>
                 {registerForm.formState.errors.email?.message}
@@ -220,15 +213,15 @@ export function AuthPage() {
 
             <PasswordField
               error={registerForm.formState.errors.password?.message}
-              hint="Usa al menos 8 caracteres."
-              label="contraseña"
+              hint={auth.register.passwordHint}
+              label={auth.register.passwordLabel}
               {...registerForm.register('password')}
             />
 
             <PasswordField
               error={registerForm.formState.errors.confirmPassword?.message}
-              hint="Debe coincidir exactamente con la contraseña principal."
-              label="Confirmar contraseña"
+              hint={auth.register.confirmHint}
+              label={labels.field.confirmPassword}
               {...registerForm.register('confirmPassword')}
             />
 
@@ -238,15 +231,14 @@ export function AuthPage() {
               type="submit"
             >
               {registerForm.formState.isSubmitting
-                ? 'Creando cuenta...'
-                : 'Crear cuenta'}
+                ? labels.action.creatingAccount
+                : labels.action.register}
             </button>
           </form>
         )}
 
         <p className="mt-4 text-[0.95rem] text-[var(--main-page-text-soft)]">
-          Quill no usa dinero real. El acceso al dashboard requiere iniciar
-          sesión manualmente después de crear tu cuenta.
+          {auth.footer}
         </p>
       </section>
     </main>

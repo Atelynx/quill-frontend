@@ -22,6 +22,7 @@ import { gradient } from "../../shared/design-system/surfaces";
 import { loadingScreen, heroPanelContent, heroPanelMeta, heroChip, heroChipSecondary, summaryGrid, dashboardGridWide, dashboardGridBalanced, guideList } from "../../shared/design-system/layout";
 import { eyebrow } from "../../shared/design-system/typography";
 import { formatCurrency } from "../../shared/utils/format";
+import { dashboard } from "../../shared/content/strings";
 import { MarketChart } from "./components/MarketChart";
 import { MarketPulseList } from "./components/MarketPulseList";
 import { MarketTable } from "./components/MarketTable";
@@ -162,22 +163,22 @@ export function DashboardPage() {
 
     return [
       {
-        label: "Saldo disponible",
+        label: dashboard.summaryCards.availableBalance,
         value: formatCurrency(portfolio.availableBalance, { currency, rate }),
         tone: "neutral" as const,
       },
       {
-        label: "Capital invertido",
+        label: dashboard.summaryCards.investedCapital,
         value: formatCurrency(portfolio.investedValue, { currency, rate }),
         tone: "neutral" as const,
       },
       {
-        label: "Patrimonio total",
+        label: dashboard.summaryCards.totalEquity,
         value: formatCurrency(portfolio.totalEquity, { currency, rate }),
         tone: "positive" as const,
       },
       {
-        label: "Resultado no realizado",
+        label: dashboard.summaryCards.unrealizedPnl,
         value: formatCurrency(portfolio.unrealizedProfitLoss, { currency, rate }),
         tone:
           portfolio.unrealizedProfitLoss >= 0
@@ -185,7 +186,7 @@ export function DashboardPage() {
             : ("negative" as const),
       },
       {
-        label: "Ordenes abiertas",
+        label: dashboard.summaryCards.openOrders,
         value: `${openOrders.length}`,
         tone: "neutral" as const,
       },
@@ -222,32 +223,28 @@ export function DashboardPage() {
     ordersQuery.isLoading ||
     tradesQuery.isLoading
   ) {
-    return <div className={loadingScreen}>Cargando datos de Quill...</div>;
+    return <div className={loadingScreen}>{dashboard.loading}</div>;
   }
 
   return (
     <AppShell
-      title="Panel principal"
-      subtitle="Lee el mercado, registra ordenes y sigue tu aprendizaje con una vista equilibrada y clara."
+      title={dashboard.title}
+      subtitle={dashboard.subtitle}
     >
       <section className={`${gradient.heroPanel} flex justify-between gap-4 rounded-[var(--main-page-radius-xl)] border border-[var(--main-page-border)] p-[1.3rem] shadow-[var(--main-page-shadow)] backdrop-blur-xl max-[820px]:flex-col max-[820px]:items-stretch`}>
         <div className={heroPanelContent}>
-          <p className={eyebrow}>Quill en tiempo real</p>
+          <p className={eyebrow}>{dashboard.hero.eyebrow}</p>
           <h2 className="m-0">
             {selectedQuote
               ? `${selectedQuote.name} (${selectedQuote.symbol})`
-              : "Mercado en seguimiento"}
+              : dashboard.hero.fallbackTitle}
           </h2>
-          <p>
-            El mercado mock actualiza precios y ordenes periodicamente para que
-            practiques lectura de contexto, entradas con limite y gestión del
-            portafolio.
-          </p>
+          <p>{dashboard.hero.description}</p>
         </div>
         <div className={heroPanelMeta}>
-          <span className={heroChip}>Marca principal: Quill</span>
+          <span className={heroChip}>{dashboard.hero.chips.brand}</span>
           <span className={`${heroChip} ${heroChipSecondary}`}>
-            Equipo desarrollador: Atelynx
+            {dashboard.hero.chips.team}
           </span>
         </div>
       </section>
@@ -264,8 +261,8 @@ export function DashboardPage() {
       </div>
 
       <SectionCard
-        title="Movimiento destacado del mercado"
-        description="Estas acciones muestran la variacion diaria mas visible del simulador."
+        title={dashboard.sections.topMovers.title}
+        description={dashboard.sections.topMovers.description}
       >
         <MarketPulseList quotes={topMovers} currency={currency} rate={rate} />
       </SectionCard>
@@ -275,11 +272,11 @@ export function DashboardPage() {
           title={`Mercado activo | ${activeSymbol}`}
           description={
             selectedQuote
-              ? `Precio actual ${formatCurrency(
-                  selectedQuote.close,
-                  { currency, rate },
-                )}. Selecciona otra accion en la tabla para cambiar la vista.`
-              : "Selecciona una accion para revisar su evolucion."
+              ? dashboard.sections.chart.description(
+                  activeSymbol,
+                  formatCurrency(selectedQuote.close, { currency, rate }),
+                )
+              : dashboard.sections.chart.fallbackDescription
           }
         >
           <MarketChart
@@ -291,8 +288,8 @@ export function DashboardPage() {
         </SectionCard>
 
         <SectionCard
-          title="Nueva orden limitada"
-          description="Define el precio al que quieres entrar o salir. Quill la ejecutara automaticamente cuando el mercado llegue a ese valor."
+          title={dashboard.sections.orderForm.title}
+          description={dashboard.sections.orderForm.description}
         >
           <OrderForm
             quotes={quotes}
@@ -304,8 +301,8 @@ export function DashboardPage() {
 
       <div className={dashboardGridBalanced}>
         <SectionCard
-          title="Mercado disponible"
-          description="Haz clic en una accion para enfocarte en su grafica y preparar una orden."
+          title={dashboard.sections.marketTable.title}
+          description={dashboard.sections.marketTable.description}
         >
           <MarketTable
             currency={currency}
@@ -320,35 +317,23 @@ export function DashboardPage() {
         </SectionCard>
 
         <SectionCard
-          title="Como leer este panel"
-          description="Ayudas rapidas para usuarios que recien comienzan."
+          title={dashboard.sections.guide.title}
+          description={dashboard.sections.guide.description}
         >
           <div className={guideList}>
-            <article className="rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-[0.95rem_1rem] shadow-[var(--main-page-shadow-soft)] [background:var(--gradient-pulse-card)]">
-              <strong className="mb-[0.3rem] block">Saldo disponible</strong>
-              <p>Es el capital que aun puedes usar para nuevas ordenes.</p>
-            </article>
-            <article className="rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-[0.95rem_1rem] shadow-[var(--main-page-shadow-soft)] [background:var(--gradient-pulse-card)]">
-              <strong className="mb-[0.3rem] block">Orden limitada</strong>
-              <p>
-                No se ejecuta al instante: espera hasta que el mercado alcance
-                tu precio objetivo.
-              </p>
-            </article>
-            <article className="rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-[0.95rem_1rem] shadow-[var(--main-page-shadow-soft)] [background:var(--gradient-pulse-card)]">
-              <strong className="mb-[0.3rem] block">Resultado no realizado</strong>
-              <p>
-                Muestra la ganancia o perdida estimada de posiciones que aun no
-                has vendido.
-              </p>
-            </article>
+            {dashboard.sections.guide.cards.map((card) => (
+              <article key={card.title} className="rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-[0.95rem_1rem] shadow-[var(--main-page-shadow-soft)] [background:var(--gradient-pulse-card)]">
+                <strong className="mb-[0.3rem] block">{card.title}</strong>
+                <p>{card.text}</p>
+              </article>
+            ))}
           </div>
         </SectionCard>
       </div>
 
       <SectionCard
-        title="Portafolio"
-        description="Tus posiciones activas, costo promedio y valor de mercado actual."
+        title={dashboard.sections.portfolio.title}
+        description={dashboard.sections.portfolio.description}
       >
         <PortfolioTable
           currency={currency}
@@ -359,8 +344,8 @@ export function DashboardPage() {
 
       <div className={dashboardGridBalanced}>
         <SectionCard
-          title="Ordenes abiertas"
-          description="Quedaran aqui mientras esperan que el precio cumpla tu condicion."
+          title={dashboard.sections.openOrders.title}
+          description={dashboard.sections.openOrders.description}
         >
           <OrdersTable
             currency={currency}
@@ -370,8 +355,8 @@ export function DashboardPage() {
         </SectionCard>
 
         <SectionCard
-          title="Operaciones recientes"
-          description="Registro de compras y ventas ya ejecutadas por el motor del simulador."
+          title={dashboard.sections.recentTrades.title}
+          description={dashboard.sections.recentTrades.description}
         >
           <TradesTable
             currency={currency}

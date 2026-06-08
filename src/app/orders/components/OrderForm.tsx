@@ -7,6 +7,7 @@ import { isStubMode } from '../../../shared/api/stub-mode';
 import { CreateOrderInputSchema } from '../../../shared/api/validators';
 import type { StockQuote } from '../../../shared/api/validators';
 import { formatBothCurrencies, formatCurrency } from '../../../shared/utils/format';
+import { labels, orderForm } from '../../../shared/content/strings';
 import { button } from '../../../shared/design-system/surfaces';
 import { hint as hintClass } from '../../../shared/design-system/typography';
 import { formGrid, buyModeToggle, buyModeButton } from '../../../shared/design-system/layout';
@@ -87,7 +88,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
     setFeedbackMessage(null);
 
     if (demoMode) {
-      setFeedbackMessage('La creacion de ordenes esta deshabilitada en modo demo.');
+      setFeedbackMessage(orderForm.demoDisabled);
       return;
     }
 
@@ -101,15 +102,13 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
             : (values.limitPrice ?? 0);
 
         if (price <= 0) {
-          setFeedbackMessage('Precio invalido. Verifica los datos.');
+          setFeedbackMessage(orderForm.invalidPrice);
           return;
         }
 
         const calculatedQty = Math.floor(Number(investAmount) / price);
         if (calculatedQty < 1) {
-          setFeedbackMessage(
-            'El monto ingresado no es suficiente para comprar al menos 1 accion.',
-          );
+          setFeedbackMessage(orderForm.insufficientQuantity);
           return;
         }
 
@@ -119,8 +118,8 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
       await orderMutation.mutateAsync(submitValues);
       setFeedbackMessage(
         values.type === 'MARKET'
-          ? 'Orden ejecutada al precio de mercado.'
-          : 'Orden registrada. Quedara pendiente hasta que el mercado cumpla la condicion.',
+          ? orderForm.orderExecuted
+          : orderForm.orderRegistered,
       );
       form.reset({
         symbol: selectedSymbol,
@@ -209,22 +208,20 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
       onSubmit={form.handleSubmit(handleSubmit)}
     >
       {demoMode ? (
-        <p className={hintClass}>
-          Estás en modo demo. Puedes revisar el formulario, pero crear órdenes está deshabilitado.
-        </p>
+        <p className={hintClass}>{orderForm.demoHint}</p>
       ) : null}
 
       <div>
-        <strong>Precio actual</strong>
+        <strong>{orderForm.currentPrice}</strong>
         <span className={hintClass}>
           {currentQuote
             ? `${currentQuote.symbol} · ${formatBothCurrencies(currentQuote.close, rate)}`
-            : 'Selecciona una accion para continuar.'}
+            : orderForm.selectStock}
         </span>
       </div>
 
       <label>
-        Accion
+        {labels.field.symbol}
         <select className={inputBase} disabled={demoMode} {...form.register('symbol')}>
           {quotes.map((quote) => (
             <option key={quote.symbol} value={quote.symbol}>
@@ -235,18 +232,18 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
       </label>
 
       <label>
-        Tipo
+        {labels.table.side}
         <select className={inputBase} disabled={demoMode} {...form.register('side')}>
-          <option value="BUY">Compra</option>
-          <option value="SELL">Venta</option>
+          <option value="BUY">{labels.action.buy}</option>
+          <option value="SELL">{labels.action.sell}</option>
         </select>
       </label>
 
       <label>
-        Modalidad
+        {labels.table.type}
         <select className={inputBase} disabled={demoMode} {...form.register('type')}>
-          <option value="LIMIT">Limite</option>
-          <option value="MARKET">Mercado</option>
+          <option value="LIMIT">{labels.action.limit}</option>
+          <option value="MARKET">{labels.action.market}</option>
         </select>
       </label>
 
@@ -257,7 +254,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
           disabled={demoMode}
           onClick={() => handleModeToggle('shares')}
         >
-          Por cantidad
+          {labels.action.byShares}
         </button>
         <button
           type="button"
@@ -265,13 +262,13 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
           disabled={demoMode}
           onClick={() => handleModeToggle('amount')}
         >
-          Por monto
+          {labels.action.byAmount}
         </button>
       </div>
 
       {buyMode === 'shares' ? (
         <label>
-          Cantidad
+          {labels.field.quantity}
           <input
             className={inputBase}
             disabled={demoMode}
@@ -281,7 +278,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
         </label>
       ) : (
         <label>
-          Monto a invertir (CLP)
+          {labels.field.investAmount}
           <input
             className={inputBase}
             disabled={demoMode}
@@ -296,7 +293,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
       {orderType === 'LIMIT' ? (
         <label>
-          Precio limite (CLP)
+          {orderForm.limitPriceLabel}
           <input
             className={inputBase}
             disabled={demoMode}
@@ -320,10 +317,10 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
       <p className={hintClass}>
         {orderType === 'MARKET'
-          ? 'La orden se ejecutara de inmediato al precio actual del mercado.'
+          ? orderForm.description.market
           : selectedSide === 'BUY'
-            ? 'La compra se ejecuta cuando el mercado cae al precio limite o por debajo.'
-            : 'La venta se ejecuta cuando el mercado sube al precio limite o por encima.'}
+            ? orderForm.description.buy
+            : orderForm.description.sell}
       </p>
 
       {feedbackMessage ? <p className={successMessage}>{feedbackMessage}</p> : null}
@@ -331,7 +328,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
         <p className={errorMessage}>
           {getApiErrorMessage(
             orderMutation.error,
-            'No fue posible registrar la orden.',
+            orderForm.errorFallback,
           )}
         </p>
       ) : null}
@@ -341,7 +338,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
         disabled={orderMutation.isPending || demoMode}
         type="submit"
       >
-        {demoMode ? 'Modo demo' : orderMutation.isPending ? 'Creando orden...' : 'Crear orden'}
+        {demoMode ? labels.action.demoMode : orderMutation.isPending ? labels.action.creatingOrder : labels.action.createOrder}
       </button>
     </form>
   );

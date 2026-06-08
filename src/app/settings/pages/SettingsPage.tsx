@@ -1,6 +1,7 @@
 import { useAuth } from '../../auth/hooks/use-auth';
 import { AppShell } from '../../../shared/layout/AppShell';
 import { SectionCard } from '../../../shared/components/SectionCard';
+import { settings } from '../../../shared/content/strings';
 import { ProfileInfoSection } from '../components/ProfileInfoSection';
 import { EditProfileForm } from '../components/EditProfileForm';
 import { ChangeEmailForm } from '../components/ChangeEmailForm';
@@ -15,14 +16,14 @@ export function SettingsPage() {
 
   return (
     <AppShell
-      title="Configuracion de perfil"
-      subtitle="Administra tu informacion personal, correo y contraseña."
+      title={settings.page.title}
+      subtitle={settings.page.subtitle}
     >
       <ProfileInfoSection user={user} />
 
       <SectionCard
-        title="Editar perfil"
-        description="Actualiza tu nombre y nombre de usuario publico."
+        title={settings.editProfile.title}
+        description={settings.editProfile.description}
       >
         <EditProfileForm
           defaultValues={{
@@ -33,15 +34,15 @@ export function SettingsPage() {
       </SectionCard>
 
       <SectionCard
-        title="Cambiar correo"
-        description="Recibiras un aviso. Despues de cambiar el correo tendras que iniciar sesión de nuevo."
+        title={settings.changeEmail.title}
+        description={settings.changeEmail.description}
       >
         <ChangeEmailForm />
       </SectionCard>
 
       <SectionCard
-        title="Cambiar contraseña"
-        description="Usa una contraseña segura. Despues de cambiarla tendras que iniciar sesión de nuevo."
+        title={settings.changePassword.title}
+        description={settings.changePassword.description}
       >
         <ChangePasswordForm />
       </SectionCard>

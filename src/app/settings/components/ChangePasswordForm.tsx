@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
 import { useChangePasswordMutation } from '../../../shared/api/hooks';
 import { useAuth } from '../../auth/hooks/use-auth';
+import { labels, settings } from '../../../shared/content/strings';
 import { PasswordField } from '../../../shared/components/PasswordField';
 import { Button } from '../../../shared/components/Button';
 import { formGrid } from '../../../shared/design-system/layout';
@@ -47,7 +48,7 @@ export function ChangePasswordForm() {
         currentPassword: values.currentPassword,
         newPassword: values.newPassword,
       });
-      setSuccessMessage('contraseña actualizada. Inicia sesión de nuevo.');
+      setSuccessMessage(settings.changePassword.success);
       setTimeout(() => {
         logout();
         navigate('/auth', { replace: true });
@@ -64,28 +65,28 @@ export function ChangePasswordForm() {
       ) : null}
       {mutation.isError ? (
         <p className={errorMsgClass}>
-          {getApiErrorMessage(mutation.error, 'No se pudo cambiar la contraseña.')}
+          {getApiErrorMessage(mutation.error, settings.changePassword.error)}
         </p>
       ) : null}
 
       <PasswordField
         error={formState.errors.currentPassword?.message}
-        hint="Tu contraseña actual para confirmar tu identidad."
-        label="contraseña actual"
+        hint={settings.changePassword.currentHint}
+        label={labels.field.currentPassword}
         {...register('currentPassword')}
       />
 
       <PasswordField
         error={formState.errors.newPassword?.message}
-        hint="Debe tener al menos 8 caracteres."
-        label="Nueva contraseña"
+        hint={settings.changePassword.newHint}
+        label={labels.field.newPassword}
         {...register('newPassword')}
       />
 
       <PasswordField
         error={formState.errors.confirmPassword?.message}
-        hint="Debe coincidir con la nueva contraseña."
-        label="Confirmar nueva contraseña"
+        hint={settings.changePassword.confirmHint}
+        label={labels.field.confirmPassword}
         {...register('confirmPassword')}
       />
 
@@ -93,7 +94,7 @@ export function ChangePasswordForm() {
         disabled={formState.isSubmitting}
         type="submit"
       >
-        {formState.isSubmitting ? 'Cambiando...' : 'Cambiar contraseña'}
+        {formState.isSubmitting ? labels.action.changingPassword : labels.action.changePassword}
       </Button>
     </form>
   );

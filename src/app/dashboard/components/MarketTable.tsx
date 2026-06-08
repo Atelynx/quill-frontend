@@ -1,5 +1,6 @@
 import type { StockQuote } from '../../../shared/api/types';
 import { formatCurrency, formatPercentage } from '../../../shared/utils/format';
+import { labels } from '../../../shared/content/strings';
 import { surface } from '../../../shared/design-system/surfaces';
 import { textPositive, textNegative } from '../../../shared/design-system/typography';
 import '../../../shared/design-system/table.css';
@@ -39,10 +40,10 @@ export function MarketTable({
             {watchlist !== undefined ? (
               <th className="w-10 p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]"></th>
             ) : null}
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Simbolo</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Empresa</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Precio</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Variacion</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">{labels.table.symbol}</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">{labels.table.company}</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">{labels.table.price}</th>
+            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">{labels.table.variation}</th>
           </tr>
         </thead>
         <tbody>
@@ -70,23 +71,23 @@ export function MarketTable({
                         ? 'text-[var(--color-accent)]'
                         : 'text-[var(--main-page-text-muted)] hover:text-[var(--color-accent)]'
                     }`}
-                    aria-label={isWatched ? `Quitar ${quote.symbol} de seguimiento` : `Agregar ${quote.symbol} a seguimiento`}
+                    aria-label={isWatched ? `${labels.action.remove} ${quote.symbol} de seguimiento` : `${labels.action.add} ${quote.symbol} a seguimiento`}
                   >
                     {isWatched ? '\u2605' : '\u2606'}
                   </button>
                 </td>
               ) : null}
-              <td className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] ${isSelected ? 'font-semibold text-[var(--color-accent)]' : ''}`} data-label="Simbolo">{quote.symbol}</td>
-              <td className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] ${isSelected ? 'font-semibold' : ''}`} data-label="Empresa">{quote.name}</td>
+              <td className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] ${isSelected ? 'font-semibold text-[var(--color-accent)]' : ''}`} data-label={labels.table.symbol}>{quote.symbol}</td>
+              <td className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] ${isSelected ? 'font-semibold' : ''}`} data-label={labels.table.company}>{quote.name}</td>
               <td
                 className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] transition-all duration-[var(--main-page-transition)] ${movementColor[movementBySymbol[quote.symbol] ?? 'steady']}`}
-                data-label="Precio"
+                data-label={labels.table.price}
               >
                 {formatCurrency(quote.close, { currency, rate })}
               </td>
               <td
                 className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] ${quote.dayChangePercentage >= 0 ? textPositive : textNegative}`}
-                data-label="Variacion"
+                data-label={labels.table.variation}
               >
                 {formatPercentage(quote.dayChangePercentage)}
               </td>
