@@ -191,7 +191,9 @@ describe('OrderForm', () => {
       <OrderForm quotes={quotes} rate={950} selectedSymbol={quotes[0].symbol} />,
     );
 
-    expect(screen.getByText(/modo demo/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/crear órdenes está deshabilitado/i),
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Modo demo' })).toBeDisabled();
 
     expect(screen.getByLabelText('Accion')).toBeDisabled();

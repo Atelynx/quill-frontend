@@ -92,7 +92,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
     }
 
     try {
-      let submitValues = { ...values };
+      const submitValues = { ...values };
 
       if (buyMode === 'amount') {
         const price =
@@ -206,7 +206,9 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
   return (
     <form
       className={formGrid}
-      onSubmit={form.handleSubmit(handleSubmit)}
+      onSubmit={(event) => {
+        void form.handleSubmit(handleSubmit)(event);
+      }}
     >
       {demoMode ? (
         <p className={hintClass}>
@@ -304,7 +306,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
             type="number"
             onChange={(e) => {
               limitPriceUserTouched.current = true;
-              limitPriceOnChange(e);
+              void limitPriceOnChange(e);
             }}
             {...limitPriceRest}
           />

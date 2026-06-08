@@ -15,11 +15,18 @@ function createMatchMedia() {
   }));
 }
 
-beforeEach(() => {
+function installMatchMedia() {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
     value: createMatchMedia(),
   });
+}
+
+vi.stubEnv('VITE_USE_STUBS', 'false');
+installMatchMedia();
+
+beforeEach(() => {
+  installMatchMedia();
 });
 
 afterEach(() => {

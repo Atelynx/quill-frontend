@@ -50,7 +50,7 @@ export function ChangePasswordForm() {
       setSuccessMessage('Contrasena actualizada. Inicia sesion de nuevo.');
       setTimeout(() => {
         logout();
-        navigate('/auth', { replace: true });
+        void navigate('/auth', { replace: true });
       }, 1500);
     } catch (error) {
       console.error('[ChangePasswordForm] Password change failed:', error);

@@ -36,7 +36,7 @@ export function ChangeEmailForm() {
       setSuccessMessage('Correo actualizado. Inicia sesion de nuevo.');
       setTimeout(() => {
         logout();
-        navigate('/auth', { replace: true });
+        void navigate('/auth', { replace: true });
       }, 1500);
     } catch (error) {
       console.error('[ChangeEmailForm] Email change failed:', error);

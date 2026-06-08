@@ -65,9 +65,12 @@ export function DashboardPage() {
     : (quotes[0]?.symbol ?? selectedSymbol);
 
   const activeSymbolRef = useRef(activeSymbol);
-  activeSymbolRef.current = activeSymbol;
 
   const historyQuery = useStockHistory(activeSymbol, 24);
+
+  useEffect(() => {
+    activeSymbolRef.current = activeSymbol;
+  }, [activeSymbol]);
 
   useEffect(() => {
     for (const quote of quotes) {
