@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import type { ReactNode } from 'react';
+import { errorBoundary } from '../content/strings';
 
 /**
  * Props for ErrorBoundary component
@@ -64,15 +65,15 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       return (
         <div className="m-4 rounded-lg border border-red-600 bg-red-50 p-8 text-red-700">
           <h2 className="mb-2 mt-0 text-lg font-bold">
-            Oops! Algo salió mal
+            {errorBoundary.title}
           </h2>
           <p className="mb-4 text-sm">
-            Disculpa, encontramos un error inesperado en la aplicación.
+            {errorBoundary.description}
           </p>
           {this.state.error && (
             <details className="mt-2 whitespace-pre-wrap break-all rounded bg-red-200 p-2 text-xs">
               <summary className="cursor-pointer font-bold">
-                Detalles del error (para desarrolladores)
+                {errorBoundary.detailsSummary}
               </summary>
               <code className="mt-2 block">
                 {this.state.error.toString()}
@@ -83,7 +84,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             className="mt-4 cursor-pointer rounded border-none bg-red-700 px-4 py-2 text-sm text-white"
             onClick={() => window.location.reload()}
           >
-            Recargar página
+            {errorBoundary.reload}
           </button>
         </div>
       );

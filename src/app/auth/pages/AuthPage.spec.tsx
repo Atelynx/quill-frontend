@@ -43,13 +43,13 @@ describe('AuthPage', () => {
 
     expect(
       await screen.findByText(
-        'La contrasena debe tener al menos 8 caracteres.',
+        'La contraseña debe tener al menos 8 caracteres.',
       ),
     ).toBeInTheDocument();
     expect(loginMock).not.toHaveBeenCalled();
   });
 
-  it('valida que la confirmacion de contrasena coincida en registro', async () => {
+  it('valida que la confirmación de contraseña coincida en registro', async () => {
     const user = userEvent.setup();
 
     renderWithProviders(<AuthPage />);
@@ -65,12 +65,12 @@ describe('AuthPage', () => {
     await user.click(screen.getAllByRole('button', { name: 'Crear cuenta' })[1]);
 
     expect(
-      await screen.findByText('Las contrasenas deben coincidir.'),
+      await screen.findByText('Las contraseñas deben coincidir.'),
     ).toBeInTheDocument();
     expect(registerMock).not.toHaveBeenCalled();
   });
 
-  it('permite mostrar y ocultar las contrasenas del formulario', async () => {
+  it('permite mostrar y ocultar las contraseñas del formulario', async () => {
     const user = userEvent.setup();
 
     renderWithProviders(<AuthPage />);
@@ -80,7 +80,7 @@ describe('AuthPage', () => {
     const passwordInput = getInputByName('password');
     const confirmPasswordInput = getInputByName('confirmPassword');
     const toggleButtons = screen.getAllByRole('button', {
-      name: 'Mostrar contrasena',
+      name: 'Mostrar contraseña',
     });
 
     expect(passwordInput).toHaveAttribute('type', 'password');
