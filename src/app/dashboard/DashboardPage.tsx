@@ -42,7 +42,7 @@ export function DashboardPage() {
   const [movementBySymbol, setMovementBySymbol] = useState<
     Record<string, "up" | "down" | "steady">
   >({});
-  const [selectedSymbol, setSelectedSymbol] = useState("AAPL");
+  const [selectedSymbol, setSelectedSymbol] = useState("");
   const { handleForexUpdate } = useForexDispatch();
   const { preferredCurrency: currency, usdclpRate: rate } = useAppSelector(
     (state) => state.currency,
