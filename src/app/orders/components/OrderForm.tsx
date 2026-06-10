@@ -250,7 +250,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
         </select>
       </label>
 
-      <div className={buyModeToggle}>
+      <div className={`${buyModeToggle} max-[720px]:flex-col`}>
         <button
           type="button"
           className={`${button.base} ${buyModeButton} ${buyMode === 'shares' ? button.primary : button.secondary}`}

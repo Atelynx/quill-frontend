@@ -82,7 +82,7 @@ export function FriendsPage() {
         <div className={formGrid}>
           {searchError ? <p className={errorMsgClass}>{searchError}</p> : null}
           {searchSuccess ? <p className="rounded-[var(--main-page-radius-md)] px-4 py-3.5 text-[var(--main-page-accent-strong)] bg-[var(--main-page-accent-soft)] border border-[color-mix(in_srgb,_var(--color-accent)_22%,_transparent)]">{searchSuccess}</p> : null}
-          <div className="flex gap-3 items-end">
+          <div className="flex gap-3 items-end max-[720px]:flex-col">
             <label className={fieldGroup + ' flex-1'}>
               <span className={fieldLabel}>{labels.field.userId}</span>
               <input
