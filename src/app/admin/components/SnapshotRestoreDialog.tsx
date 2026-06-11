@@ -1,6 +1,6 @@
 import { useRestoreSnapshot } from '../../../shared/api/hooks';
 import { admin } from '../../../shared/content/strings';
-import { button, surface } from '../../../shared/design-system/surfaces';
+import { button } from '../../../shared/design-system/surfaces';
 import type { AdminSnapshot } from '../../../shared/api/validators';
 
 interface SnapshotRestoreDialogProps {
@@ -20,7 +20,7 @@ export function SnapshotRestoreDialog({ snapshot, onClose, onSuccess }: Snapshot
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div className={`${surface.lg} ${'w-full max-w-md'} bg-[var(--gradient-card-surface)] p-6`} onClick={(e) => e.stopPropagation()}>
+      <div className={`rounded-[var(--main-page-radius-lg)] shadow-[var(--main-page-shadow)] border border-[var(--main-page-border)] w-full max-w-md [background:var(--main-page-surface-strong)] p-6`} onClick={(e) => e.stopPropagation()}>
         <h3 className="m-0 mb-2 text-text">{admin.snapshots.restore}</h3>
         <p className="mb-4 text-[var(--main-page-text-soft)]">{admin.snapshots.restoreConfirm}</p>
 

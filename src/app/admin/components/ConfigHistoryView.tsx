@@ -1,6 +1,6 @@
 import { useAdminConfigHistory } from '../../../shared/api/hooks';
 import { admin } from '../../../shared/content/strings';
-import { button, surface } from '../../../shared/design-system/surfaces';
+import { button } from '../../../shared/design-system/surfaces';
 import { hint } from '../../../shared/design-system/typography';
 
 interface ConfigHistoryViewProps {
@@ -13,7 +13,7 @@ export function ConfigHistoryView({ keyName, onClose }: ConfigHistoryViewProps) 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div className={`${surface.lg} ${'w-full max-w-2xl'} bg-[var(--gradient-card-surface)] p-6 max-h-[80vh] flex flex-col`} onClick={(e) => e.stopPropagation()}>
+      <div className={`rounded-[var(--main-page-radius-lg)] shadow-[var(--main-page-shadow)] border border-[var(--main-page-border)] w-full max-w-2xl [background:var(--main-page-surface-strong)] p-6 max-h-[80vh] flex flex-col`} onClick={(e) => e.stopPropagation()}>
         <h3 className="m-0 mb-4 text-text">{admin.config.history} — {keyName}</h3>
 
         <div className="overflow-y-auto flex-1">
