@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 import { useAuth } from '../auth/hooks/use-auth';
-import { auth } from '../../shared/content/strings';
+import { auth, admin } from '../../shared/content/strings';
 import { loadingScreen } from '../../shared/design-system/layout';
 const AuthPage = lazy(() =>
   import('../auth/pages/AuthPage').then((module) => ({ default: module.AuthPage })),
@@ -30,6 +30,20 @@ function ProtectedRoute({ element }: { element: React.ReactNode }) {
   return element;
 }
 
+function AdminRoute({ element }: { element: React.ReactNode }) {
+  const { isAuthenticated, user } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  if (user?.role !== 'admin') {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return element;
+}
+
 export function AppRouter() {
   return (
     <Suspense fallback={<div className={loadingScreen}>{auth.loading}</div>}>
@@ -52,6 +66,14 @@ export function AppRouter() {
         {
           path: '/friends',
           element: <ProtectedRoute element={<FriendsPage />} />,
+        },
+        {
+          path: '/admin/config',
+          element: <AdminRoute element={<div>{admin.config.title}</div>} />,
+        },
+        {
+          path: '/admin/snapshots',
+          element: <AdminRoute element={<div>{admin.snapshots.title}</div>} />,
         },
         { path: '/', element: <Navigate to="/auth" replace /> },
         { path: '*', element: <NotFound /> },

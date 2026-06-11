@@ -363,6 +363,20 @@ export const appShell = {
   },
 } as const
 
+/* ── Admin ── */
+export const admin = {
+  nav: 'Admin',
+  title: 'Panel de administración',
+  config: {
+    title: 'Configuraciones',
+    description: 'Gestiona las configuraciones del sistema.',
+  },
+  snapshots: {
+    title: 'Respaldos',
+    description: 'Administra los respaldos de configuración.',
+  },
+} as const
+
 /* ── Error boundary ── */
 export const errorBoundary = {
   title: 'Oops! Algo salió mal',

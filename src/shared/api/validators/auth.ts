@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+export const USER_ROLES = ['investor', 'admin'] as const;
+export type UserRole = (typeof USER_ROLES)[number];
+
 /**
  * Schema for user profile in authentication context
  */
@@ -7,6 +10,7 @@ export const UserProfileSchema = z.object({
   id: z.string(),
   fullName: z.string(),
   email: z.string().email(),
+  role: z.enum(USER_ROLES).default('investor'),
   username: z.string().optional(),
   watchlist: z.array(z.string()).default([]),
   availableBalance: z.number(),

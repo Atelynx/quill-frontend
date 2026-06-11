@@ -2,7 +2,7 @@ import { useState, useEffect, type PropsWithChildren } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../app/auth/hooks/use-auth';
 import { ThemeToggle, CurrencySelector } from '../components';
-import { appShell, labels } from '../content/strings';
+import { appShell, labels, admin } from '../content/strings';
 import { button, surface, gradient } from '../design-system/surfaces';
 import { eyebrow, sidebarLabel } from '../design-system/typography';
 
@@ -111,6 +111,22 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
           >
             {appShell.nav.settings}
           </NavLink>
+
+          {user?.role === 'admin' ? (
+            <NavLink
+              to="/admin/config"
+              onClick={closeSidebar}
+              className={({ isActive }) =>
+                `rounded-[var(--main-page-radius-md)] px-4 py-2.5 text-white transition-colors ${
+                  isActive
+                    ? 'bg-white/10 font-semibold'
+                    : 'text-[var(--main-page-inverse-text-soft)] hover:bg-white/5'
+                }`
+              }
+            >
+              {admin.nav}
+            </NavLink>
+          ) : null}
         </nav>
 
         <div className={`${surface.inverseCard} p-4 text-white`}>

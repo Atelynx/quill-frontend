@@ -1,7 +1,10 @@
+import type { UserRole } from './validators/auth';
+
 export interface UserProfile {
   id: string;
   fullName: string;
   email: string;
+  role: UserRole;
   username?: string;
   watchlist?: string[];
   availableBalance: number;
