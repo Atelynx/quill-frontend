@@ -1,8 +1,9 @@
 import { lazy, Suspense } from 'react';
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import { useAuth } from '../auth/hooks/use-auth';
 import { auth, admin } from '../../shared/content/strings';
 import { loadingScreen } from '../../shared/design-system/layout';
+import { AdminLayout } from '../admin/layout/AdminLayout';
 const AuthPage = lazy(() =>
   import('../auth/pages/AuthPage').then((module) => ({ default: module.AuthPage })),
 );
@@ -17,6 +18,12 @@ const WatchlistPage = lazy(() =>
 );
 const FriendsPage = lazy(() =>
   import('../friends/pages/FriendsPage').then((module) => ({ default: module.FriendsPage })),
+);
+const AdminConfigPage = lazy(() =>
+  import('../admin/pages/AdminConfigPage').then((module) => ({ default: module.AdminConfigPage })),
+);
+const AdminSnapshotsPage = lazy(() =>
+  import('../admin/pages/AdminSnapshotsPage').then((module) => ({ default: module.AdminSnapshotsPage })),
 );
 const NotFound = lazy(() => import('../not-found/NotFound'));
 
@@ -68,12 +75,12 @@ export function AppRouter() {
           element: <ProtectedRoute element={<FriendsPage />} />,
         },
         {
-          path: '/admin/config',
-          element: <AdminRoute element={<div>{admin.config.title}</div>} />,
-        },
-        {
-          path: '/admin/snapshots',
-          element: <AdminRoute element={<div>{admin.snapshots.title}</div>} />,
+          path: '/admin',
+          element: <AdminRoute element={<AdminLayout><Outlet /></AdminLayout>} />,
+          children: [
+            { path: 'config', element: <AdminConfigPage /> },
+            { path: 'snapshots', element: <AdminSnapshotsPage /> },
+          ],
         },
         { path: '/', element: <Navigate to="/auth" replace /> },
         { path: '*', element: <NotFound /> },
