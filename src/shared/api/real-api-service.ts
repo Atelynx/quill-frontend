@@ -20,6 +20,7 @@ import {
   FriendRequestSchema,
   type FriendActionInput,
   MessageResponseSchema,
+  CurrencyRateSchema,
 } from './validators';
 
 export const authService = {
@@ -228,6 +229,28 @@ export const usersService = {
       return MessageResponseSchema.parse(response.data);
     } catch (error) {
       console.error('[API] Remove friend failed:', error);
+      throw error;
+    }
+  },
+};
+
+export const currencyService = {
+  getRates: async () => {
+    try {
+      const response = await apiClient.get('/currency/rates');
+      return CurrencyRateSchema.array().parse(response.data);
+    } catch (error) {
+      console.error('[API] Currency rates fetch failed:', error);
+      throw error;
+    }
+  },
+
+  getRate: async (symbol: string) => {
+    try {
+      const response = await apiClient.get(`/currency/rates/${symbol}`);
+      return CurrencyRateSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Currency rate fetch failed for symbol:', symbol, error);
       throw error;
     }
   },

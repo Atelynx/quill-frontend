@@ -20,6 +20,7 @@ import {
   FriendRequestSchema,
   WatchlistResponseSchema,
   MessageResponseSchema,
+  CurrencyRateSchema,
 } from './validators';
 import {
   STUB_AUTH_RESPONSE,
@@ -31,6 +32,7 @@ import {
   STUB_USER_PROFILE,
   STUB_FRIENDS,
   STUB_FRIEND_REQUESTS,
+  STUB_CURRENCY_RATES,
   buildStubHistory,
 } from './stub-data';
 
@@ -155,5 +157,19 @@ export const usersService = {
   removeFriend: async (_userId: string) => {
     await delay(NETWORK_LATENCY_MS);
     return MessageResponseSchema.parse({ message: 'Amigo eliminado.' });
+  },
+};
+
+export const currencyService = {
+  getRates: async () => {
+    await delay(NETWORK_LATENCY_MS);
+    return CurrencyRateSchema.array().parse(STUB_CURRENCY_RATES);
+  },
+
+  getRate: async (symbol: string) => {
+    await delay(NETWORK_LATENCY_MS);
+    const rate = STUB_CURRENCY_RATES.find((r) => r.symbol === symbol);
+    if (!rate) throw new Error(`Currency rate not found: ${symbol}`);
+    return CurrencyRateSchema.parse(rate);
   },
 };

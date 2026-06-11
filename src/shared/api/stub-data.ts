@@ -229,6 +229,15 @@ export const STUB_FRIEND_REQUESTS = [
   },
 ];
 
+export const STUB_CURRENCY_RATES = [
+  {
+    symbol: 'USDCLP',
+    rate: 950,
+    basePrice: 948,
+    dayChangePercentage: 0.26,
+  },
+];
+
 export function buildStubHistory(symbol: string, limit = 24): PricePoint[] {
   const baseBySymbol: Record<string, number> = {
     AAPL: 193.12,

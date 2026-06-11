@@ -1,71 +1,109 @@
-# Plan — Mobile Responsive Styles
+# Quill Frontend Plan
+
+## Pending — v1.1.0 Remaining Features + Admin Module
+
+### Phase 1 — Foundation Fixes
+
+**Goal:** Currency rates REST fallback + registration username field.
+
+| Step | File | Action |
+|---|---|---|
+| 1.1 | `src/shared/api/validators/currency.ts` | **New** — `CurrencyRateSchema` |
+| 1.2 | `src/shared/api/validators/index.ts` | Add `export * from './currency'` |
+| 1.3 | `src/shared/api/real-api-service.ts` | Add `currencyService` |
+| 1.4 | `src/shared/api/stubbed-api-service.ts` | Add stub `currencyService` |
+| 1.5 | `src/shared/api/stub-data.ts` | Add `STUB_CURRENCY_RATES` |
+| 1.6 | `src/shared/api/api-service.ts` | Export `currencyService` |
+| 1.7 | `src/shared/api/hooks/queries.ts` | Add `useForexRates()`, `useForexRate(symbol)` |
+| 1.8 | `src/shared/hooks/useForexRate.ts` | REST query as WS fallback |
+| 1.9 | `src/shared/content/strings.ts` | Add `usernameLabel` to `auth.register` |
+| 1.10 | `src/app/auth/pages/AuthPage.tsx` | Add username field to register form |
+
+**Files: 9 (1 new, 8 modified)**
 
 ---
 
-## Goal
-Add responsive mobile styles across the app, with the primary fix being a hamburger drawer sidebar on mobile.
+### Phase 2 — Admin: User Role System
+
+**Goal:** Add `role` field to user types, conditionally show admin UI.
+
+| Step | File | Action |
+|---|---|---|
+| 2.1 | `src/shared/api/validators/auth.ts` | Add `role` to `UserProfileSchema` |
+| 2.2 | `src/shared/api/stub-data.ts` | Add `role` to stubs |
+| 2.3 | `src/shared/layout/AppShell.tsx` | Admin nav link (visible when `role === 'admin'`) |
+| 2.4 | `src/app/router/AppRouter.tsx` | Add `AdminRoute` guard + `/admin/*` routes |
+| 2.5 | `src/shared/content/strings.ts` | Add admin section strings |
+
+**Files: 5 modified**
 
 ---
 
-## Step 1 — AppShell: Hamburger Drawer Sidebar
+### Phase 3 — Admin: Config Module API Layer
 
-**File:** `src/shared/layout/AppShell.tsx`
+**Goal:** React Query hooks + services for admin config CRUD + snapshots.
 
-- Add `useState` for `sidebarOpen`
-- Add `useEffect` with Escape key + body scroll lock
-- **Hamburger button** (`max-[720px]:flex hidden`): fixed top-left, toggles drawer
-- **Backdrop overlay** (`max-[720px]:block hidden`): fixed fullscreen, closes on click
-- **`<aside>` sidebar**: on mobile (`max-[720px]`) becomes `fixed inset-y-0 left-0 z-50 w-[280px]` with `translate-x` slide transition; add close button inside
-- On desktop (>720px) the sidebar stays in the CSS grid as before
+| Step | File | Action |
+|---|---|---|
+| 3.1 | `src/shared/api/validators/admin.ts` | **New** — Admin config + snapshot schemas |
+| 3.2 | `src/shared/api/validators/index.ts` | Add `export * from './admin'` |
+| 3.3 | `src/shared/api/real-api-service.ts` | Add `adminConfigService` (10 methods) |
+| 3.4 | `src/shared/api/stubbed-api-service.ts` | Add stub `adminConfigService` |
+| 3.5 | `src/shared/api/stub-data.ts` | Add stub admin configs + snapshots |
+| 3.6 | `src/shared/api/api-service.ts` | Export `adminConfigService` |
+| 3.7 | `src/shared/api/hooks/queries.ts` | Add 5 query hooks |
+| 3.8 | `src/shared/api/hooks/mutations.ts` | Add 5 mutation hooks |
 
-No new dependencies — pure React state + Tailwind transitions.
-
----
-
-## Step 2 — SectionCard: Mobile Padding
-
-**File:** `src/shared/components/SectionCard.tsx`
-- Add `max-[720px]:p-4` (from `p-5`)
-- Add `max-[720px]:flex-col` to header `flex` container
+**Files: 8 (1 new, 7 modified)**
 
 ---
 
-## Step 3 — MarketChart: Responsive Height
+### Phase 4 — Admin: Config Management UI
 
-**File:** `src/app/dashboard/components/MarketChart.tsx`
-- Add `max-[720px]:h-[220px]` to chart container class (from `h-[300px]`)
+**Goal:** Full admin panel — config list, edit/create, history, snapshots.
+
+| Step | File | Action |
+|---|---|---|
+| 4.1 | `src/app/admin/layout/AdminLayout.tsx` | **New** — Admin layout shell |
+| 4.2 | `src/app/admin/pages/AdminConfigPage.tsx` | **New** — Config list page |
+| 4.3 | `src/app/admin/pages/AdminSnapshotsPage.tsx` | **New** — Snapshots page |
+| 4.4 | `src/app/admin/components/ConfigEditModal.tsx` | **New** — Edit config modal |
+| 4.5 | `src/app/admin/components/ConfigCreateForm.tsx` | **New** — Create config form |
+| 4.6 | `src/app/admin/components/ConfigHistoryView.tsx` | **New** — Config version history |
+| 4.7 | `src/app/admin/components/SnapshotRestoreDialog.tsx` | **New** — Restore confirmation |
+| 4.8 | `src/app/admin/components/AdminNav.tsx` | **New** — Sub-navigation tabs |
+| 4.9 | `src/app/router/AppRouter.tsx` | Add `/admin/config`, `/admin/snapshots` routes |
+
+**Files: 8 new**
 
 ---
 
-## Step 4 — OrderForm: Stack Buy-Mode Toggle
+### Phase 5 — Market Hours Error Handling
 
-**File:** `src/app/orders/components/OrderForm.tsx`
-- Add `max-[720px]:flex-col` to `buyModeToggle` div
+| Step | File | Action |
+|---|---|---|
+| 5.1 | `src/app/orders/components/OrderForm.tsx` | Handle 400 error on MARKET orders |
 
----
-
-## Step 5 — FriendsPage: Stack Search Input
-
-**File:** `src/app/friends/pages/FriendsPage.tsx`
-- Add `max-[720px]:flex-col` to the search input + button flex container
+**Files: 1 modified**
 
 ---
 
-## Pattern compliance (rules.md)
+## Rules Compliance
 
-| Rule | Compliance |
+| Rule | Approach |
 |---|---|
-| §1 — <400 lines/component | AppShell stays under limit (116 → ~170 lines) |
-| §2 — Reuse design system | Uses existing gradient, surface, button design tokens |
-| §3 — Props & state | Local component state for drawer; no prop drilling |
-| §4 — State management | Local `useState` for sidebar; does not belong in Redux |
+| §1 — <400 lines/component | Each component is a focused file; if AdminConfigPage grows, split further |
+| §2 — Reuse design system | Use `SectionCard`, `button.*`, `surface.*`, `fieldGroup`, `inputBase`, `fieldLabel` |
+| §3 — Data flow | React Query for server data, local state for modals, no prop drilling |
+| §4 — State management | Admin state in React Query cache; modal/dialog state kept local, not Redux |
 
-## Files touched
+## Total
 
-| File | Action |
-|---|---|
-| `src/shared/layout/AppShell.tsx` | Add hamburger drawer |
-| `src/shared/components/SectionCard.tsx` | Add responsive padding |
-| `src/app/dashboard/components/MarketChart.tsx` | Add responsive height |
-| `src/app/orders/components/OrderForm.tsx` | Stack toggle buttons |
-| `src/app/friends/pages/FriendsPage.tsx` | Stack search input |
+| Phase | New files | Modified files | Est. lines |
+|---|---|---|---|
+| 1 — Foundation | 1 | 8 | ~150 |
+| 2 — Role system | 0 | 5 | ~80 |
+| 3 — Admin API layer | 1 | 7 | ~350 |
+| 4 — Admin UI | 8 | 1 | ~600 |
+| 5 — Market hours | 0 | 1 | ~15 |
+| **Total** | **10** | **22** | **~1,195** |

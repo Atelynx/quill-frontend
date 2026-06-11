@@ -21,6 +21,11 @@ const loginSchema = z.object({
 const registerSchema = z
   .object({
     fullName: z.string().min(3, 'Ingresa tu nombre completo.'),
+    username: z
+      .string()
+      .regex(/^[a-zA-Z0-9_]+$/, 'Solo letras, números y guion bajo.')
+      .optional()
+      .or(z.literal('')),
     email: z.string().email('Ingresa un correo valido.'),
     password: z
       .string()
@@ -59,6 +64,7 @@ export function AuthPage() {
     resolver: zodResolver(registerSchema),
     defaultValues: {
       fullName: '',
+      username: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -85,11 +91,13 @@ export function AuthPage() {
       setErrorMessage(null);
       const result = await register({
         fullName: values.fullName,
+        username: values.username || undefined,
         email: values.email,
         password: values.password,
       });
 
-      setSuccessMessage(result.message);
+      const usernameMsg = result.username ? ` (usuario: ${result.username})` : '';
+      setSuccessMessage(result.message + usernameMsg);
       setMode('login');
       registerForm.reset();
       loginForm.reset({
@@ -200,6 +208,14 @@ export function AuthPage() {
               <input className={inputBase} type="text" {...registerForm.register('fullName')} />
               <span className={fieldError}>
                 {registerForm.formState.errors.fullName?.message}
+              </span>
+            </label>
+
+            <label className={fieldGroup}>
+              <span className={fieldLabel}>{auth.register.usernameLabel}</span>
+              <input className={inputBase} type="text" placeholder={labels.field.usernamePlaceholder} {...registerForm.register('username')} />
+              <span className={fieldError}>
+                {registerForm.formState.errors.username?.message}
               </span>
             </label>
 

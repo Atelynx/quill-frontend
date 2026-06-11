@@ -5,7 +5,7 @@
 
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { portfolioService, marketService, ordersService, tradesService, usersService } from '../api-service';
+import { portfolioService, marketService, ordersService, tradesService, usersService, currencyService } from '../api-service';
 
 /**
  * Hook to fetch portfolio summary
@@ -187,6 +187,47 @@ export function useStockHistory(symbol: string, limit: number = 24) {
   useEffect(() => {
     if (query.error) {
       console.error('[Query] Stock history fetch failed for symbol:', symbol, query.error);
+    }
+  }, [query.error, symbol]);
+
+  return query;
+}
+
+/**
+ * Hook to fetch all forex/currency rates
+ */
+export function useForexRates() {
+  const query = useQuery({
+    queryKey: ['currency', 'rates'],
+    queryFn: currencyService.getRates,
+    staleTime: 15000,
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('[Query] Forex rates fetch failed:', query.error);
+    }
+  }, [query.error]);
+
+  return query;
+}
+
+/**
+ * Hook to fetch a single forex rate by symbol
+ */
+export function useForexRate(symbol: string) {
+  const query = useQuery({
+    queryKey: ['currency', 'rates', symbol],
+    queryFn: () => currencyService.getRate(symbol),
+    staleTime: 15000,
+    retry: 1,
+    enabled: Boolean(symbol),
+  });
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('[Query] Forex rate fetch failed for symbol:', symbol, query.error);
     }
   }, [query.error, symbol]);
 

@@ -304,6 +304,7 @@ export const auth = {
     passwordHint: 'Usa al menos 8 caracteres.',
     confirmHint: 'Debe coincidir exactamente con la contraseña principal.',
     error: 'No fue posible crear tu cuenta. Verifica los datos.',
+    usernameLabel: 'Nombre de usuario',
     emailLabel: 'Correo',
     passwordLabel: 'Contraseña',
   },
