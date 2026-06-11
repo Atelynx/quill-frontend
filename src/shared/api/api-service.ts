@@ -11,3 +11,4 @@ export const ordersService = services.ordersService;
 export const tradesService = services.tradesService;
 export const usersService = services.usersService;
 export const currencyService = services.currencyService;
+export const adminConfigService = services.adminConfigService;

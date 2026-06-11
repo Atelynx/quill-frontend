@@ -21,6 +21,11 @@ import {
   WatchlistResponseSchema,
   MessageResponseSchema,
   CurrencyRateSchema,
+  AdminConfigSchema,
+  type CreateConfigInput,
+  type UpdateConfigInput,
+  AdminSnapshotSchema,
+  type CreateSnapshotInput,
 } from './validators';
 import {
   STUB_AUTH_RESPONSE,
@@ -33,6 +38,8 @@ import {
   STUB_FRIENDS,
   STUB_FRIEND_REQUESTS,
   STUB_CURRENCY_RATES,
+  STUB_ADMIN_CONFIGS,
+  STUB_ADMIN_SNAPSHOTS,
   buildStubHistory,
 } from './stub-data';
 
@@ -171,5 +178,89 @@ export const currencyService = {
     const rate = STUB_CURRENCY_RATES.find((r) => r.symbol === symbol);
     if (!rate) throw new Error(`Currency rate not found: ${symbol}`);
     return CurrencyRateSchema.parse(rate);
+  },
+};
+
+export const adminConfigService = {
+  getAll: async () => {
+    await delay(NETWORK_LATENCY_MS);
+    return AdminConfigSchema.array().parse(STUB_ADMIN_CONFIGS);
+  },
+
+  get: async (key: string) => {
+    await delay(NETWORK_LATENCY_MS);
+    const config = STUB_ADMIN_CONFIGS.find((c) => c.key === key);
+    if (!config) throw new Error(`Admin config not found: ${key}`);
+    return AdminConfigSchema.parse(config);
+  },
+
+  getHistory: async (_key: string) => {
+    await delay(NETWORK_LATENCY_MS);
+    return AdminConfigSchema.array().parse(STUB_ADMIN_CONFIGS);
+  },
+
+  create: async (data: CreateConfigInput) => {
+    await delay(NETWORK_LATENCY_MS);
+    const config = {
+      ...data,
+      inUse: true,
+      lastUsedAt: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    return AdminConfigSchema.parse(config);
+  },
+
+  update: async (_key: string, data: UpdateConfigInput) => {
+    await delay(NETWORK_LATENCY_MS);
+    const existing = STUB_ADMIN_CONFIGS[0];
+    const config = {
+      ...existing,
+      ...data,
+      updatedAt: new Date().toISOString(),
+    };
+    return AdminConfigSchema.parse(config);
+  },
+
+  remove: async (_key: string) => {
+    await delay(NETWORK_LATENCY_MS);
+    return { message: `Configuración "${_key}" eliminada.` };
+  },
+
+  getSnapshots: async () => {
+    await delay(NETWORK_LATENCY_MS);
+    return AdminSnapshotSchema.array().parse(STUB_ADMIN_SNAPSHOTS);
+  },
+
+  getSnapshot: async (id: string) => {
+    await delay(NETWORK_LATENCY_MS);
+    const snapshot = STUB_ADMIN_SNAPSHOTS.find((s) => s._id === id);
+    if (!snapshot) throw new Error(`Snapshot not found: ${id}`);
+    return AdminSnapshotSchema.parse(snapshot);
+  },
+
+  createSnapshot: async (data?: CreateSnapshotInput) => {
+    await delay(NETWORK_LATENCY_MS);
+    const snapshot = {
+      _id: `snapshot-${Date.now()}`,
+      configs: {
+        COMMISSION_RATE: 0.005,
+        INITIAL_BALANCE: 100000,
+        MARKET_HOURS_OPEN: '09:30',
+        MARKET_HOURS_CLOSED: '16:00',
+        MARKET_PROVIDER: 'mock',
+        SIMULATION_STRATEGY: 'flat',
+      },
+      name: data?.name ?? `Snapshot ${new Date().toISOString()}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    return AdminSnapshotSchema.parse(snapshot);
+  },
+
+  restoreSnapshot: async (_id: string) => {
+    await delay(NETWORK_LATENCY_MS);
+    const snapshot = STUB_ADMIN_SNAPSHOTS[0];
+    return AdminSnapshotSchema.parse(snapshot);
   },
 };
