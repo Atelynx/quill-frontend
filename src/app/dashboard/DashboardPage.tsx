@@ -61,11 +61,11 @@ export function DashboardPage() {
     () => (marketQuery.data ?? []) as StockQuote[],
     [marketQuery.data],
   );
-  const activeSymbol = quotes.find(
-    (quote: { symbol: string }) => quote.symbol === selectedSymbol,
-  )
-    ? selectedSymbol
-    : (quotes[0]?.symbol ?? selectedSymbol);
+  const activeSymbol = selectedSymbol
+    ? quotes.find((q) => q.symbol === selectedSymbol)
+      ? selectedSymbol
+      : (quotes[0]?.symbol ?? '')
+    : '';
 
   const activeSymbolRef = useRef(activeSymbol);
   activeSymbolRef.current = activeSymbol;
@@ -286,7 +286,7 @@ export function DashboardPage() {
 
       <div className={dashboardGridWide}>
         <SectionCard
-          title={`Mercado activo | ${activeSymbol}`}
+          title={activeSymbol ? `Mercado activo | ${activeSymbol}` : 'Mercado activo'}
           description={
             selectedQuote
               ? <>Precio actual <AnimatedCurrency value={selectedQuote.close} currency={currency} rate={rate} />. Selecciona otra accion en la tabla para cambiar la vista.</>
