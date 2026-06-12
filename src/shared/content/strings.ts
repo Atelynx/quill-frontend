@@ -367,6 +367,7 @@ export const appShell = {
 export const admin = {
   nav: 'Admin',
   title: 'Panel de administración',
+  subtitle: 'Gestiona las configuraciones y respaldos del sistema.',
   config: {
     title: 'Configuraciones',
     description: 'Gestiona las configuraciones del sistema.',

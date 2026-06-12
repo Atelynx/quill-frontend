@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAdminSnapshots, useCreateSnapshot } from '../../../shared/api/hooks';
 import { admin } from '../../../shared/content/strings';
-import { button, surface, gradient } from '../../../shared/design-system/surfaces';
+import { button, gradient } from '../../../shared/design-system/surfaces';
 import { loadingScreen } from '../../../shared/design-system/layout';
 import { SectionCard } from '../../../shared/components/SectionCard';
 import { SnapshotRestoreDialog } from '../components/SnapshotRestoreDialog';

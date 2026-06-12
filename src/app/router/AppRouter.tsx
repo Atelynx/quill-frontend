@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import { useAuth } from '../auth/hooks/use-auth';
-import { auth, admin } from '../../shared/content/strings';
+import { auth } from '../../shared/content/strings';
 import { loadingScreen } from '../../shared/design-system/layout';
 import { AdminLayout } from '../admin/layout/AdminLayout';
 const AuthPage = lazy(() =>
