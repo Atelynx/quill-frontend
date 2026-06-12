@@ -180,7 +180,7 @@ export function DashboardPage() {
 
   const portfolio = portfolioQuery.data as PortfolioSummary;
   const openOrders = ordersQuery.data as OrderRecord[] ?? [];
-  const recentTrades = tradesQuery.data as TradeRecord[];
+  const recentTrades: TradeRecord[] = tradesQuery.data ?? [];
   const selectedQuote = quotes.find((quote) => quote.symbol === activeSymbol);
 
   const summaryCards = useMemo(() => {
@@ -413,6 +413,7 @@ export function DashboardPage() {
         >
           <TradesTable
             currency={currency}
+            hasError={tradesQuery.isError}
             rate={rate}
             trades={recentTrades}
           />
