@@ -24,9 +24,10 @@ interface OrderFormProps {
   quotes: StockQuote[];
   rate: number;
   selectedSymbol: string;
+  marketOpen?: boolean;
 }
 
-export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
+export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: OrderFormProps) {
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const [buyMode, setBuyMode] = useState<'shares' | 'amount'>('shares');
   const [investAmount, setInvestAmount] = useState<string>('');
@@ -88,6 +89,11 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
 
     if (demoMode) {
       setFeedbackMessage('La creacion de ordenes esta deshabilitada en modo demo.');
+      return;
+    }
+
+    if (!marketOpen && values.type === 'MARKET') {
+      setFeedbackMessage('El mercado está cerrado. Las órdenes MARKET solo pueden ejecutarse dentro del horario de operación.');
       return;
     }
 
@@ -218,6 +224,12 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
         </p>
       ) : null}
 
+      {!marketOpen ? (
+        <p className={hintClass} style={{ color: 'var(--main-page-danger)' }}>
+          El mercado está cerrado. Solo puedes registrar órdenes limitadas; las órdenes MARKET se rechazarán.
+        </p>
+      ) : null}
+
       <div>
         <strong>Precio actual</strong>
         <span className={hintClass}>
@@ -250,7 +262,7 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
         Modalidad
         <select className={inputBase} disabled={demoMode} {...form.register('type')}>
           <option value="LIMIT">Limite</option>
-          <option value="MARKET">Mercado</option>
+          <option value="MARKET" disabled={!marketOpen}>Mercado{!marketOpen ? ' (no disponible)' : ''}</option>
         </select>
       </label>
 
@@ -347,7 +359,13 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
         disabled={orderMutation.isPending || demoMode}
         type="submit"
       >
-        {demoMode ? 'Modo demo' : orderMutation.isPending ? 'Creando orden...' : 'Crear orden'}
+        {demoMode
+          ? 'Modo demo'
+          : orderMutation.isPending
+            ? 'Creando orden...'
+            : !marketOpen && orderType === 'MARKET'
+              ? 'Mercado cerrado'
+              : 'Crear orden'}
       </button>
     </form>
   );

@@ -29,6 +29,28 @@ export function usePortfolioSummary() {
 }
 
 /**
+ * Hook to fetch market open/closed status
+ * No caching — always reflects live server time
+ */
+export function useMarketStatus() {
+  const query = useQuery({
+    queryKey: ['market', 'status'],
+    queryFn: marketService.getStatus,
+    staleTime: 0,
+    refetchInterval: 30000,
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('[Query] Market status fetch failed:', query.error);
+    }
+  }, [query.error]);
+
+  return query;
+}
+
+/**
  * Hook to fetch stock quotes/market data
  * Caches for 10 seconds before considering stale
  */

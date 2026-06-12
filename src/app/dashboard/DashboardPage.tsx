@@ -8,6 +8,7 @@ import { TradesTable } from "../trades/components/TradesTable";
 import {
   usePortfolioSummary,
   useMarketStocks,
+  useMarketStatus,
   usePendingOrders,
   useRecentTrades,
   useStockHistory,
@@ -26,6 +27,7 @@ import { MarketChart } from "./components/MarketChart";
 import { MarketPulseList } from "./components/MarketPulseList";
 import { MarketTable } from "./components/MarketTable";
 import { SummaryCard } from "./components/SummaryCard";
+import { MarketStatusBadge } from "./components/MarketStatusBadge";
 import { isStubMode } from "@/shared/api/stub-mode";
 import type { PortfolioSummary } from "@/shared/api/types";
 import { useForexDispatch } from "@/shared/hooks/useForexRate";
@@ -51,6 +53,7 @@ export function DashboardPage() {
   // Use custom hooks for data fetching
   const portfolioQuery = usePortfolioSummary();
   const marketQuery = useMarketStocks();
+  const marketStatusQuery = useMarketStatus();
   const ordersQuery = usePendingOrders();
   const tradesQuery = useRecentTrades(8);
 
@@ -253,6 +256,7 @@ export function DashboardPage() {
           </p>
         </div>
         <div className={heroPanelMeta}>
+          <MarketStatusBadge status={marketStatusQuery.data} />
           <span className={heroChip}>Marca principal: Quill</span>
           <span className={`${heroChip} ${heroChipSecondary}`}>
             Equipo desarrollador: Atelynx
@@ -305,6 +309,7 @@ export function DashboardPage() {
             quotes={quotes}
             rate={rate}
             selectedSymbol={activeSymbol}
+            marketOpen={marketStatusQuery.data?.open ?? true}
           />
         </SectionCard>
       </div>

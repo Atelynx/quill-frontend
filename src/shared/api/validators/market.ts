@@ -34,3 +34,12 @@ export const PricePointSchema = z.object({
 });
 
 export type PricePoint = z.infer<typeof PricePointSchema>;
+
+export const MarketStatusSchema = z.object({
+  open: z.boolean(),
+  openTime: z.string(),
+  closeTime: z.string(),
+  currentTime: z.string(),
+});
+
+export type MarketStatus = z.infer<typeof MarketStatusSchema>;

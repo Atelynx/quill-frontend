@@ -7,6 +7,7 @@ import {
   PortfolioSummarySchema,
   StockQuoteSchema,
   PricePointSchema,
+  MarketStatusSchema,
   OrderRecordSchema,
   type CreateOrderInput,
   TradeRecordSchema,
@@ -63,6 +64,16 @@ export const portfolioService = {
 };
 
 export const marketService = {
+  getStatus: async () => {
+    try {
+      const response = await apiClient.get('/market/status');
+      return MarketStatusSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Market status fetch failed:', error);
+      throw error;
+    }
+  },
+
   getStocks: async () => {
     try {
       const response = await apiClient.get('/market/stocks');

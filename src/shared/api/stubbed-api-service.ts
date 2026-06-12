@@ -7,6 +7,7 @@ import {
   PortfolioSummarySchema,
   StockQuoteSchema,
   PricePointSchema,
+  MarketStatusSchema,
   OrderRecordSchema,
   type CreateOrderInput,
   TradeRecordSchema,
@@ -65,6 +66,16 @@ export const portfolioService = {
 };
 
 export const marketService = {
+  getStatus: async () => {
+    await delay(NETWORK_LATENCY_MS);
+    return MarketStatusSchema.parse({
+      open: false,
+      openTime: '09:30',
+      closeTime: '16:00',
+      currentTime: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', hour12: false }),
+    });
+  },
+
   getStocks: async () => {
     await delay(NETWORK_LATENCY_MS);
     return StockQuoteSchema.array().parse(STUB_QUOTES);

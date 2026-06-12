@@ -99,6 +99,14 @@ export const dashboard = {
     unrealizedPnl: 'Resultado no realizado',
     openOrders: 'Órdenes abiertas',
   },
+  marketStatus: {
+    open: 'Mercado abierto',
+    closed: 'Mercado cerrado',
+    hours: (open: string, close: string) => `${open} – ${close} hrs`,
+    closesIn: 'Cierra en',
+    opensIn: 'Abre en',
+    resumesAt: (time: string) => `Reabre a las ${time}`,
+  },
   sections: {
     topMovers: {
       title: 'Movimiento destacado del mercado',
