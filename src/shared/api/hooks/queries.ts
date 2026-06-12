@@ -6,6 +6,7 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { portfolioService, marketService, ordersService, tradesService, usersService, currencyService, adminConfigService } from '../api-service';
+import { logError } from '../error-logging';
 
 /**
  * Hook to fetch portfolio summary
@@ -21,7 +22,7 @@ export function usePortfolioSummary() {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Portfolio summary fetch failed:', query.error);
+      logError('[Query] Portfolio summary fetch failed:', query.error);
     }
   }, [query.error]);
 
@@ -43,7 +44,7 @@ export function useMarketStatus() {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Market status fetch failed:', query.error);
+      logError('[Query] Market status fetch failed:', query.error);
     }
   }, [query.error]);
 
@@ -64,7 +65,7 @@ export function useMarketStocks() {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Market stocks fetch failed:', query.error);
+      logError('[Query] Market stocks fetch failed:', query.error);
     }
   }, [query.error]);
 
@@ -85,7 +86,7 @@ export function usePendingOrders() {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Pending orders fetch failed:', query.error);
+      logError('[Query] Pending orders fetch failed:', query.error);
     }
   }, [query.error]);
 
@@ -106,7 +107,7 @@ export function useRecentTrades(limit: number = 8) {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Recent trades fetch failed:', query.error);
+      logError('[Query] Recent trades fetch failed:', query.error);
     }
   }, [query.error]);
 
@@ -130,7 +131,7 @@ export function useProfile() {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Profile fetch failed:', query.error);
+      logError('[Query] Profile fetch failed:', query.error);
     }
   }, [query.error]);
 
@@ -150,7 +151,7 @@ export function useWatchlist() {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Watchlist fetch failed:', query.error);
+      logError('[Query] Watchlist fetch failed:', query.error);
     }
   }, [query.error]);
 
@@ -170,7 +171,7 @@ export function useFriends() {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Friends fetch failed:', query.error);
+      logError('[Query] Friends fetch failed:', query.error);
     }
   }, [query.error]);
 
@@ -190,7 +191,7 @@ export function useFriendRequests() {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Friend requests fetch failed:', query.error);
+      logError('[Query] Friend requests fetch failed:', query.error);
     }
   }, [query.error]);
 
@@ -208,7 +209,7 @@ export function useStockHistory(symbol: string, limit: number = 24) {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Stock history fetch failed for symbol:', symbol, query.error);
+      logError(`[Query] Stock history fetch failed: ${symbol}`, query.error);
     }
   }, [query.error, symbol]);
 
@@ -228,7 +229,7 @@ export function useForexRates() {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Forex rates fetch failed:', query.error);
+      logError('[Query] Forex rates fetch failed:', query.error);
     }
   }, [query.error]);
 
@@ -249,7 +250,7 @@ export function useForexRate(symbol: string) {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Forex rate fetch failed for symbol:', symbol, query.error);
+      logError(`[Query] Forex rate fetch failed: ${symbol}`, query.error);
     }
   }, [query.error, symbol]);
 
@@ -269,7 +270,7 @@ export function useAdminConfigs() {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Admin configs fetch failed:', query.error);
+      logError('[Query] Admin configs fetch failed:', query.error);
     }
   }, [query.error]);
 
@@ -290,7 +291,7 @@ export function useAdminConfig(key: string) {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Admin config fetch failed for key:', key, query.error);
+      logError(`[Query] Admin config fetch failed: ${key}`, query.error);
     }
   }, [query.error, key]);
 
@@ -311,7 +312,7 @@ export function useAdminConfigHistory(key: string) {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Admin config history fetch failed for key:', key, query.error);
+      logError(`[Query] Admin config history fetch failed: ${key}`, query.error);
     }
   }, [query.error, key]);
 
@@ -331,7 +332,7 @@ export function useAdminSnapshots() {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Admin snapshots fetch failed:', query.error);
+      logError('[Query] Admin snapshots fetch failed:', query.error);
     }
   }, [query.error]);
 
@@ -352,7 +353,7 @@ export function useAdminSnapshot(id: string) {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[Query] Admin snapshot fetch failed for id:', id, query.error);
+      logError(`[Query] Admin snapshot fetch failed: ${id}`, query.error);
     }
   }, [query.error, id]);
 

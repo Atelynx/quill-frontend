@@ -20,7 +20,7 @@ export function MarketPulseList({ quotes, currency, rate }: MarketPulseListProps
             <strong className="mt-[0.2rem] block">{quote.name}</strong>
           </div>
           <div>
-            <b className="block"><AnimatedCurrency value={quote.close} currency={currency} rate={rate} /></b>
+            <b className="block"><AnimatedCurrency value={quote.close} currency={currency} sourceCurrency={quote.currency} rate={rate} /></b>
             <small className={`mt-[0.28rem] block font-semibold ${quote.dayChangePercentage >= 0 ? textPositive : textNegative}`}>
               {formatPercentage(quote.dayChangePercentage)}
             </small>

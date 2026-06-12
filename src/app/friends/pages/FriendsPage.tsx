@@ -15,6 +15,7 @@ import { surface } from '../../../shared/design-system/surfaces';
 import { fieldLabel } from '../../../shared/design-system/typography';
 import { errorMessage as errorMsgClass, inputBase } from '../../../shared/design-system/forms';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
+import { logError } from '../../../shared/api/error-logging';
 import type { Friend, FriendRequest } from '../../../shared/api/validators';
 
 export function FriendsPage() {
@@ -50,7 +51,7 @@ export function FriendsPage() {
     try {
       await respondMutation.mutateAsync({ userId, data: { status: 'accepted' } });
     } catch (error) {
-      console.error('[FriendsPage] Accept failed:', error);
+      logError('[FriendsPage] Accept failed:', error);
     }
   };
 
@@ -58,7 +59,7 @@ export function FriendsPage() {
     try {
       await removeMutation.mutateAsync(userId);
     } catch (error) {
-      console.error('[FriendsPage] Remove failed:', error);
+      logError('[FriendsPage] Remove failed:', error);
     }
   };
 

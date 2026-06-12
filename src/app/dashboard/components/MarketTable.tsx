@@ -83,7 +83,7 @@ export function MarketTable({
                 className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] transition-all duration-[var(--main-page-transition)] ${movementColor[movementBySymbol[quote.symbol] ?? 'steady']}`}
                 data-label="Precio"
               >
-                <AnimatedCurrency value={quote.close} currency={currency} rate={rate} />
+                <AnimatedCurrency value={quote.close} currency={currency} sourceCurrency={quote.currency} rate={rate} />
               </td>
               <td
                 className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] ${quote.dayChangePercentage >= 0 ? textPositive : textNegative}`}

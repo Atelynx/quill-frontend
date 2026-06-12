@@ -1,4 +1,5 @@
 import { apiClient } from './http';
+import { logError } from './error-logging';
 import {
   AuthResponseSchema,
   type LoginInput,
@@ -35,7 +36,7 @@ export const authService = {
       const response = await apiClient.post('/auth/login', credentials);
       return AuthResponseSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Login failed:', error);
+      logError('[API] Login failed:', error);
       throw error;
     }
   },
@@ -45,7 +46,7 @@ export const authService = {
       const response = await apiClient.post('/auth/register', data);
       return RegisterResponseSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Registration failed:', error);
+      logError('[API] Registration failed:', error);
       throw error;
     }
   },
@@ -57,7 +58,7 @@ export const portfolioService = {
       const response = await apiClient.get('/portfolio/summary');
       return PortfolioSummarySchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Portfolio summary fetch failed:', error);
+      logError('[API] Portfolio summary fetch failed:', error);
       throw error;
     }
   },
@@ -69,7 +70,7 @@ export const marketService = {
       const response = await apiClient.get('/market/status');
       return MarketStatusSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Market status fetch failed:', error);
+      logError('[API] Market status fetch failed:', error);
       throw error;
     }
   },
@@ -79,7 +80,7 @@ export const marketService = {
       const response = await apiClient.get('/market/stocks');
       return StockQuoteSchema.array().parse(response.data);
     } catch (error) {
-      console.error('[API] Stock quotes fetch failed:', error);
+      logError('[API] Stock quotes fetch failed:', error);
       throw error;
     }
   },
@@ -91,7 +92,7 @@ export const marketService = {
       );
       return PricePointSchema.array().parse(response.data);
     } catch (error) {
-      console.error('[API] Stock history fetch failed:', { symbol, error });
+      logError(`[API] Stock history fetch failed: ${symbol}`, error);
       throw error;
     }
   },
@@ -103,7 +104,7 @@ export const ordersService = {
       const response = await apiClient.get('/orders?status=PENDING');
       return OrderRecordSchema.array().parse(response.data);
     } catch (error) {
-      console.error('[API] Pending orders fetch failed:', error);
+      logError('[API] Pending orders fetch failed:', error);
       throw error;
     }
   },
@@ -112,7 +113,7 @@ export const ordersService = {
     try {
       await apiClient.post('/orders', order);
     } catch (error) {
-      console.error('[API] Order creation failed:', { order, error });
+      logError(`[API] Order creation failed: ${order.symbol}`, error);
       throw error;
     }
   },
@@ -124,7 +125,7 @@ export const tradesService = {
       const response = await apiClient.get(`/trades?limit=${limit}`);
       return TradeRecordSchema.array().parse(response.data);
     } catch (error) {
-      console.error('[API] Recent trades fetch failed:', error);
+      logError('[API] Recent trades fetch failed:', error);
       throw error;
     }
   },
@@ -136,7 +137,7 @@ export const usersService = {
       const response = await apiClient.get('/users/me');
       return UserProfileSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Profile fetch failed:', error);
+      logError('[API] Profile fetch failed:', error);
       throw error;
     }
   },
@@ -146,7 +147,7 @@ export const usersService = {
       const response = await apiClient.patch('/users/me', data);
       return UserProfileSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Profile update failed:', error);
+      logError('[API] Profile update failed:', error);
       throw error;
     }
   },
@@ -155,7 +156,7 @@ export const usersService = {
     try {
       await apiClient.patch('/users/me/email', data);
     } catch (error) {
-      console.error('[API] Email change failed:', error);
+      logError('[API] Email change failed:', error);
       throw error;
     }
   },
@@ -164,7 +165,7 @@ export const usersService = {
     try {
       await apiClient.patch('/users/me/password', data);
     } catch (error) {
-      console.error('[API] Password change failed:', error);
+      logError('[API] Password change failed:', error);
       throw error;
     }
   },
@@ -174,7 +175,7 @@ export const usersService = {
       const response = await apiClient.get('/users/me/watchlist');
       return StockQuoteSchema.array().parse(response.data);
     } catch (error) {
-      console.error('[API] Watchlist fetch failed:', error);
+      logError('[API] Watchlist fetch failed:', error);
       throw error;
     }
   },
@@ -184,7 +185,7 @@ export const usersService = {
       const response = await apiClient.post('/users/me/watchlist', data);
       return WatchlistResponseSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Watchlist add failed:', error);
+      logError('[API] Watchlist add failed:', error);
       throw error;
     }
   },
@@ -194,7 +195,7 @@ export const usersService = {
       const response = await apiClient.delete(`/users/me/watchlist/${symbol}`);
       return WatchlistResponseSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Watchlist remove failed:', error);
+      logError('[API] Watchlist remove failed:', error);
       throw error;
     }
   },
@@ -204,7 +205,7 @@ export const usersService = {
       const response = await apiClient.get('/users/me/friends');
       return FriendSchema.array().parse(response.data);
     } catch (error) {
-      console.error('[API] Friends fetch failed:', error);
+      logError('[API] Friends fetch failed:', error);
       throw error;
     }
   },
@@ -214,7 +215,7 @@ export const usersService = {
       const response = await apiClient.get('/users/me/friends/requests');
       return FriendRequestSchema.array().parse(response.data);
     } catch (error) {
-      console.error('[API] Friend requests fetch failed:', error);
+      logError('[API] Friend requests fetch failed:', error);
       throw error;
     }
   },
@@ -224,7 +225,7 @@ export const usersService = {
       const response = await apiClient.post(`/users/me/friends/${userId}`);
       return MessageResponseSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Send friend request failed:', error);
+      logError('[API] Send friend request failed:', error);
       throw error;
     }
   },
@@ -234,7 +235,7 @@ export const usersService = {
       const response = await apiClient.patch(`/users/me/friends/${userId}`, data);
       return MessageResponseSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Friend request response failed:', error);
+      logError('[API] Friend request response failed:', error);
       throw error;
     }
   },
@@ -244,7 +245,7 @@ export const usersService = {
       const response = await apiClient.delete(`/users/me/friends/${userId}`);
       return MessageResponseSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Remove friend failed:', error);
+      logError('[API] Remove friend failed:', error);
       throw error;
     }
   },
@@ -256,7 +257,7 @@ export const currencyService = {
       const response = await apiClient.get('/currency/rates');
       return CurrencyRateSchema.array().parse(response.data);
     } catch (error) {
-      console.error('[API] Currency rates fetch failed:', error);
+      logError('[API] Currency rates fetch failed:', error);
       throw error;
     }
   },
@@ -266,7 +267,7 @@ export const currencyService = {
       const response = await apiClient.get(`/currency/rates/${symbol}`);
       return CurrencyRateSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Currency rate fetch failed for symbol:', symbol, error);
+      logError(`[API] Currency rate fetch failed: ${symbol}`, error);
       throw error;
     }
   },
@@ -278,7 +279,7 @@ export const adminConfigService = {
       const response = await apiClient.get('/admin/config');
       return AdminConfigSchema.array().parse(response.data);
     } catch (error) {
-      console.error('[API] Admin configs fetch failed:', error);
+      logError('[API] Admin configs fetch failed:', error);
       throw error;
     }
   },
@@ -288,7 +289,7 @@ export const adminConfigService = {
       const response = await apiClient.get(`/admin/config/${key}`);
       return AdminConfigSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Admin config fetch failed for key:', key, error);
+      logError(`[API] Admin config fetch failed: ${key}`, error);
       throw error;
     }
   },
@@ -298,7 +299,7 @@ export const adminConfigService = {
       const response = await apiClient.get(`/admin/config/${key}/history`);
       return AdminConfigSchema.array().parse(response.data);
     } catch (error) {
-      console.error('[API] Admin config history fetch failed for key:', key, error);
+      logError(`[API] Admin config history fetch failed: ${key}`, error);
       throw error;
     }
   },
@@ -308,7 +309,7 @@ export const adminConfigService = {
       const response = await apiClient.post('/admin/config', data);
       return AdminConfigSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Admin config create failed:', error);
+      logError('[API] Admin config create failed:', error);
       throw error;
     }
   },
@@ -318,7 +319,7 @@ export const adminConfigService = {
       const response = await apiClient.put(`/admin/config/${key}`, data);
       return AdminConfigSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Admin config update failed for key:', key, error);
+      logError(`[API] Admin config update failed: ${key}`, error);
       throw error;
     }
   },
@@ -328,7 +329,7 @@ export const adminConfigService = {
       const response = await apiClient.delete(`/admin/config/${key}`);
       return MessageResponseSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Admin config delete failed for key:', key, error);
+      logError(`[API] Admin config delete failed: ${key}`, error);
       throw error;
     }
   },
@@ -338,7 +339,7 @@ export const adminConfigService = {
       const response = await apiClient.get('/admin/config/snapshots');
       return AdminSnapshotSchema.array().parse(response.data);
     } catch (error) {
-      console.error('[API] Admin snapshots fetch failed:', error);
+      logError('[API] Admin snapshots fetch failed:', error);
       throw error;
     }
   },
@@ -348,7 +349,7 @@ export const adminConfigService = {
       const response = await apiClient.get(`/admin/config/snapshots/${id}`);
       return AdminSnapshotSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Admin snapshot fetch failed for id:', id, error);
+      logError(`[API] Admin snapshot fetch failed: ${id}`, error);
       throw error;
     }
   },
@@ -358,7 +359,7 @@ export const adminConfigService = {
       const response = await apiClient.post('/admin/config/snapshots', data ?? {});
       return AdminSnapshotSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Admin snapshot create failed:', error);
+      logError('[API] Admin snapshot create failed:', error);
       throw error;
     }
   },
@@ -368,7 +369,7 @@ export const adminConfigService = {
       const response = await apiClient.post(`/admin/config/snapshots/${id}/restore`);
       return AdminSnapshotSchema.parse(response.data);
     } catch (error) {
-      console.error('[API] Admin snapshot restore failed for id:', id, error);
+      logError(`[API] Admin snapshot restore failed: ${id}`, error);
       throw error;
     }
   },

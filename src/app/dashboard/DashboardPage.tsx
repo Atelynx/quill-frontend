@@ -35,6 +35,22 @@ import { useAppSelector } from "@/store/hooks";
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL ?? "http://localhost:3000";
 
+interface MarketPriceUpdate {
+  symbol: string;
+  price: number;
+  close?: number;
+  dayChangePercentage?: number;
+}
+
+function isMarketPriceUpdate(value: unknown): value is MarketPriceUpdate {
+  if (typeof value !== "object" || value === null) return false;
+
+  return "symbol" in value
+    && "price" in value
+    && typeof value.symbol === "string"
+    && typeof value.price === "number";
+}
+
 export function DashboardPage() {
   const queryClient = useQueryClient();
   const { token, user, updateUser } = useAuth();
@@ -58,8 +74,12 @@ export function DashboardPage() {
   const tradesQuery = useRecentTrades(8);
 
   const quotes = useMemo<StockQuote[]>(
-    () => (marketQuery.data ?? []) as StockQuote[],
+    () => marketQuery.data ?? [],
     [marketQuery.data],
+  );
+  const quoteSymbols = useMemo(
+    () => quotes.map((quote) => quote.symbol).join(","),
+    [quotes],
   );
   const activeSymbol = selectedSymbol
     ? quotes.find((q) => q.symbol === selectedSymbol)
@@ -68,7 +88,10 @@ export function DashboardPage() {
     : '';
 
   const activeSymbolRef = useRef(activeSymbol);
-  activeSymbolRef.current = activeSymbol;
+
+  useEffect(() => {
+    activeSymbolRef.current = activeSymbol;
+  }, [activeSymbol]);
 
   const historyQuery = useStockHistory(activeSymbol, 24);
 
@@ -81,7 +104,7 @@ export function DashboardPage() {
   }, [quotes]);
 
   useEffect(() => {
-    if (isStubMode() || quotes.length === 0) return;
+    if (isStubMode() || quoteSymbols.length === 0) return;
 
     const socket = io(`${socketUrl}/realtime`, {
       transports: ["websocket"],
@@ -89,17 +112,19 @@ export function DashboardPage() {
     });
 
     socket.on("connect", () => {
-      for (const q of quotes) {
-        socket.emit("subscribe", { topic: q.symbol });
+      for (const symbol of quoteSymbols.split(",")) {
+        socket.emit("subscribe", { topic: symbol });
       }
       socket.emit("subscribe", { topic: "USDCLP", type: "forex" });
     });
 
-    socket.on("price_update", (update) => {
+    socket.on("price_update", (update: unknown) => {
+      if (!isMarketPriceUpdate(update)) return;
+
       const { symbol, price, dayChangePercentage } = update;
 
       if (symbol === "USDCLP") {
-        handleForexUpdate(update);
+        handleForexUpdate({ symbol, close: update.close ?? price });
         return;
       }
 
@@ -151,7 +176,7 @@ export function DashboardPage() {
     return () => {
       socket.disconnect();
     };
-  }, [quotes.length > 0, queryClient, token]);
+  }, [handleForexUpdate, queryClient, quoteSymbols, token]);
 
   const portfolio = portfolioQuery.data as PortfolioSummary;
   const openOrders = ordersQuery.data as OrderRecord[] ?? [];
@@ -289,7 +314,7 @@ export function DashboardPage() {
           title={activeSymbol ? `Mercado activo | ${activeSymbol}` : 'Mercado activo'}
           description={
             selectedQuote
-              ? <>Precio actual <AnimatedCurrency value={selectedQuote.close} currency={currency} rate={rate} />. Selecciona otra accion en la tabla para cambiar la vista.</>
+              ? <>Precio actual <AnimatedCurrency value={selectedQuote.close} currency={currency} sourceCurrency={selectedQuote.currency} rate={rate} />. Selecciona otra accion en la tabla para cambiar la vista.</>
               : "Selecciona una accion para revisar su evolucion."
           }
         >
@@ -297,6 +322,7 @@ export function DashboardPage() {
             currency={currency}
             data={historyQuery.data as PricePoint[] ?? []}
             rate={rate}
+            sourceCurrency={selectedQuote?.currency ?? 'USD'}
             symbol={activeSymbol}
           />
         </SectionCard>

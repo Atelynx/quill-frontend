@@ -6,6 +6,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authService, ordersService, usersService, adminConfigService } from '../api-service';
 import type { UpdateConfigInput, CreateSnapshotInput } from '../validators';
+import { logError } from '../error-logging';
 
 /**
  * Hook for user login mutation
@@ -15,7 +16,7 @@ export function useLoginMutation() {
   return useMutation({
     mutationFn: authService.login,
     onError: (error) => {
-      console.error('[Mutation] Login failed:', error);
+      logError('[Mutation] Login failed:', error);
     },
   });
 }
@@ -28,7 +29,7 @@ export function useRegisterMutation() {
   return useMutation({
     mutationFn: authService.register,
     onError: (error) => {
-      console.error('[Mutation] Registration failed:', error);
+      logError('[Mutation] Registration failed:', error);
     },
   });
 }
@@ -51,7 +52,7 @@ export function useUpdateProfileMutation() {
       void queryClient.invalidateQueries({ queryKey: ['profile'] });
     },
     onError: (error) => {
-      console.error('[Mutation] Profile update failed:', error);
+      logError('[Mutation] Profile update failed:', error);
     },
   });
 }
@@ -64,7 +65,7 @@ export function useChangeEmailMutation() {
   return useMutation({
     mutationFn: usersService.changeEmail,
     onError: (error) => {
-      console.error('[Mutation] Email change failed:', error);
+      logError('[Mutation] Email change failed:', error);
     },
   });
 }
@@ -77,7 +78,7 @@ export function useChangePasswordMutation() {
   return useMutation({
     mutationFn: usersService.changePassword,
     onError: (error) => {
-      console.error('[Mutation] Password change failed:', error);
+      logError('[Mutation] Password change failed:', error);
     },
   });
 }
@@ -95,7 +96,7 @@ export function useAddToWatchlistMutation() {
       void queryClient.invalidateQueries({ queryKey: ['profile'] });
     },
     onError: (error) => {
-      console.error('[Mutation] Add to watchlist failed:', error);
+      logError('[Mutation] Add to watchlist failed:', error);
     },
   });
 }
@@ -113,7 +114,7 @@ export function useRemoveFromWatchlistMutation() {
       void queryClient.invalidateQueries({ queryKey: ['profile'] });
     },
     onError: (error) => {
-      console.error('[Mutation] Remove from watchlist failed:', error);
+      logError('[Mutation] Remove from watchlist failed:', error);
     },
   });
 }
@@ -130,7 +131,7 @@ export function useSendFriendRequestMutation() {
       void queryClient.invalidateQueries({ queryKey: ['friends'] });
     },
     onError: (error) => {
-      console.error('[Mutation] Send friend request failed:', error);
+      logError('[Mutation] Send friend request failed:', error);
     },
   });
 }
@@ -149,7 +150,7 @@ export function useRespondToFriendRequestMutation() {
       void queryClient.invalidateQueries({ queryKey: ['friends', 'requests'] });
     },
     onError: (error) => {
-      console.error('[Mutation] Respond to friend request failed:', error);
+      logError('[Mutation] Respond to friend request failed:', error);
     },
   });
 }
@@ -166,7 +167,7 @@ export function useRemoveFriendMutation() {
       void queryClient.invalidateQueries({ queryKey: ['friends'] });
     },
     onError: (error) => {
-      console.error('[Mutation] Remove friend failed:', error);
+      logError('[Mutation] Remove friend failed:', error);
     },
   });
 }
@@ -177,14 +178,12 @@ export function useCreateOrderMutation() {
   return useMutation({
     mutationFn: ordersService.create,
     onSuccess: () => {
-      console.log('[Mutation] Order created successfully');
-      // Invalidate cache for related queries so they refetch
       void queryClient.invalidateQueries({ queryKey: ['portfolio', 'summary'] });
       void queryClient.invalidateQueries({ queryKey: ['orders', 'pending'] });
       void queryClient.invalidateQueries({ queryKey: ['trades', 'recent'] });
     },
     onError: (error) => {
-      console.error('[Mutation] Order creation failed:', error);
+      logError('[Mutation] Order creation failed:', error);
     },
   });
 }
@@ -201,7 +200,7 @@ export function useCreateAdminConfig() {
       void queryClient.invalidateQueries({ queryKey: ['admin', 'configs'] });
     },
     onError: (error) => {
-      console.error('[Mutation] Admin config create failed:', error);
+      logError('[Mutation] Admin config create failed:', error);
     },
   });
 }
@@ -219,7 +218,7 @@ export function useUpdateAdminConfig() {
       void queryClient.invalidateQueries({ queryKey: ['admin', 'configs'] });
     },
     onError: (error) => {
-      console.error('[Mutation] Admin config update failed:', error);
+      logError('[Mutation] Admin config update failed:', error);
     },
   });
 }
@@ -236,7 +235,7 @@ export function useDeleteAdminConfig() {
       void queryClient.invalidateQueries({ queryKey: ['admin', 'configs'] });
     },
     onError: (error) => {
-      console.error('[Mutation] Admin config delete failed:', error);
+      logError('[Mutation] Admin config delete failed:', error);
     },
   });
 }
@@ -254,7 +253,7 @@ export function useCreateSnapshot() {
       void queryClient.invalidateQueries({ queryKey: ['admin', 'snapshots'] });
     },
     onError: (error) => {
-      console.error('[Mutation] Snapshot create failed:', error);
+      logError('[Mutation] Snapshot create failed:', error);
     },
   });
 }
@@ -272,7 +271,7 @@ export function useRestoreSnapshot() {
       void queryClient.invalidateQueries({ queryKey: ['admin', 'snapshots'] });
     },
     onError: (error) => {
-      console.error('[Mutation] Snapshot restore failed:', error);
+      logError('[Mutation] Snapshot restore failed:', error);
     },
   });
 }

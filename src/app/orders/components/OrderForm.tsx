@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useCreateOrderMutation } from '../../../shared/api/hooks';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
+import { logError } from '../../../shared/api/error-logging';
 import { isStubMode } from '../../../shared/api/stub-mode';
 import { CreateOrderInputSchema } from '../../../shared/api/validators';
 import type { StockQuote } from '../../../shared/api/validators';
@@ -11,6 +12,8 @@ import { button } from '../../../shared/design-system/surfaces';
 import { hint as hintClass } from '../../../shared/design-system/typography';
 import { formGrid, buyModeToggle, buyModeButton } from '../../../shared/design-system/layout';
 import { inputBase, successMessage, errorMessage } from '../../../shared/design-system/forms';
+import { resolveCurrency } from '../../../shared/utils/currency';
+import { calculateQuantityFromClpAmount } from '../utils/order-calculations';
 
 type FormValues = {
   symbol: string;
@@ -34,6 +37,10 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
   const limitPriceUserTouched = useRef(false);
   const orderMutation = useCreateOrderMutation();
   const demoMode = isStubMode();
+  const currentQuote = useMemo(
+    () => quotes.find((quote) => quote.symbol === selectedSymbol),
+    [quotes, selectedSymbol],
+  );
 
   const form = useForm<FormValues>({
     resolver: zodResolver(CreateOrderInputSchema),
@@ -42,31 +49,24 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
       side: 'BUY',
       type: 'LIMIT',
       quantity: 1,
-      limitPrice:
-          quotes.find((quote) => quote.symbol === selectedSymbol)?.close ?? undefined,
+      limitPrice: currentQuote?.close,
     },
   });
 
   useEffect(() => {
     form.setValue('symbol', selectedSymbol);
-    const quote = quotes.find((q) => q.symbol === selectedSymbol);
-    if (quote) {
-      form.setValue('limitPrice', quote.close);
-    }
     limitPriceUserTouched.current = false;
-  }, [selectedSymbol]);
+  }, [form, selectedSymbol]);
 
   useEffect(() => {
-    if (!limitPriceUserTouched.current) {
-      const quote = quotes.find((q) => q.symbol === selectedSymbol);
-      if (quote) {
-        form.setValue('limitPrice', quote.close);
-      }
+    if (!limitPriceUserTouched.current && currentQuote) {
+      form.setValue('limitPrice', currentQuote.close);
     }
-  }, [quotes]);
+  }, [currentQuote, form]);
 
   const { onChange: limitPriceOnChange, ...limitPriceRest } = form.register('limitPrice', { valueAsNumber: true });
-  const currentQuote = quotes.find((quote) => quote.symbol === selectedSymbol);
+  const priceCurrency = currentQuote ? resolveCurrency(currentQuote.currency) : 'CLP';
+  const secondaryCurrency = priceCurrency === 'CLP' ? 'USD' : 'CLP';
   const selectedSide = useWatch({
     control: form.control,
     name: 'side',
@@ -98,7 +98,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
     }
 
     try {
-      let submitValues = { ...values };
+      const submitValues = { ...values };
 
       if (buyMode === 'amount') {
         const price =
@@ -111,7 +111,12 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
           return;
         }
 
-        const calculatedQty = Math.floor(Number(investAmount) / price);
+        const calculatedQty = calculateQuantityFromClpAmount({
+          amountClp: Number(investAmount),
+          price,
+          priceCurrency,
+          usdclpRate: rate,
+        });
         if (calculatedQty < 1) {
           setFeedbackMessage(
             'El monto ingresado no es suficiente para comprar al menos 1 accion.',
@@ -138,7 +143,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
       });
       setInvestAmount('');
     } catch (error) {
-      console.error('[OrderForm] Error submitting order:', error);
+      logError('[OrderForm] No fue posible crear la orden', error);
       const apiMsg = getApiErrorMessage(error, '');
       if (apiMsg.toLowerCase().includes('cerrado')) {
         setFeedbackMessage('El mercado está cerrado en este momento. Las órdenes MARKET solo pueden ejecutarse dentro del horario de operación.');
@@ -148,7 +153,6 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
 
   const handleModeToggle = (mode: 'shares' | 'amount') => {
     setBuyMode(mode);
-    form.setValue('quantity', 1);
     if (mode === 'amount') {
       setInvestAmount('');
     }
@@ -169,10 +173,10 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
     const totalCost = watchedQuantity * price;
     return (
       <p className={hintClass}>
-        Costo total estimado: <AnimatedCurrency value={totalCost} /> (<AnimatedCurrency value={totalCost} currency="USD" rate={rate} />)
+        Costo total estimado: <AnimatedCurrency value={totalCost} sourceCurrency={priceCurrency} rate={rate} /> (<AnimatedCurrency value={totalCost} currency={secondaryCurrency} sourceCurrency={priceCurrency} rate={rate} />)
         <br />
         <small>
-          ({watchedQuantity} acciones &times; <AnimatedCurrency value={price} /> c/u)
+          ({watchedQuantity} acciones &times; <AnimatedCurrency value={price} currency={priceCurrency} sourceCurrency={priceCurrency} rate={rate} /> c/u)
         </small>
       </p>
     );
@@ -188,13 +192,18 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
 
     if (price <= 0) return null;
 
-    const calculatedQty = Math.floor(investAmountValue / price);
+    const calculatedQty = calculateQuantityFromClpAmount({
+      amountClp: investAmountValue,
+      price,
+      priceCurrency,
+      usdclpRate: rate,
+    });
 
     if (calculatedQty < 1) {
       return (
         <p className={hintClass} style={{ color: 'var(--main-page-danger)' }}>
           Monto insuficiente. Debe ser al menos{' '}
-          <AnimatedCurrency value={price} /> para comprar 1 accion.
+          <AnimatedCurrency value={price} sourceCurrency={priceCurrency} rate={rate} /> para comprar 1 accion.
         </p>
       );
     }
@@ -203,11 +212,11 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
     return (
       <p className={hintClass}>
         &asymp; {calculatedQty} acciones &middot; Costo estimado:{' '}
-        <AnimatedCurrency value={totalCost} /> (<AnimatedCurrency value={totalCost} currency="USD" rate={rate} />)
+        <AnimatedCurrency value={totalCost} sourceCurrency={priceCurrency} rate={rate} /> (<AnimatedCurrency value={totalCost} currency={secondaryCurrency} sourceCurrency={priceCurrency} rate={rate} />)
         <br />
         <small>
-          (<AnimatedCurrency value={totalCost} /> / {calculatedQty}{' '}
-          acciones &times; <AnimatedCurrency value={price} /> c/u)
+          (<AnimatedCurrency value={totalCost} sourceCurrency={priceCurrency} rate={rate} /> / {calculatedQty}{' '}
+          acciones &times; <AnimatedCurrency value={price} currency={priceCurrency} sourceCurrency={priceCurrency} rate={rate} /> c/u)
         </small>
       </p>
     );
@@ -234,7 +243,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
         <strong>Precio actual</strong>
         <span className={hintClass}>
           {currentQuote
-            ? <>{currentQuote.symbol} · <AnimatedCurrency value={currentQuote.close} /> (<AnimatedCurrency value={currentQuote.close} currency="USD" rate={rate} />)</>
+            ? <>{currentQuote.symbol} · <AnimatedCurrency value={currentQuote.close} currency={priceCurrency} sourceCurrency={priceCurrency} rate={rate} /> (<AnimatedCurrency value={currentQuote.close} currency={secondaryCurrency} sourceCurrency={priceCurrency} rate={rate} />)</>
             : 'Selecciona una accion para continuar.'}
         </span>
       </div>
@@ -291,6 +300,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
           <input
             className={inputBase}
             disabled={demoMode}
+            key="quantity"
             type="number"
             {...form.register('quantity', { valueAsNumber: true })}
           />
@@ -301,6 +311,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
           <input
             className={inputBase}
             disabled={demoMode}
+            key="amount"
             type="number"
             value={investAmount}
             onChange={(e) => setInvestAmount(e.target.value)}
@@ -312,7 +323,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
 
       {orderType === 'LIMIT' ? (
         <label>
-          Precio limite (CLP)
+          Precio limite ({priceCurrency})
           <input
             className={inputBase}
             disabled={demoMode}
@@ -320,13 +331,13 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
             type="number"
             onChange={(e) => {
               limitPriceUserTouched.current = true;
-              limitPriceOnChange(e);
+              void limitPriceOnChange(e);
             }}
             {...limitPriceRest}
           />
           {watchedLimitPrice && watchedLimitPrice > 0 ? (
             <small className={hintClass}>
-              ≈ <AnimatedCurrency value={watchedLimitPrice} currency="USD" rate={rate} />
+              ≈ <AnimatedCurrency value={watchedLimitPrice} currency={secondaryCurrency} sourceCurrency={priceCurrency} rate={rate} />
             </small>
           ) : null}
         </label>
