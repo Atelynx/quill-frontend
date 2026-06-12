@@ -5,7 +5,7 @@
 
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { portfolioService, marketService, ordersService, tradesService, usersService, currencyService } from '../api-service';
+import { portfolioService, marketService, ordersService, tradesService, usersService, currencyService, adminConfigService } from '../api-service';
 
 /**
  * Hook to fetch portfolio summary
@@ -230,6 +230,109 @@ export function useForexRate(symbol: string) {
       console.error('[Query] Forex rate fetch failed for symbol:', symbol, query.error);
     }
   }, [query.error, symbol]);
+
+  return query;
+}
+
+/**
+ * Hook to fetch all admin configs
+ */
+export function useAdminConfigs() {
+  const query = useQuery({
+    queryKey: ['admin', 'configs'],
+    queryFn: adminConfigService.getAll,
+    staleTime: 30000,
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('[Query] Admin configs fetch failed:', query.error);
+    }
+  }, [query.error]);
+
+  return query;
+}
+
+/**
+ * Hook to fetch a single admin config by key
+ */
+export function useAdminConfig(key: string) {
+  const query = useQuery({
+    queryKey: ['admin', 'configs', key],
+    queryFn: () => adminConfigService.get(key),
+    staleTime: 30000,
+    retry: 1,
+    enabled: Boolean(key),
+  });
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('[Query] Admin config fetch failed for key:', key, query.error);
+    }
+  }, [query.error, key]);
+
+  return query;
+}
+
+/**
+ * Hook to fetch admin config history by key
+ */
+export function useAdminConfigHistory(key: string) {
+  const query = useQuery({
+    queryKey: ['admin', 'configs', key, 'history'],
+    queryFn: () => adminConfigService.getHistory(key),
+    staleTime: 60000,
+    retry: 1,
+    enabled: Boolean(key),
+  });
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('[Query] Admin config history fetch failed for key:', key, query.error);
+    }
+  }, [query.error, key]);
+
+  return query;
+}
+
+/**
+ * Hook to fetch all admin snapshots
+ */
+export function useAdminSnapshots() {
+  const query = useQuery({
+    queryKey: ['admin', 'snapshots'],
+    queryFn: adminConfigService.getSnapshots,
+    staleTime: 30000,
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('[Query] Admin snapshots fetch failed:', query.error);
+    }
+  }, [query.error]);
+
+  return query;
+}
+
+/**
+ * Hook to fetch a single admin snapshot by id
+ */
+export function useAdminSnapshot(id: string) {
+  const query = useQuery({
+    queryKey: ['admin', 'snapshots', id],
+    queryFn: () => adminConfigService.getSnapshot(id),
+    staleTime: 60000,
+    retry: 1,
+    enabled: Boolean(id),
+  });
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('[Query] Admin snapshot fetch failed for id:', id, query.error);
+    }
+  }, [query.error, id]);
 
   return query;
 }

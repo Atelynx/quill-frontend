@@ -1,8 +1,9 @@
 import { lazy, Suspense } from 'react';
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import { useAuth } from '../auth/hooks/use-auth';
 import { auth } from '../../shared/content/strings';
 import { loadingScreen } from '../../shared/design-system/layout';
+import { AdminLayout } from '../admin/layout/AdminLayout';
 const AuthPage = lazy(() =>
   import('../auth/pages/AuthPage').then((module) => ({ default: module.AuthPage })),
 );
@@ -18,6 +19,12 @@ const WatchlistPage = lazy(() =>
 const FriendsPage = lazy(() =>
   import('../friends/pages/FriendsPage').then((module) => ({ default: module.FriendsPage })),
 );
+const AdminConfigPage = lazy(() =>
+  import('../admin/pages/AdminConfigPage').then((module) => ({ default: module.AdminConfigPage })),
+);
+const AdminSnapshotsPage = lazy(() =>
+  import('../admin/pages/AdminSnapshotsPage').then((module) => ({ default: module.AdminSnapshotsPage })),
+);
 const NotFound = lazy(() => import('../not-found/NotFound'));
 
 function ProtectedRoute({ element }: { element: React.ReactNode }) {
@@ -25,6 +32,20 @@ function ProtectedRoute({ element }: { element: React.ReactNode }) {
 
   if (!isAuthenticated) {
     return <Navigate to="/auth" replace />;
+  }
+
+  return element;
+}
+
+function AdminRoute({ element }: { element: React.ReactNode }) {
+  const { isAuthenticated, user } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  if (user?.role !== 'admin') {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return element;
@@ -52,6 +73,14 @@ export function AppRouter() {
         {
           path: '/friends',
           element: <ProtectedRoute element={<FriendsPage />} />,
+        },
+        {
+          path: '/admin',
+          element: <AdminRoute element={<AdminLayout><Outlet /></AdminLayout>} />,
+          children: [
+            { path: 'config', element: <AdminConfigPage /> },
+            { path: 'snapshots', element: <AdminSnapshotsPage /> },
+          ],
         },
         { path: '/', element: <Navigate to="/auth" replace /> },
         { path: '*', element: <NotFound /> },

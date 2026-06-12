@@ -21,6 +21,11 @@ import {
   type FriendActionInput,
   MessageResponseSchema,
   CurrencyRateSchema,
+  AdminConfigSchema,
+  type CreateConfigInput,
+  type UpdateConfigInput,
+  AdminSnapshotSchema,
+  type CreateSnapshotInput,
 } from './validators';
 
 export const authService = {
@@ -251,6 +256,108 @@ export const currencyService = {
       return CurrencyRateSchema.parse(response.data);
     } catch (error) {
       console.error('[API] Currency rate fetch failed for symbol:', symbol, error);
+      throw error;
+    }
+  },
+};
+
+export const adminConfigService = {
+  getAll: async () => {
+    try {
+      const response = await apiClient.get('/admin/config');
+      return AdminConfigSchema.array().parse(response.data);
+    } catch (error) {
+      console.error('[API] Admin configs fetch failed:', error);
+      throw error;
+    }
+  },
+
+  get: async (key: string) => {
+    try {
+      const response = await apiClient.get(`/admin/config/${key}`);
+      return AdminConfigSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Admin config fetch failed for key:', key, error);
+      throw error;
+    }
+  },
+
+  getHistory: async (key: string) => {
+    try {
+      const response = await apiClient.get(`/admin/config/${key}/history`);
+      return AdminConfigSchema.array().parse(response.data);
+    } catch (error) {
+      console.error('[API] Admin config history fetch failed for key:', key, error);
+      throw error;
+    }
+  },
+
+  create: async (data: CreateConfigInput) => {
+    try {
+      const response = await apiClient.post('/admin/config', data);
+      return AdminConfigSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Admin config create failed:', error);
+      throw error;
+    }
+  },
+
+  update: async (key: string, data: UpdateConfigInput) => {
+    try {
+      const response = await apiClient.put(`/admin/config/${key}`, data);
+      return AdminConfigSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Admin config update failed for key:', key, error);
+      throw error;
+    }
+  },
+
+  remove: async (key: string) => {
+    try {
+      const response = await apiClient.delete(`/admin/config/${key}`);
+      return MessageResponseSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Admin config delete failed for key:', key, error);
+      throw error;
+    }
+  },
+
+  getSnapshots: async () => {
+    try {
+      const response = await apiClient.get('/admin/config/snapshots');
+      return AdminSnapshotSchema.array().parse(response.data);
+    } catch (error) {
+      console.error('[API] Admin snapshots fetch failed:', error);
+      throw error;
+    }
+  },
+
+  getSnapshot: async (id: string) => {
+    try {
+      const response = await apiClient.get(`/admin/config/snapshots/${id}`);
+      return AdminSnapshotSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Admin snapshot fetch failed for id:', id, error);
+      throw error;
+    }
+  },
+
+  createSnapshot: async (data?: CreateSnapshotInput) => {
+    try {
+      const response = await apiClient.post('/admin/config/snapshots', data ?? {});
+      return AdminSnapshotSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Admin snapshot create failed:', error);
+      throw error;
+    }
+  },
+
+  restoreSnapshot: async (id: string) => {
+    try {
+      const response = await apiClient.post(`/admin/config/snapshots/${id}/restore`);
+      return AdminSnapshotSchema.parse(response.data);
+    } catch (error) {
+      console.error('[API] Admin snapshot restore failed for id:', id, error);
       throw error;
     }
   },

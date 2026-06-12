@@ -4,7 +4,8 @@
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { authService, ordersService, usersService } from '../api-service';
+import { authService, ordersService, usersService, adminConfigService } from '../api-service';
+import type { UpdateConfigInput, CreateSnapshotInput } from '../validators';
 
 /**
  * Hook for user login mutation
@@ -184,6 +185,94 @@ export function useCreateOrderMutation() {
     },
     onError: (error) => {
       console.error('[Mutation] Order creation failed:', error);
+    },
+  });
+}
+
+/**
+ * Hook for creating a new admin config
+ */
+export function useCreateAdminConfig() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: adminConfigService.create,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'configs'] });
+    },
+    onError: (error) => {
+      console.error('[Mutation] Admin config create failed:', error);
+    },
+  });
+}
+
+/**
+ * Hook for updating an admin config
+ */
+export function useUpdateAdminConfig() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ key, data }: { key: string; data: UpdateConfigInput }) =>
+      adminConfigService.update(key, data),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'configs'] });
+    },
+    onError: (error) => {
+      console.error('[Mutation] Admin config update failed:', error);
+    },
+  });
+}
+
+/**
+ * Hook for deleting an admin config
+ */
+export function useDeleteAdminConfig() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: adminConfigService.remove,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'configs'] });
+    },
+    onError: (error) => {
+      console.error('[Mutation] Admin config delete failed:', error);
+    },
+  });
+}
+
+/**
+ * Hook for creating an admin snapshot
+ */
+export function useCreateSnapshot() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data?: CreateSnapshotInput) =>
+      adminConfigService.createSnapshot(data),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'snapshots'] });
+    },
+    onError: (error) => {
+      console.error('[Mutation] Snapshot create failed:', error);
+    },
+  });
+}
+
+/**
+ * Hook for restoring an admin snapshot
+ */
+export function useRestoreSnapshot() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: adminConfigService.restoreSnapshot,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'configs'] });
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'snapshots'] });
+    },
+    onError: (error) => {
+      console.error('[Mutation] Snapshot restore failed:', error);
     },
   });
 }

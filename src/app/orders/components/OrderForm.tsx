@@ -133,6 +133,10 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
       setInvestAmount('');
     } catch (error) {
       console.error('[OrderForm] Error submitting order:', error);
+      const apiMsg = getApiErrorMessage(error, '');
+      if (apiMsg.toLowerCase().includes('cerrado')) {
+        setFeedbackMessage('El mercado está cerrado en este momento. Las órdenes MARKET solo pueden ejecutarse dentro del horario de operación.');
+      }
     }
   };
 
@@ -326,8 +330,10 @@ export function OrderForm({ quotes, rate, selectedSymbol }: OrderFormProps) {
             : 'La venta se ejecuta cuando el mercado sube al precio limite o por encima.'}
       </p>
 
-      {feedbackMessage ? <p className={successMessage}>{feedbackMessage}</p> : null}
-      {orderMutation.isError ? (
+      {feedbackMessage ? (
+        <p className={feedbackMessage.includes('cerrado') ? errorMessage : successMessage}>{feedbackMessage}</p>
+      ) : null}
+      {orderMutation.isError && !feedbackMessage?.includes('cerrado') ? (
         <p className={errorMessage}>
           {getApiErrorMessage(
             orderMutation.error,

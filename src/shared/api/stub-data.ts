@@ -6,6 +6,7 @@ import type {
   RegisterResponse,
   StockQuote,
   TradeRecord,
+  UserRole,
 } from './validators';
 
 export const STUB_AUTH_RESPONSE: AuthResponse = {
@@ -14,6 +15,7 @@ export const STUB_AUTH_RESPONSE: AuthResponse = {
     id: 'stub-user-1',
     fullName: 'Demo Quill',
     email: 'demo@quill.cl',
+    role: 'investor',
     username: 'demo_quill',
     watchlist: ['AAPL', 'TSLA'],
     availableBalance: 2_000_000,
@@ -25,6 +27,7 @@ export const STUB_USER_PROFILE: {
   id: string;
   fullName: string;
   email: string;
+  role: UserRole;
   username: string;
   watchlist: string[];
   availableBalance: number;
@@ -33,6 +36,7 @@ export const STUB_USER_PROFILE: {
   id: 'stub-user-1',
   fullName: 'Demo Quill',
   email: 'demo@quill.cl',
+  role: 'investor',
   username: 'demo_quill',
   watchlist: ['AAPL', 'TSLA'],
   availableBalance: 2_000_000,
@@ -235,6 +239,102 @@ export const STUB_CURRENCY_RATES = [
     rate: 950,
     basePrice: 948,
     dayChangePercentage: 0.26,
+  },
+];
+
+export const STUB_ADMIN_CONFIGS = [
+  {
+    _id: 'config-1',
+    key: 'COMMISSION_RATE',
+    value: 0.005,
+    name: 'Comisión de trading',
+    tags: ['trading', 'fees'],
+    inUse: true,
+    lastUsedAt: new Date().toISOString(),
+    updatedBy: null,
+    createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+    updatedAt: new Date(Date.now() - 86400000).toISOString(),
+  },
+  {
+    _id: 'config-2',
+    key: 'INITIAL_BALANCE',
+    value: 100000,
+    name: 'Saldo inicial',
+    tags: ['registration'],
+    inUse: true,
+    lastUsedAt: null,
+    updatedBy: null,
+    createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+    updatedAt: new Date(Date.now() - 86400000).toISOString(),
+  },
+  {
+    _id: 'config-3',
+    key: 'MARKET_HOURS_OPEN',
+    value: '09:30',
+    name: 'Horario de apertura',
+    tags: ['market', 'hours'],
+    inUse: true,
+    lastUsedAt: null,
+    updatedBy: null,
+    createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+    updatedAt: new Date(Date.now() - 86400000).toISOString(),
+  },
+  {
+    _id: 'config-4',
+    key: 'MARKET_HOURS_CLOSED',
+    value: '16:00',
+    name: 'Horario de cierre',
+    tags: ['market', 'hours'],
+    inUse: true,
+    lastUsedAt: null,
+    updatedBy: null,
+    createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+    updatedAt: new Date(Date.now() - 86400000).toISOString(),
+  },
+  {
+    _id: 'config-5',
+    key: 'MARKET_PROVIDER',
+    value: 'mock',
+    effectiveValue: 'mock',
+    appliesOn: 'restart',
+    name: 'Proveedor de datos de mercado',
+    tags: ['market', 'provider'],
+    inUse: true,
+    lastUsedAt: null,
+    updatedBy: null,
+    createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+    updatedAt: new Date(Date.now() - 86400000).toISOString(),
+  },
+  {
+    _id: 'config-6',
+    key: 'SIMULATION_STRATEGY',
+    value: 'flat',
+    effectiveValue: 'flat',
+    appliesOn: 'restart',
+    name: 'Estrategia de simulación',
+    tags: ['simulation'],
+    inUse: true,
+    lastUsedAt: null,
+    updatedBy: null,
+    createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+    updatedAt: new Date(Date.now() - 86400000).toISOString(),
+  },
+];
+
+export const STUB_ADMIN_SNAPSHOTS = [
+  {
+    _id: 'snapshot-1',
+    configs: {
+      COMMISSION_RATE: 0.005,
+      INITIAL_BALANCE: 100000,
+      MARKET_HOURS_OPEN: '09:30',
+      MARKET_HOURS_CLOSED: '16:00',
+      MARKET_PROVIDER: 'mock',
+      SIMULATION_STRATEGY: 'flat',
+    },
+    name: 'Configuración inicial',
+    createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+    updatedAt: new Date(Date.now() - 86400000 * 7).toISOString(),
   },
 ];
 
