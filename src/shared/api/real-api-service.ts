@@ -24,6 +24,7 @@ import {
   MessageResponseSchema,
   CurrencyRateSchema,
   AdminConfigSchema,
+  AdminConfigHistorySchema,
   type CreateConfigInput,
   type UpdateConfigInput,
   AdminSnapshotSchema,
@@ -297,7 +298,7 @@ export const adminConfigService = {
   getHistory: async (key: string) => {
     try {
       const response = await apiClient.get(`/admin/config/${key}/history`);
-      return AdminConfigSchema.array().parse(response.data);
+      return AdminConfigHistorySchema.array().parse(response.data);
     } catch (error) {
       logError(`[API] Admin config history fetch failed: ${key}`, error);
       throw error;

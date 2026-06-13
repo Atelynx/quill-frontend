@@ -23,6 +23,7 @@ import {
   MessageResponseSchema,
   CurrencyRateSchema,
   AdminConfigSchema,
+  AdminConfigHistorySchema,
   type CreateConfigInput,
   type UpdateConfigInput,
   AdminSnapshotSchema,
@@ -207,7 +208,7 @@ export const adminConfigService = {
 
   getHistory: async (_key: string) => {
     await delay(NETWORK_LATENCY_MS);
-    return AdminConfigSchema.array().parse(STUB_ADMIN_CONFIGS);
+    return AdminConfigHistorySchema.array().parse(STUB_ADMIN_CONFIG_HISTORY);
   },
 
   create: async (data: CreateConfigInput) => {

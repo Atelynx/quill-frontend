@@ -24,7 +24,7 @@ export function ConfigHistoryView({ keyName, onClose }: ConfigHistoryViewProps) 
           ) : (
             <div className="grid gap-3">
               {history.map((entry, index) => (
-                <div key={entry._id ?? index} className="rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-4">
+                <div key={entry._id} className="rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <span className="font-semibold text-text">{String(entry.value)}</span>

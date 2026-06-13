@@ -244,55 +244,46 @@ export const STUB_CURRENCY_RATES = [
 
 export const STUB_ADMIN_CONFIGS = [
   {
-    _id: 'config-1',
     key: 'COMMISSION_RATE',
     value: 0.005,
     name: 'Comisión de trading',
     tags: ['trading', 'fees'],
     inUse: true,
     lastUsedAt: new Date().toISOString(),
-    updatedBy: null,
     createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
     updatedAt: new Date(Date.now() - 86400000).toISOString(),
   },
   {
-    _id: 'config-2',
     key: 'INITIAL_BALANCE',
     value: 100000,
     name: 'Saldo inicial',
     tags: ['registration'],
     inUse: true,
     lastUsedAt: null,
-    updatedBy: null,
     createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
     updatedAt: new Date(Date.now() - 86400000).toISOString(),
   },
   {
-    _id: 'config-3',
     key: 'MARKET_HOURS_OPEN',
     value: '09:30',
     name: 'Horario de apertura',
     tags: ['market', 'hours'],
     inUse: true,
     lastUsedAt: null,
-    updatedBy: null,
     createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
     updatedAt: new Date(Date.now() - 86400000).toISOString(),
   },
   {
-    _id: 'config-4',
     key: 'MARKET_HOURS_CLOSED',
     value: '16:00',
     name: 'Horario de cierre',
     tags: ['market', 'hours'],
     inUse: true,
     lastUsedAt: null,
-    updatedBy: null,
     createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
     updatedAt: new Date(Date.now() - 86400000).toISOString(),
   },
   {
-    _id: 'config-5',
     key: 'MARKET_PROVIDER',
     value: 'mock',
     effectiveValue: 'mock',
@@ -301,12 +292,10 @@ export const STUB_ADMIN_CONFIGS = [
     tags: ['market', 'provider'],
     inUse: true,
     lastUsedAt: null,
-    updatedBy: null,
     createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
     updatedAt: new Date(Date.now() - 86400000).toISOString(),
   },
   {
-    _id: 'config-6',
     key: 'SIMULATION_STRATEGY',
     value: 'flat',
     effectiveValue: 'flat',
@@ -315,7 +304,6 @@ export const STUB_ADMIN_CONFIGS = [
     tags: ['simulation'],
     inUse: true,
     lastUsedAt: null,
-    updatedBy: null,
     createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
     updatedAt: new Date(Date.now() - 86400000).toISOString(),
   },
@@ -337,6 +325,28 @@ export const STUB_ADMIN_SNAPSHOTS = [
     updatedAt: new Date(Date.now() - 86400000 * 7).toISOString(),
   },
 ];
+
+export const STUB_ADMIN_CONFIG_HISTORY: Array<{
+  _id: string;
+  key: string;
+  value: string | number | boolean;
+  name?: string;
+  tags?: string[];
+  inUse: boolean;
+  lastUsedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}> = STUB_ADMIN_CONFIGS.map((cfg, i) => ({
+  _id: `hist-${i + 1}`,
+  key: cfg.key,
+  value: cfg.value,
+  name: cfg.name,
+  tags: cfg.tags,
+  inUse: cfg.inUse,
+  lastUsedAt: cfg.lastUsedAt,
+  createdAt: cfg.createdAt,
+  updatedAt: cfg.updatedAt,
+}));
 
 export function buildStubHistory(symbol: string, limit = 24): PricePoint[] {
   const baseBySymbol: Record<string, number> = {
