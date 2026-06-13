@@ -121,7 +121,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true, onS
         });
         if (calculatedQty < 1) {
           setFeedbackMessage(
-            'El monto ingresado no es suficiente para comprar al menos 1 accion.',
+            `El monto ingresado no es suficiente para ${selectedSide === 'BUY' ? 'comprar' : 'vender'} al menos 1 accion.`,
           );
           return;
         }
@@ -317,7 +317,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true, onS
         </label>
       ) : (
         <label>
-          Monto a invertir (CLP)
+          {selectedSide === 'BUY' ? 'Monto a invertir (CLP)' : 'Monto a recibir (CLP)'}
           <input
             className={inputBase}
             disabled={demoMode}
