@@ -57,21 +57,10 @@ export function AdminConfigPage() {
                   <tr key={cfg.key} className="border-b border-[var(--main-page-border)] transition-colors">
                     <td className="p-[0.85rem_0.75rem] font-mono text-[0.88rem] font-semibold text-text">
                       {cfg.key}
-                      {cfg.appliesOn === 'restart' ? (
-                        <span className="ml-2 inline-flex items-center rounded-full bg-amber-500/15 px-2 py-0.5 text-[0.7rem] font-medium text-amber-600">
-                          {admin.config.restartWarning}
-                        </span>
-                      ) : null}
                     </td>
                     <td className="p-[0.85rem_0.75rem] text-text">{cfg.name ?? '—'}</td>
                     <td className="p-[0.85rem_0.75rem] font-mono text-[0.88rem] text-text">
-                      {cfg.appliesOn === 'restart' ? (
-                        <span title={`${admin.config.fields.effectiveValue}: ${String(cfg.effectiveValue)}`}>
-                          {String(cfg.effectiveValue ?? cfg.value)}
-                        </span>
-                      ) : (
-                        String(cfg.value)
-                      )}
+                      {String(cfg.value)}
                     </td>
                     <td className="p-[0.85rem_0.75rem]">
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[0.78rem] font-medium ${cfg.inUse ? 'bg-[var(--main-page-accent-soft)] text-[var(--main-page-accent-strong)]' : 'bg-[var(--main-page-surface-muted)] text-[var(--main-page-text-muted)]'}`}>

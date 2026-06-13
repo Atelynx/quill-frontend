@@ -383,7 +383,6 @@ export const admin = {
     edit: 'Editar configuración',
     delete: 'Eliminar configuración',
     deleteConfirm: 'Esta acción eliminará permanentemente esta configuración y todo su historial.',
-    restartWarning: 'Requiere reinicio del servidor',
     history: 'Historial de cambios',
     fields: {
       key: 'Clave',
@@ -394,8 +393,6 @@ export const admin = {
       lastUsed: 'Último uso',
       status: 'Estado',
       actions: 'Acciones',
-      effectiveValue: 'Valor efectivo',
-      appliesOn: 'Aplica en',
     },
     tags: {
       active: 'Activa',
