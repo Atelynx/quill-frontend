@@ -9,6 +9,8 @@ export const AdminConfigSchema = z.object({
   inUse: z.boolean(),
   lastUsedAt: z.string().datetime().nullable().optional(),
   updatedBy: z.string().nullable().optional(),
+  appliesOn: z.enum(['restart']).optional(),
+  effectiveValue: z.union([z.string(), z.number(), z.boolean()]).optional(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 });
