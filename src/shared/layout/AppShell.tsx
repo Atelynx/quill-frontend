@@ -54,7 +54,12 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
 
         <div className={`${surface.inverseCard} grid gap-[0.2rem] p-4 text-white`}>
           <span className={sidebarLabel}>{appShell.account}</span>
-          <strong className="block">{user?.fullName}</strong>
+          <strong className="block">
+            {user?.fullName}
+            {user?.role === 'admin' ? (
+              <span className="ml-2 inline-flex items-center rounded-full bg-white/20 px-2 py-0.5 text-[0.7rem] font-medium text-white">Admin</span>
+            ) : null}
+          </strong>
           <small className="block text-[var(--main-page-inverse-text-soft)]">{user?.email}</small>
         </div>
 

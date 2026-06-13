@@ -3,8 +3,9 @@ import { admin } from '../../../shared/content/strings';
 import { button } from '../../../shared/design-system/surfaces';
 import { fieldLabel } from '../../../shared/design-system/typography';
 import { fieldGroup } from '../../../shared/design-system/layout';
-import { inputBase } from '../../../shared/design-system/forms';
+import { inputBase, successMessage, errorMessage } from '../../../shared/design-system/forms';
 import { useCreateAdminConfig } from '../../../shared/api/hooks';
+import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
 
 interface ConfigCreateFormProps {
   onClose: () => void;
@@ -15,6 +16,7 @@ export function ConfigCreateForm({ onClose }: ConfigCreateFormProps) {
   const [value, setValue] = useState('');
   const [name, setName] = useState('');
   const [tags, setTags] = useState('');
+  const [message, setMessage] = useState<{ text: string; isError: boolean } | null>(null);
   const createMutation = useCreateAdminConfig();
 
   useEffect(() => {
@@ -27,13 +29,20 @@ export function ConfigCreateForm({ onClose }: ConfigCreateFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await createMutation.mutateAsync({
-      key,
-      value: isNaN(Number(value)) ? value : Number(value),
-      name: name || undefined,
-      tags: tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : undefined,
-    });
-    onClose();
+    setMessage(null);
+
+    try {
+      await createMutation.mutateAsync({
+        key,
+        value: isNaN(Number(value)) ? value : Number(value),
+        name: name || undefined,
+        tags: tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : undefined,
+      });
+      setMessage({ text: 'Configuración creada correctamente.', isError: false });
+      setTimeout(onClose, 1200);
+    } catch (error) {
+      setMessage({ text: getApiErrorMessage(error, 'Error al crear la configuración.'), isError: true });
+    }
   };
 
   return (
@@ -85,6 +94,10 @@ export function ConfigCreateForm({ onClose }: ConfigCreateFormProps) {
               onChange={(e) => setTags(e.target.value)}
             />
           </label>
+
+          {message ? (
+            <p className={message.isError ? errorMessage : successMessage}>{message.text}</p>
+          ) : null}
 
           <div className="flex justify-end gap-3">
             <button type="button" className={`${button.base} ${button.secondary}`} onClick={onClose}>
