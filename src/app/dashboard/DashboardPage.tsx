@@ -336,6 +336,7 @@ export function DashboardPage() {
             rate={rate}
             selectedSymbol={activeSymbol}
             marketOpen={marketStatusQuery.data?.open ?? true}
+            onSymbolChange={setSelectedSymbol}
           />
         </SectionCard>
       </div>

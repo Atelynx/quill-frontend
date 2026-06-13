@@ -28,9 +28,10 @@ interface OrderFormProps {
   rate: number;
   selectedSymbol: string;
   marketOpen?: boolean;
+  onSymbolChange?: (symbol: string) => void;
 }
 
-export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: OrderFormProps) {
+export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true, onSymbolChange }: OrderFormProps) {
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const [buyMode, setBuyMode] = useState<'shares' | 'amount'>('shares');
   const [investAmount, setInvestAmount] = useState<string>('');
@@ -64,6 +65,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
     }
   }, [currentQuote, form]);
 
+  const { onChange: formSymbolOnChange, ...symbolRest } = form.register('symbol');
   const { onChange: limitPriceOnChange, ...limitPriceRest } = form.register('limitPrice', { valueAsNumber: true });
   const priceCurrency = currentQuote ? resolveCurrency(currentQuote.currency) : 'CLP';
   const secondaryCurrency = priceCurrency === 'CLP' ? 'USD' : 'CLP';
@@ -173,7 +175,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
     const totalCost = watchedQuantity * price;
     return (
       <p className={hintClass}>
-        Costo total estimado: <AnimatedCurrency value={totalCost} sourceCurrency={priceCurrency} rate={rate} /> (<AnimatedCurrency value={totalCost} currency={secondaryCurrency} sourceCurrency={priceCurrency} rate={rate} />)
+        {selectedSide === 'BUY' ? 'Costo total estimado' : 'Ingreso total estimado'}: <AnimatedCurrency value={totalCost} sourceCurrency={priceCurrency} rate={rate} /> (<AnimatedCurrency value={totalCost} currency={secondaryCurrency} sourceCurrency={priceCurrency} rate={rate} />)
         <br />
         <small>
           ({watchedQuantity} acciones &times; <AnimatedCurrency value={price} currency={priceCurrency} sourceCurrency={priceCurrency} rate={rate} /> c/u)
@@ -203,7 +205,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
       return (
         <p className={hintClass} style={{ color: 'var(--main-page-danger)' }}>
           Monto insuficiente. Debe ser al menos{' '}
-          <AnimatedCurrency value={price} sourceCurrency={priceCurrency} rate={rate} /> para comprar 1 accion.
+          <AnimatedCurrency value={price} sourceCurrency={priceCurrency} rate={rate} /> para {selectedSide === 'BUY' ? 'comprar' : 'vender'} 1 accion.
         </p>
       );
     }
@@ -211,7 +213,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
     const totalCost = calculatedQty * price;
     return (
       <p className={hintClass}>
-        &asymp; {calculatedQty} acciones &middot; Costo estimado:{' '}
+        &asymp; {calculatedQty} acciones &middot; {selectedSide === 'BUY' ? 'Costo estimado' : 'Ingreso estimado'}:{' '}
         <AnimatedCurrency value={totalCost} sourceCurrency={priceCurrency} rate={rate} /> (<AnimatedCurrency value={totalCost} currency={secondaryCurrency} sourceCurrency={priceCurrency} rate={rate} />)
         <br />
         <small>
@@ -250,7 +252,15 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true }: O
 
       <label>
         Accion
-        <select className={inputBase} disabled={demoMode} {...form.register('symbol')}>
+        <select
+          className={inputBase}
+          disabled={demoMode}
+          onChange={(e) => {
+            formSymbolOnChange(e);
+            onSymbolChange?.(e.target.value);
+          }}
+          {...symbolRest}
+        >
           {quotes.map((quote) => (
             <option key={quote.symbol} value={quote.symbol}>
               {quote.symbol} · {quote.name}
