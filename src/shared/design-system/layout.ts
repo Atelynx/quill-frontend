@@ -28,7 +28,7 @@ export const heroPanelContent = 'max-w-[760px]'
 
 export const heroPanelMeta = 'flex flex-wrap content-start gap-[0.6rem]'
 
-export const heroChip = 'inline-flex items-center px-3 py-[0.45rem] rounded-full text-[0.9rem] bg-[var(--main-page-accent-soft)] text-[var(--main-page-accent-strong)] border border-[color-mix(in_srgb,var(--color-accent)_22%,_transparent)]'
+export const heroChip = 'inline-flex items-center px-3 py-[0.45rem] rounded-[var(--main-page-radius-md)] text-[0.9rem] bg-[var(--main-page-accent-soft)] text-[var(--main-page-accent-strong)] border border-[color-mix(in_srgb,var(--color-accent)_22%,_transparent)]'
 
 export const heroChipSecondary = 'bg-[var(--main-page-surface-muted)] text-[var(--main-page-text-soft)] border-[var(--main-page-border)]'
 

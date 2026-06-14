@@ -32,7 +32,7 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
 
   return (
     <div className="grid min-h-screen grid-cols-[minmax(240px,280px)_1fr] max-[1180px]:grid-cols-1">
-      <aside className={`${gradient.sidebar} flex flex-col gap-4 overflow-y-auto p-6 text-white max-[1180px]:order-2 max-[720px]:fixed max-[720px]:inset-y-0 max-[720px]:left-0 max-[720px]:z-50 max-[720px]:w-[280px] max-[720px]:p-4 max-[720px]:shadow-2xl max-[720px]:transition-transform max-[720px]:duration-300 ${sidebarOpen ? 'max-[720px]:translate-x-0' : 'max-[720px]:-translate-x-full'}`}>
+      <aside className={`${gradient.sidebar} sticky top-0 flex h-screen flex-col gap-4 overflow-y-auto p-6 text-white max-[1180px]:static max-[1180px]:h-auto max-[1180px]:order-2 max-[720px]:fixed max-[720px]:inset-y-0 max-[720px]:left-0 max-[720px]:z-50 max-[720px]:w-[280px] max-[720px]:p-4 max-[720px]:shadow-2xl max-[720px]:transition-transform max-[720px]:duration-300 ${sidebarOpen ? 'max-[720px]:translate-x-0' : 'max-[720px]:-translate-x-full'}`}>
         <button
           type="button"
           onClick={closeSidebar}

@@ -16,13 +16,29 @@ import {
   useRemoveFromWatchlistMutation,
 } from "../../shared/api/hooks";
 import { useAuth } from "../auth/hooks/use-auth";
-import type { OrderRecord, PricePoint, StockQuote, TradeRecord } from "../../shared/api/validators";
+import type {
+  OrderRecord,
+  PricePoint,
+  StockQuote,
+  TradeRecord,
+} from "../../shared/api/validators";
 import { SectionCard } from "../../shared/components/SectionCard";
 import { AppShell } from "../../shared/layout/AppShell";
 import { gradient } from "../../shared/design-system/surfaces";
-import { loadingScreen, heroPanelContent, heroPanelMeta, heroChip, heroChipSecondary, summaryGrid, dashboardGridWide, dashboardGridBalanced, guideList } from "../../shared/design-system/layout";
+import {
+  loadingScreen,
+  heroPanelContent,
+  heroPanelMeta,
+  heroChip,
+  heroChipSecondary,
+  summaryGrid,
+  dashboardGridWide,
+  dashboardGridBalanced,
+  guideList,
+} from "../../shared/design-system/layout";
 import { eyebrow } from "../../shared/design-system/typography";
 import { AnimatedCurrency } from "../../shared/components/AnimatedCurrency";
+import { formatCurrency } from "../../shared/utils/format";
 import { MarketChart } from "./components/MarketChart";
 import { MarketPulseList } from "./components/MarketPulseList";
 import { MarketTable } from "./components/MarketTable";
@@ -45,10 +61,12 @@ interface MarketPriceUpdate {
 function isMarketPriceUpdate(value: unknown): value is MarketPriceUpdate {
   if (typeof value !== "object" || value === null) return false;
 
-  return "symbol" in value
-    && "price" in value
-    && typeof value.symbol === "string"
-    && typeof value.price === "number";
+  return (
+    "symbol" in value &&
+    "price" in value &&
+    typeof value.symbol === "string" &&
+    typeof value.price === "number"
+  );
 }
 
 export function DashboardPage() {
@@ -84,8 +102,8 @@ export function DashboardPage() {
   const activeSymbol = selectedSymbol
     ? quotes.find((q) => q.symbol === selectedSymbol)
       ? selectedSymbol
-      : (quotes[0]?.symbol ?? '')
-    : '';
+      : (quotes[0]?.symbol ?? "")
+    : "";
 
   const activeSymbolRef = useRef(activeSymbol);
 
@@ -170,7 +188,9 @@ export function DashboardPage() {
     });
 
     socket.on("connect_error", () => {
-      console.error("[ForexRate] WebSocket connection error — using static rate");
+      console.error(
+        "[ForexRate] WebSocket connection error — using static rate",
+      );
     });
 
     return () => {
@@ -179,7 +199,7 @@ export function DashboardPage() {
   }, [handleForexUpdate, queryClient, quoteSymbols, token]);
 
   const portfolio = portfolioQuery.data as PortfolioSummary;
-  const openOrders = ordersQuery.data as OrderRecord[] ?? [];
+  const openOrders = (ordersQuery.data as OrderRecord[]) ?? [];
   const recentTrades: TradeRecord[] = tradesQuery.data ?? [];
   const selectedQuote = quotes.find((quote) => quote.symbol === activeSymbol);
 
@@ -247,7 +267,9 @@ export function DashboardPage() {
       const result = await removeWatchlistMutation.mutateAsync(symbol);
       updateUser({ watchlist: result.watchlist });
     } else {
-      const result = await addWatchlistMutation.mutateAsync({ symbols: [symbol] });
+      const result = await addWatchlistMutation.mutateAsync({
+        symbols: [symbol],
+      });
       updateUser({ watchlist: result.watchlist });
     }
   };
@@ -266,7 +288,9 @@ export function DashboardPage() {
       title="Panel principal"
       subtitle="Lee el mercado, registra ordenes y sigue tu aprendizaje con una vista equilibrada y clara."
     >
-      <section className={`${gradient.heroPanel} flex justify-between gap-4 rounded-[var(--main-page-radius-xl)] border border-[var(--main-page-border)] p-[1.3rem] shadow-[var(--main-page-shadow)] backdrop-blur-xl max-[820px]:flex-col max-[820px]:items-stretch`}>
+      <section
+        className={`${gradient.heroPanel} flex justify-between gap-4 rounded-[var(--main-page-radius-xl)] border border-[var(--main-page-border)] p-[1.3rem] shadow-[var(--main-page-shadow)] backdrop-blur-xl max-[820px]:flex-col max-[820px]:items-stretch`}
+      >
         <div className={heroPanelContent}>
           <p className={eyebrow}>Quill en tiempo real</p>
           <h2 className="m-0">
@@ -282,9 +306,9 @@ export function DashboardPage() {
         </div>
         <div className={heroPanelMeta}>
           <MarketStatusBadge status={marketStatusQuery.data} />
-          <span className={heroChip}>Marca principal: Quill</span>
-          <span className={`${heroChip} ${heroChipSecondary}`}>
-            Equipo desarrollador: Atelynx
+          <span className={heroChip}>
+            Moneda de cambio (USD): {formatCurrency(rate, { currency: "CLP" })}{" "}
+            CLP{" "}
           </span>
         </div>
       </section>
@@ -311,20 +335,50 @@ export function DashboardPage() {
 
       <div className={dashboardGridWide}>
         <SectionCard
-          title={activeSymbol ? `Mercado activo | ${activeSymbol}` : 'Mercado activo'}
-          description={
-            selectedQuote
-              ? <>Precio actual <AnimatedCurrency value={selectedQuote.close} currency={currency} sourceCurrency={selectedQuote.currency} rate={rate} />. Selecciona otra accion en la tabla para cambiar la vista.</>
-              : "Selecciona una accion para revisar su evolucion."
+          title={
+            activeSymbol ? `Mercado activo | ${activeSymbol}` : "Mercado activo"
           }
+          description={
+            selectedQuote ? (
+              <>
+                Precio actual{" "}
+                <AnimatedCurrency
+                  value={selectedQuote.close}
+                  currency={currency}
+                  sourceCurrency={selectedQuote.currency}
+                  rate={rate}
+                />
+                . Selecciona otra accion en la tabla para cambiar la vista.
+              </>
+            ) : (
+              "Selecciona una accion para revisar su evolucion."
+            )
+          }
+          className="flex flex-col"
         >
-          <MarketChart
-            currency={currency}
-            data={historyQuery.data as PricePoint[] ?? []}
-            rate={rate}
-            sourceCurrency={selectedQuote?.currency ?? 'USD'}
-            symbol={activeSymbol}
-          />
+          {activeSymbol ? (
+            <div className="flex min-h-0 flex-1 flex-col">
+              <MarketChart
+                currency={currency}
+                data={(historyQuery.data as PricePoint[]) ?? []}
+                rate={rate}
+                sourceCurrency={selectedQuote?.currency ?? "USD"}
+                symbol={activeSymbol}
+              />
+            </div>
+          ) : (
+            <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3">
+              <svg className="h-10 w-10 text-[var(--main-page-text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 3v18h18" />
+                <path d="M7 16l4-8 4 4 4-6" />
+              </svg>
+              <p className="m-0 max-w-[28ch] text-center text-[1.1rem] leading-relaxed text-[var(--main-page-text-soft)]">
+                Sin selección activa.
+                <br />
+                Elige una acción en la tabla para revisar su evolución.
+              </p>
+            </div>
+          )}
         </SectionCard>
 
         <SectionCard
@@ -375,7 +429,9 @@ export function DashboardPage() {
               </p>
             </article>
             <article className="rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-[0.95rem_1rem] shadow-[var(--main-page-shadow-soft)] [background:var(--gradient-pulse-card)]">
-              <strong className="mb-[0.3rem] block">Resultado no realizado</strong>
+              <strong className="mb-[0.3rem] block">
+                Resultado no realizado
+              </strong>
               <p>
                 Muestra la ganancia o perdida estimada de posiciones que aun no
                 has vendido.
@@ -401,11 +457,7 @@ export function DashboardPage() {
           title="Ordenes abiertas"
           description="Quedaran aqui mientras esperan que el precio cumpla tu condicion."
         >
-          <OrdersTable
-            currency={currency}
-            orders={openOrders}
-            rate={rate}
-          />
+          <OrdersTable currency={currency} orders={openOrders} rate={rate} />
         </SectionCard>
 
         <SectionCard
@@ -420,6 +472,10 @@ export function DashboardPage() {
           />
         </SectionCard>
       </div>
+      <span className={heroChip}>Marca principal: Quill</span>
+      <span className={`${heroChip} ${heroChipSecondary}`}>
+        Equipo desarrollador: Atelynx
+      </span>
     </AppShell>
   );
 }

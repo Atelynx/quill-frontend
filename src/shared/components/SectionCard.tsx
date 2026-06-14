@@ -5,11 +5,12 @@ interface SectionCardProps extends PropsWithChildren {
   title: string;
   description?: ReactNode;
   actions?: ReactNode;
+  className?: string;
 }
 
-export function SectionCard({ title, description, actions, children }: SectionCardProps) {
+export function SectionCard({ title, description, actions, children, className }: SectionCardProps) {
   return (
-    <section className={`${surface.xl} ${gradient.card} p-5 max-[720px]:p-4`}>
+    <section className={`${surface.xl} ${gradient.card} p-5 max-[720px]:p-4 ${className ?? ''}`}>
       <div className="mb-4 flex items-start justify-between gap-4 max-[720px]:flex-col">
         <div>
           <h3 className="m-0 text-text">{title}</h3>

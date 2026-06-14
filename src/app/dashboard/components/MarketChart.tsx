@@ -37,8 +37,8 @@ export function MarketChart({ data, symbol, currency, sourceCurrency, rate }: Ma
     'rgba(16, 35, 58, 1)';
 
   return (
-    <div className="h-[300px] w-full rounded-[calc(var(--main-page-radius-md)-2px)] p-[0.35rem_0.25rem_0_0] [background:var(--gradient-chart)] max-[720px]:h-[220px]">
-      <ResponsiveContainer height={280} width="100%">
+    <div className="h-full w-full rounded-[calc(var(--main-page-radius-md)-2px)] p-[0.35rem_0.25rem_0_0] [background:var(--gradient-chart)]">
+      <ResponsiveContainer height="100%" width="100%">
         <LineChart data={data}>
           <CartesianGrid stroke={chartGrid} vertical={false} />
           <XAxis
