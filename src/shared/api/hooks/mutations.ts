@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { authService, ordersService, usersService, adminConfigService } from '../api-service';
-import type { UpdateConfigInput, CreateSnapshotInput } from '../validators';
+import { authService, ordersService, usersService, adminConfigService, adminStockService } from '../api-service';
+import type { UpdateConfigInput, CreateSnapshotInput, CreateStockInput, UpdateStockPriceInput } from '../validators';
 import { logError } from '../error-logging';
 import { showToast } from '../../components/Toast';
 
@@ -241,6 +241,62 @@ export function useRestoreSnapshot() {
     },
     onError: (error) => {
       logError('[Mutation] Snapshot restore failed:', error);
+    },
+  });
+}
+
+/**
+ * Hook for creating a new admin stock
+ */
+export function useCreateAdminStock() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateStockInput) => adminStockService.create(data),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'stocks'] });
+      showToast('Acción creada correctamente.');
+    },
+    onError: (error) => {
+      logError('[Mutation] Admin stock create failed:', error);
+    },
+  });
+}
+
+/**
+ * Hook for updating an admin stock price
+ */
+export function useUpdateAdminStockPrice() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ symbol, data }: { symbol: string; data: UpdateStockPriceInput }) =>
+      adminStockService.updatePrice(symbol, data),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'stocks'] });
+      void queryClient.invalidateQueries({ queryKey: ['market', 'stocks'] });
+      showToast('Precio actualizado. La próxima actualización del proveedor sobrescribirá este valor.');
+    },
+    onError: (error) => {
+      logError('[Mutation] Admin stock price update failed:', error);
+    },
+  });
+}
+
+/**
+ * Hook for deleting an admin stock
+ */
+export function useDeleteAdminStock() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (symbol: string) => adminStockService.remove(symbol),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'stocks'] });
+      showToast('Acción eliminada correctamente.');
+    },
+    onError: (error) => {
+      logError('[Mutation] Admin stock delete failed:', error);
     },
   });
 }

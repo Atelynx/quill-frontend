@@ -10,3 +10,4 @@ export * from './orders';
 export * from './trades';
 export * from './currency';
 export * from './admin';
+export * from './stocks';

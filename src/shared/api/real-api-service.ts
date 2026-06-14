@@ -29,6 +29,10 @@ import {
   type UpdateConfigInput,
   AdminSnapshotSchema,
   type CreateSnapshotInput,
+  AdminStockSchema,
+  AdminStockListResponseSchema,
+  type CreateStockInput,
+  type UpdateStockPriceInput,
 } from './validators';
 
 export const authService = {
@@ -371,6 +375,48 @@ export const adminConfigService = {
       return AdminSnapshotSchema.parse(response.data);
     } catch (error) {
       logError(`[API] Admin snapshot restore failed: ${id}`, error);
+      throw error;
+    }
+  },
+};
+
+export const adminStockService = {
+  list: async (params?: { search?: string; source?: string; page?: number; limit?: number }) => {
+    try {
+      const response = await apiClient.get('/admin/stocks', { params });
+      return AdminStockListResponseSchema.parse(response.data);
+    } catch (error) {
+      logError('[API] Admin stocks fetch failed:', error);
+      throw error;
+    }
+  },
+
+  create: async (data: CreateStockInput) => {
+    try {
+      const response = await apiClient.post('/admin/stocks', data);
+      return AdminStockSchema.parse(response.data);
+    } catch (error) {
+      logError('[API] Admin stock create failed:', error);
+      throw error;
+    }
+  },
+
+  updatePrice: async (symbol: string, data: UpdateStockPriceInput) => {
+    try {
+      const response = await apiClient.patch(`/admin/stocks/${symbol}/price`, data);
+      return AdminStockSchema.parse(response.data);
+    } catch (error) {
+      logError(`[API] Admin stock price update failed: ${symbol}`, error);
+      throw error;
+    }
+  },
+
+  remove: async (symbol: string) => {
+    try {
+      const response = await apiClient.delete(`/admin/stocks/${symbol}`);
+      return MessageResponseSchema.parse(response.data);
+    } catch (error) {
+      logError(`[API] Admin stock delete failed: ${symbol}`, error);
       throw error;
     }
   },

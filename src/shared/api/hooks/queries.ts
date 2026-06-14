@@ -5,7 +5,7 @@
 
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { portfolioService, marketService, ordersService, tradesService, usersService, currencyService, adminConfigService } from '../api-service';
+import { portfolioService, marketService, ordersService, tradesService, usersService, currencyService, adminConfigService, adminStockService } from '../api-service';
 import { logError } from '../error-logging';
 
 /**
@@ -356,6 +356,26 @@ export function useAdminSnapshot(id: string) {
       logError(`[Query] Admin snapshot fetch failed: ${id}`, query.error);
     }
   }, [query.error, id]);
+
+  return query;
+}
+
+/**
+ * Hook to fetch admin stocks with optional search/filter/pagination
+ */
+export function useAdminStocks(params?: { search?: string; source?: string; page?: number; limit?: number }) {
+  const query = useQuery({
+    queryKey: ['admin', 'stocks', params],
+    queryFn: () => adminStockService.list(params),
+    staleTime: 10000,
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (query.error) {
+      logError('[Query] Admin stocks fetch failed:', query.error);
+    }
+  }, [query.error]);
 
   return query;
 }
