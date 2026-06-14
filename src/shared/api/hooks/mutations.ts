@@ -190,24 +190,6 @@ export function useCreateOrderMutation() {
 }
 
 /**
- * Hook for creating a new admin config
- */
-export function useCreateAdminConfig() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: adminConfigService.create,
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['admin', 'configs'] });
-      showToast('Configuración creada correctamente.');
-    },
-    onError: (error) => {
-      logError('[Mutation] Admin config create failed:', error);
-    },
-  });
-}
-
-/**
  * Hook for updating an admin config
  */
 export function useUpdateAdminConfig() {
@@ -222,24 +204,6 @@ export function useUpdateAdminConfig() {
     },
     onError: (error) => {
       logError('[Mutation] Admin config update failed:', error);
-    },
-  });
-}
-
-/**
- * Hook for deleting an admin config
- */
-export function useDeleteAdminConfig() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: adminConfigService.remove,
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['admin', 'configs'] });
-      showToast('Configuración eliminada correctamente.');
-    },
-    onError: (error) => {
-      logError('[Mutation] Admin config delete failed:', error);
     },
   });
 }

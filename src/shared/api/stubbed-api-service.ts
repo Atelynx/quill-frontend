@@ -24,7 +24,6 @@ import {
   CurrencyRateSchema,
   AdminConfigSchema,
   AdminConfigHistorySchema,
-  type CreateConfigInput,
   type UpdateConfigInput,
   AdminSnapshotSchema,
   type CreateSnapshotInput,
@@ -43,6 +42,7 @@ import {
   STUB_ADMIN_CONFIGS,
   STUB_ADMIN_SNAPSHOTS,
   buildStubHistory,
+  STUB_ADMIN_CONFIG_HISTORY,
 } from './stub-data';
 
 const NETWORK_LATENCY_MS = 250;
@@ -211,17 +211,17 @@ export const adminConfigService = {
     return AdminConfigHistorySchema.array().parse(STUB_ADMIN_CONFIG_HISTORY);
   },
 
-  create: async (data: CreateConfigInput) => {
-    await delay(NETWORK_LATENCY_MS);
-    const config = {
-      ...data,
-      inUse: true,
-      lastUsedAt: null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    return AdminConfigSchema.parse(config);
-  },
+  // create: async (data: CreateConfigInput) => {
+  //   await delay(NETWORK_LATENCY_MS);
+  //   const config = {
+  //     ...data,
+  //     inUse: true,
+  //     lastUsedAt: null,
+  //     createdAt: new Date().toISOString(),
+  //     updatedAt: new Date().toISOString(),
+  //   };
+  //   return AdminConfigSchema.parse(config);
+  // },
 
   update: async (_key: string, data: UpdateConfigInput) => {
     await delay(NETWORK_LATENCY_MS);
@@ -234,10 +234,10 @@ export const adminConfigService = {
     return AdminConfigSchema.parse(config);
   },
 
-  remove: async (_key: string) => {
-    await delay(NETWORK_LATENCY_MS);
-    return { message: `Configuración "${_key}" eliminada.` };
-  },
+  // remove: async (_key: string) => {
+  //   await delay(NETWORK_LATENCY_MS);
+  //   return { message: `Configuración "${_key}" eliminada.` };
+  // },
 
   getSnapshots: async () => {
     await delay(NETWORK_LATENCY_MS);
