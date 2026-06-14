@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
+import { logError } from '../../../shared/api/error-logging';
 import { useUpdateProfileMutation } from '../../../shared/api/hooks';
 import { useAuth } from '../../auth/hooks/use-auth';
 import { labels, settings } from '../../../shared/content/strings';
@@ -38,7 +39,7 @@ export function EditProfileForm({ defaultValues }: EditProfileFormProps) {
       const updatedProfile = await mutation.mutateAsync(values);
       updateUser(updatedProfile);
     } catch (error) {
-      console.error('[EditProfileForm] Update failed:', error);
+      logError('[EditProfileForm] Update failed:', error);
     }
   });
 

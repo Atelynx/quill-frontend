@@ -1,13 +1,17 @@
+import { convertCurrency } from './currency';
+import type { Currency } from './currency';
+
 export interface FormatCurrencyOptions {
-  currency?: 'CLP' | 'USD';
+  currency?: Currency;
+  sourceCurrency?: Currency;
   rate?: number;
 }
 
 export function formatCurrency(value: number, opts?: FormatCurrencyOptions) {
   const currency = opts?.currency ?? 'CLP';
+  const sourceCurrency = opts?.sourceCurrency ?? 'CLP';
   const rate = opts?.rate ?? 950;
-
-  const displayValue = currency === 'USD' ? value / rate : value;
+  const displayValue = convertCurrency(value, sourceCurrency, currency, rate);
 
   const formattedNumber = new Intl.NumberFormat('es-CL', {
     minimumFractionDigits: currency === 'CLP' ? 0 : 2,

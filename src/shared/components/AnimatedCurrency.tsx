@@ -1,8 +1,11 @@
 import NumberFlow from '@number-flow/react'
+import { convertCurrency } from '../utils/currency'
+import type { Currency } from '../utils/currency'
 
 interface AnimatedCurrencyProps {
   value: number
-  currency?: 'CLP' | 'USD'
+  currency?: Currency
+  sourceCurrency?: Currency
   rate?: number
   className?: string
 }
@@ -10,10 +13,11 @@ interface AnimatedCurrencyProps {
 export function AnimatedCurrency({
   value,
   currency = 'CLP',
+  sourceCurrency = 'CLP',
   rate = 950,
   className,
 }: AnimatedCurrencyProps) {
-  const displayValue = currency === 'USD' ? value / rate : value
+  const displayValue = convertCurrency(value, sourceCurrency, currency, rate)
 
   const isCLP = currency === 'CLP'
 

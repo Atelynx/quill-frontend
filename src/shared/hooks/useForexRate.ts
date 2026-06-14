@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setForexRate } from '@/store/slices/currencySlice';
 import { useForexRates } from '../api/hooks';
@@ -15,20 +15,20 @@ export function useForexDispatch() {
   const dispatch = useAppDispatch();
   const { data: rates } = useForexRates();
 
-  const handleForexUpdate = (update: { symbol: string; close: number }) => {
+  const handleForexUpdate = useCallback((update: { symbol: string; close: number }) => {
     if (update.symbol === 'USDCLP' && update.close > 0) {
       dispatch(setForexRate(update.close));
     }
-  };
+  }, [dispatch]);
 
-  const fallbackRate = () => {
+  const fallbackRate = useCallback(() => {
     const wsRate = STATIC_USDCLP_RATE;
     console.error(
       '[ForexRate] WebSocket fallback — using static rate',
       wsRate,
     );
     dispatch(setForexRate(wsRate));
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     if (rates && rates.length > 0) {

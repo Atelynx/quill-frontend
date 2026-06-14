@@ -51,7 +51,7 @@ export function AuthPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard', { replace: true });
+      void navigate('/dashboard', { replace: true });
     }
   }, [isAuthenticated, navigate]);
 
@@ -75,7 +75,7 @@ export function AuthPage() {
     try {
       setErrorMessage(null);
       await login(values);
-      navigate('/dashboard', { replace: true });
+      void navigate('/dashboard', { replace: true });
     } catch (error) {
       setErrorMessage(
         getApiErrorMessage(

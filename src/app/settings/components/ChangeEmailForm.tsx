@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
+import { logError } from '../../../shared/api/error-logging';
 import { useChangeEmailMutation } from '../../../shared/api/hooks';
 import { useAuth } from '../../auth/hooks/use-auth';
 import { labels, settings } from '../../../shared/content/strings';
@@ -37,10 +38,10 @@ export function ChangeEmailForm() {
       setSuccessMessage(settings.changeEmail.success);
       setTimeout(() => {
         logout();
-        navigate('/auth', { replace: true });
+        void navigate('/auth', { replace: true });
       }, 1500);
     } catch (error) {
-      console.error('[ChangeEmailForm] Email change failed:', error);
+      logError('[ChangeEmailForm] Email change failed:', error);
     }
   });
 

@@ -2,6 +2,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 import type { PropsWithChildren } from 'react';
@@ -16,8 +17,7 @@ import type {
   RegisterInput,
   UserProfile,
 } from '../../../shared/api/validators';
-
-const STORAGE_KEY = 'quill_auth';
+import { AUTH_STORAGE_KEY, UNAUTHORIZED_EVENT } from '../../../shared/api/auth-session';
 
 interface AuthContextValue {
   user: UserProfile | null;
@@ -37,7 +37,7 @@ interface StoredAuthState {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 function readStoredState(): StoredAuthState | null {
-  const raw = sessionStorage.getItem(STORAGE_KEY);
+  const raw = sessionStorage.getItem(AUTH_STORAGE_KEY);
 
   if (!raw) {
     return null;
@@ -46,7 +46,7 @@ function readStoredState(): StoredAuthState | null {
   try {
     return JSON.parse(raw) as StoredAuthState;
   } catch {
-    sessionStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(AUTH_STORAGE_KEY);
     return null;
   }
 }
@@ -56,13 +56,19 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const loginMutation = useLoginMutation();
   const registerMutation = useRegisterMutation();
 
+  useEffect(() => {
+    const handleUnauthorized = () => setAuthState(null);
+    window.addEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
+    return () => window.removeEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
+  }, []);
+
   const persistSession = (session: AuthResponse) => {
     const nextState = {
       token: session.accessToken,
       user: session.user,
     };
 
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+    sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(nextState));
     setAuthState(nextState);
   };
 
@@ -76,7 +82,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   const logout = () => {
-    sessionStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(AUTH_STORAGE_KEY);
     setAuthState(null);
   };
 
@@ -89,7 +95,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         user: { ...current.user, ...updates },
       };
 
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+      sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(nextState));
       return nextState;
     });
   };

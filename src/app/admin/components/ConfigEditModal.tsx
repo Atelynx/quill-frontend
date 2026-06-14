@@ -31,7 +31,9 @@ export function ConfigEditModal({ config, onClose }: ConfigEditModalProps) {
     await updateMutation.mutateAsync({
       key: config.key,
       data: {
-        value: isNaN(Number(value)) ? value : Number(value),
+        value: typeof config.value === 'number' && /^-?\d+(\.\d+)?$/.test(value)
+          ? Number(value)
+          : value,
         name: name || undefined,
         tags: tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : undefined,
       },

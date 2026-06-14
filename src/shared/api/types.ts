@@ -36,7 +36,7 @@ export interface StockQuote {
   _id?: string;
   symbol: string;
   name: string;
-  currency: string;
+  currency: 'CLP' | 'USD';
   close: number;
   open?: number;
   high?: number;

@@ -4,6 +4,7 @@ import { useAuth } from '../auth/hooks/use-auth';
 import { auth } from '../../shared/content/strings';
 import { loadingScreen } from '../../shared/design-system/layout';
 import { AdminLayout } from '../admin/layout/AdminLayout';
+import { useProfile } from '../../shared/api/hooks';
 const AuthPage = lazy(() =>
   import('../auth/pages/AuthPage').then((module) => ({ default: module.AuthPage })),
 );
@@ -37,18 +38,26 @@ function ProtectedRoute({ element }: { element: React.ReactNode }) {
   return element;
 }
 
-function AdminRoute({ element }: { element: React.ReactNode }) {
-  const { isAuthenticated, user } = useAuth();
+function AdminAuthorization({ element }: { element: React.ReactNode }) {
+  const profileQuery = useProfile();
 
-  if (!isAuthenticated) {
-    return <Navigate to="/auth" replace />;
+  if (profileQuery.isLoading) {
+    return <div className={loadingScreen}>{auth.loading}</div>;
   }
 
-  if (user?.role !== 'admin') {
+  if (profileQuery.data?.role !== 'admin') {
     return <Navigate to="/dashboard" replace />;
   }
 
   return element;
+}
+
+function AdminRoute({ element }: { element: React.ReactNode }) {
+  const { isAuthenticated } = useAuth();
+
+  return isAuthenticated
+    ? <AdminAuthorization element={element} />
+    : <Navigate to="/auth" replace />;
 }
 
 export function AppRouter() {

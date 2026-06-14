@@ -1,8 +1,9 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithProviders } from '../../../test/render';
 import * as stubMode from '../../../shared/api/stub-mode';
+import type { StockQuote } from '../../../shared/api/validators';
 import { OrderForm } from './OrderForm';
 
 const { postMock } = vi.hoisted(() => ({
@@ -15,7 +16,7 @@ vi.mock('../../../shared/api/http', () => ({
   },
 }));
 
-const quotes = [
+const quotes: StockQuote[] = [
   {
     symbol: 'AAPL',
     name: 'Apple',
@@ -38,6 +39,7 @@ const quotes = [
 describe('OrderForm', () => {
   beforeEach(() => {
     postMock.mockReset();
+    vi.spyOn(stubMode, 'isStubMode').mockReturnValue(false);
   });
 
   it('bloquea el envio cuando la cantidad o el precio limite son invalidos', async () => {
@@ -47,11 +49,13 @@ describe('OrderForm', () => {
       <OrderForm quotes={quotes} rate={950} selectedSymbol={quotes[0].symbol} />,
     );
 
-    await user.clear(screen.getByLabelText('Cantidad'));
-    await user.type(screen.getByLabelText('Cantidad'), '0');
-    await user.clear(screen.getByLabelText(/Precio limite/));
-    await user.type(screen.getByLabelText(/Precio limite/), '0');
-    await user.click(screen.getByRole('button', { name: 'Crear orden' }));
+    await act(async () => {
+      await user.clear(screen.getByLabelText('Cantidad'));
+      await user.type(screen.getByLabelText('Cantidad'), '0');
+      await user.clear(screen.getByLabelText(/Precio limite/));
+      await user.type(screen.getByLabelText(/Precio limite/), '0');
+      await user.click(screen.getByRole('button', { name: 'Crear orden' }));
+    });
 
     await waitFor(() => {
       expect(postMock).not.toHaveBeenCalled();
@@ -70,11 +74,13 @@ describe('OrderForm', () => {
       <OrderForm quotes={quotes} rate={950} selectedSymbol={quotes[0].symbol} />,
     );
 
-    await user.clear(screen.getByLabelText('Cantidad'));
-    await user.type(screen.getByLabelText('Cantidad'), '3');
-    await user.clear(screen.getByLabelText(/Precio limite/));
-    await user.type(screen.getByLabelText(/Precio limite/), '189.5');
-    await user.click(screen.getByRole('button', { name: 'Crear orden' }));
+    await act(async () => {
+      await user.clear(screen.getByLabelText('Cantidad'));
+      await user.type(screen.getByLabelText('Cantidad'), '3');
+      await user.clear(screen.getByLabelText(/Precio limite/));
+      await user.type(screen.getByLabelText(/Precio limite/), '189.5');
+      await user.click(screen.getByRole('button', { name: 'Crear orden' }));
+    });
 
     await waitFor(() => {
       expect(postMock).toHaveBeenCalledWith('/orders', {
@@ -102,11 +108,15 @@ describe('OrderForm', () => {
     expect(screen.getByLabelText('Cantidad')).toBeInTheDocument();
     expect(screen.queryByLabelText('Monto a invertir (CLP)')).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: 'Por monto' }));
+    await act(async () => {
+      await user.click(screen.getByRole('button', { name: 'Por monto' }));
+    });
     expect(screen.queryByLabelText('Cantidad')).not.toBeInTheDocument();
     expect(screen.getByLabelText('Monto a invertir (CLP)')).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: 'Por cantidad' }));
+    await act(async () => {
+      await user.click(screen.getByRole('button', { name: 'Por cantidad' }));
+    });
     expect(screen.getByLabelText('Cantidad')).toBeInTheDocument();
     expect(screen.queryByLabelText('Monto a invertir (CLP)')).not.toBeInTheDocument();
   });
@@ -118,10 +128,12 @@ describe('OrderForm', () => {
       <OrderForm quotes={quotes} rate={950} selectedSymbol={quotes[0].symbol} />,
     );
 
-    await user.click(screen.getByRole('button', { name: 'Por monto' }));
-    await user.clear(screen.getByLabelText(/Precio limite/));
-    await user.type(screen.getByLabelText(/Precio limite/), '1000');
-    await user.type(screen.getByLabelText('Monto a invertir (CLP)'), '500000');
+    await act(async () => {
+      await user.click(screen.getByRole('button', { name: 'Por monto' }));
+      await user.clear(screen.getByLabelText(/Precio limite/));
+      await user.type(screen.getByLabelText(/Precio limite/), '100');
+      await user.type(screen.getByLabelText('Monto a invertir (CLP)'), '500000');
+    });
 
     expect(await screen.findByText(/Costo estimado/i)).toBeInTheDocument();
   });
@@ -133,10 +145,12 @@ describe('OrderForm', () => {
       <OrderForm quotes={quotes} rate={950} selectedSymbol={quotes[0].symbol} />,
     );
 
-    await user.click(screen.getByRole('button', { name: 'Por monto' }));
-    await user.clear(screen.getByLabelText(/Precio limite/));
-    await user.type(screen.getByLabelText(/Precio limite/), '1000');
-    await user.type(screen.getByLabelText('Monto a invertir (CLP)'), '500');
+    await act(async () => {
+      await user.click(screen.getByRole('button', { name: 'Por monto' }));
+      await user.clear(screen.getByLabelText(/Precio limite/));
+      await user.type(screen.getByLabelText(/Precio limite/), '100');
+      await user.type(screen.getByLabelText('Monto a invertir (CLP)'), '500');
+    });
 
     expect(await screen.findByText(/Monto insuficiente/i)).toBeInTheDocument();
   });
@@ -149,19 +163,21 @@ describe('OrderForm', () => {
       <OrderForm quotes={quotes} rate={950} selectedSymbol={quotes[0].symbol} />,
     );
 
-    await user.click(screen.getByRole('button', { name: 'Por monto' }));
-    await user.clear(screen.getByLabelText(/Precio limite/));
-    await user.type(screen.getByLabelText(/Precio limite/), '1000');
-    await user.type(screen.getByLabelText('Monto a invertir (CLP)'), '500000');
-    await user.click(screen.getByRole('button', { name: 'Crear orden' }));
+    await act(async () => {
+      await user.click(screen.getByRole('button', { name: 'Por monto' }));
+      await user.clear(screen.getByLabelText(/Precio limite/));
+      await user.type(screen.getByLabelText(/Precio limite/), '100');
+      await user.type(screen.getByLabelText('Monto a invertir (CLP)'), '500000');
+      await user.click(screen.getByRole('button', { name: 'Crear orden' }));
+    });
 
     await waitFor(() => {
       expect(postMock).toHaveBeenCalledWith('/orders', {
         symbol: 'AAPL',
         side: 'BUY',
         type: 'LIMIT',
-        quantity: 500,
-        limitPrice: 1000,
+        quantity: 5,
+        limitPrice: 100,
       });
     });
   });
@@ -173,25 +189,27 @@ describe('OrderForm', () => {
       <OrderForm quotes={quotes} rate={950} selectedSymbol={quotes[0].symbol} />,
     );
 
-    await user.click(screen.getByRole('button', { name: 'Por monto' }));
-    await user.clear(screen.getByLabelText(/Precio limite/));
-    await user.type(screen.getByLabelText(/Precio limite/), '1000');
-    await user.type(screen.getByLabelText('Monto a invertir (CLP)'), '500');
-    await user.click(screen.getByRole('button', { name: 'Crear orden' }));
+    await act(async () => {
+      await user.click(screen.getByRole('button', { name: 'Por monto' }));
+      await user.clear(screen.getByLabelText(/Precio limite/));
+      await user.type(screen.getByLabelText(/Precio limite/), '1000');
+      await user.type(screen.getByLabelText('Monto a invertir (CLP)'), '500');
+      await user.click(screen.getByRole('button', { name: 'Crear orden' }));
+    });
 
     await waitFor(() => {
       expect(postMock).not.toHaveBeenCalled();
     });
   });
 
-  it('deshabilita el formulario en modo demo', async () => {
-    const stubModeSpy = vi.spyOn(stubMode, 'isStubMode').mockReturnValue(true);
+  it('deshabilita el formulario en modo demo', () => {
+    vi.spyOn(stubMode, 'isStubMode').mockReturnValue(true);
 
     renderWithProviders(
       <OrderForm quotes={quotes} rate={950} selectedSymbol={quotes[0].symbol} />,
     );
 
-    expect(screen.getByText(/modo demo/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/modo demo/i)).toHaveLength(2);
     expect(screen.getByRole('button', { name: 'Modo demo' })).toBeDisabled();
 
     expect(screen.getByLabelText('Accion')).toBeDisabled();
@@ -200,6 +218,5 @@ describe('OrderForm', () => {
 
     expect(postMock).not.toHaveBeenCalled();
 
-    stubModeSpy.mockRestore();
   });
 });

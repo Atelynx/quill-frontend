@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithProviders } from '../../../test/render';
@@ -37,9 +37,11 @@ describe('AuthPage', () => {
 
     renderWithProviders(<AuthPage />);
 
-    await user.type(screen.getByLabelText('Correo'), 'ana@quill.dev');
-    await user.type(getInputByName('password'), '123');
-    await user.click(screen.getByRole('button', { name: 'Entrar a Quill' }));
+    await act(async () => {
+      await user.type(screen.getByLabelText('Correo'), 'ana@quill.dev');
+      await user.type(getInputByName('password'), '123');
+      await user.click(screen.getByRole('button', { name: 'Entrar a Quill' }));
+    });
 
     expect(
       await screen.findByText(
@@ -54,15 +56,22 @@ describe('AuthPage', () => {
 
     renderWithProviders(<AuthPage />);
 
-    await user.click(screen.getByRole('button', { name: 'Crear cuenta' }));
-    await user.type(screen.getByLabelText('Nombre completo'), 'Ana Lopez');
-    await user.type(screen.getByLabelText('Correo'), 'ana@quill.dev');
-    await user.type(getInputByName('password'), 'Password123');
-    await user.type(
-      getInputByName('confirmPassword'),
-      'Password124',
-    );
-    await user.click(screen.getAllByRole('button', { name: 'Crear cuenta' })[1]);
+    await act(async () => {
+      await user.click(screen.getByRole('button', { name: 'Crear cuenta' }));
+    });
+
+    const fullNameInput = await screen.findByLabelText('Nombre completo');
+
+    await act(async () => {
+      await user.type(fullNameInput, 'Ana Lopez');
+      await user.type(screen.getByLabelText('Correo'), 'ana@quill.dev');
+      await user.type(getInputByName('password'), 'Password123');
+      await user.type(
+        getInputByName('confirmPassword'),
+        'Password124',
+      );
+      await user.click(screen.getAllByRole('button', { name: 'Crear cuenta' })[1]);
+    });
 
     expect(
       await screen.findByText('Las contraseñas deben coincidir.'),
@@ -75,7 +84,9 @@ describe('AuthPage', () => {
 
     renderWithProviders(<AuthPage />);
 
-    await user.click(screen.getByRole('button', { name: 'Crear cuenta' }));
+    await act(async () => {
+      await user.click(screen.getByRole('button', { name: 'Crear cuenta' }));
+    });
 
     const passwordInput = getInputByName('password');
     const confirmPasswordInput = getInputByName('confirmPassword');
@@ -86,8 +97,10 @@ describe('AuthPage', () => {
     expect(passwordInput).toHaveAttribute('type', 'password');
     expect(confirmPasswordInput).toHaveAttribute('type', 'password');
 
-    await user.click(toggleButtons[0]);
-    await user.click(toggleButtons[1]);
+    await act(async () => {
+      await user.click(toggleButtons[0]);
+      await user.click(toggleButtons[1]);
+    });
 
     expect(passwordInput).toHaveAttribute('type', 'text');
     expect(confirmPasswordInput).toHaveAttribute('type', 'text');

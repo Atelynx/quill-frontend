@@ -24,12 +24,12 @@ export function WatchlistPage() {
     (state) => state.currency,
   );
 
-  const watchlistSymbols = user?.watchlist ?? [];
+  const watchlistSymbols = user?.watchlist;
 
-  const availableStocks = useMemo(
-    () => (allStocks ?? []).filter((s: StockQuote) => !watchlistSymbols.includes(s.symbol)),
-    [allStocks, watchlistSymbols],
-  );
+  const availableStocks = useMemo(() => {
+    const symbols = watchlistSymbols ?? [];
+    return (allStocks ?? []).filter((stock: StockQuote) => !symbols.includes(stock.symbol));
+  }, [allStocks, watchlistSymbols]);
 
   if (watchlistLoading || marketLoading) {
     return (
@@ -87,7 +87,7 @@ export function WatchlistPage() {
                       {stock.name}
                     </td>
                     <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="Precio">
-                      <AnimatedCurrency value={stock.close} currency={currency} rate={rate} />
+                      <AnimatedCurrency value={stock.close} currency={currency} sourceCurrency={stock.currency} rate={rate} />
                     </td>
                     <td className={`p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] ${stock.dayChangePercentage >= 0 ? textPositive : textNegative}`} data-label="Variacion">
                       {formatPercentage(stock.dayChangePercentage)}
@@ -135,7 +135,7 @@ export function WatchlistPage() {
                       {stock.name}
                     </td>
                     <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="Precio">
-                      <AnimatedCurrency value={stock.close} currency={currency} rate={rate} />
+                      <AnimatedCurrency value={stock.close} currency={currency} sourceCurrency={stock.currency} rate={rate} />
                     </td>
                     <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="">
                       <Button

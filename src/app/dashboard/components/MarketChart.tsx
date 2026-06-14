@@ -14,10 +14,11 @@ interface MarketChartProps {
   data: PricePoint[];
   symbol: string;
   currency: 'CLP' | 'USD';
+  sourceCurrency: 'CLP' | 'USD';
   rate: number;
 }
 
-export function MarketChart({ data, symbol, currency, rate }: MarketChartProps) {
+export function MarketChart({ data, symbol, currency, sourceCurrency, rate }: MarketChartProps) {
   const styles = getComputedStyle(document.documentElement);
   const chartGrid =
     styles.getPropertyValue('--chart-grid').trim() || 'rgba(19, 35, 60, 0.08)';
@@ -49,7 +50,7 @@ export function MarketChart({ data, symbol, currency, rate }: MarketChartProps) 
                 hour: '2-digit',
                 day: '2-digit',
                 month: '2-digit',
-              }).format(new Date(value))
+              }).format(new Date(String(value)))
             }
             tickLine={false}
           />
@@ -57,9 +58,7 @@ export function MarketChart({ data, symbol, currency, rate }: MarketChartProps) 
             axisLine={false}
             tick={{ fill: chartAxis, fontSize: 12 }}
             tickFormatter={(value) =>
-              currency === 'USD'
-                ? `$${(value / rate).toFixed(2)}`
-                : `$${Math.round(value).toLocaleString('es-CL')}`
+              formatCurrency(Number(value), { currency, sourceCurrency, rate })
             }
             tickLine={false}
             width={80}
@@ -74,10 +73,10 @@ export function MarketChart({ data, symbol, currency, rate }: MarketChartProps) 
             }}
             cursor={{ stroke: chartGrid, strokeDasharray: '4 4' }}
             formatter={(value) =>
-              formatCurrency(Number(value ?? 0), { currency, rate })
+              formatCurrency(Number(value ?? 0), { currency, sourceCurrency, rate })
             }
             labelFormatter={(value) =>
-              `${symbol} · ${new Date(value).toLocaleString('es-CL')}`
+              `${symbol} · ${new Date(String(value)).toLocaleString('es-CL')}`
             }
             labelStyle={{
               color: tooltipText,

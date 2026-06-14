@@ -6,13 +6,28 @@ import { surface } from '../../../shared/design-system/surfaces';
 import '../../../shared/design-system/table.css';
 
 interface TradesTableProps {
-  trades: TradeRecord[];
+  trades?: TradeRecord[];
   currency: 'CLP' | 'USD';
+  hasError?: boolean;
   rate: number;
 }
 
-export function TradesTable({ trades, currency, rate }: TradesTableProps) {
-  if (!trades.length) {
+export function TradesTable({
+  trades = [],
+  currency,
+  hasError = false,
+  rate,
+}: TradesTableProps) {
+  if (hasError) {
+    return (
+      <EmptyState
+        description="No fue posible cargar las operaciones recientes. Intenta nuevamente cuando el servicio esté disponible."
+        title="Operaciones no disponibles"
+      />
+    );
+  }
+
+  if (trades.length === 0) {
     return (
       <EmptyState
         description="Tus compras y ventas ejecutadas quedaran registradas aqui con precio, comision y monto neto."

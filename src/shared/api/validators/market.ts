@@ -7,7 +7,7 @@ export const StockQuoteSchema = z.object({
   _id: z.string().optional(),
   symbol: z.string(),
   name: z.string(),
-  currency: z.string(),
+  currency: z.enum(['CLP', 'USD']),
   close: z.number(),
   open: z.number().optional(),
   high: z.number().optional(),
