@@ -46,12 +46,6 @@ export function AdminStockCreateModal({ onClose }: AdminStockCreateModalProps) {
         <h3 className="m-0 mb-4 text-text">{admin.stocks.createTitle}</h3>
 
         <form onSubmit={handleSubmit} className="grid gap-4">
-          {createMutation.error ? (
-            <p className="m-0 rounded-[var(--main-page-radius-md)] border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600">
-              {createMutation.error instanceof Error ? createMutation.error.message : 'Error al crear la acción.'}
-            </p>
-          ) : null}
-
           <label className={fieldGroup}>
             <span className={fieldLabel}>{admin.stocks.fields.symbol}</span>
             <input
