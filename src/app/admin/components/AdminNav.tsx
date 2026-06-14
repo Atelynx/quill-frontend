@@ -29,6 +29,18 @@ export function AdminNav() {
       >
         {admin.snapshots.title}
       </NavLink>
+      <NavLink
+        to="/admin/stocks"
+        className={({ isActive }) =>
+          `flex-1 rounded-[calc(var(--main-page-radius-md)-4px)] px-4 py-2.5 text-center text-[0.92rem] font-medium transition-colors ${
+            isActive
+              ? 'bg-[var(--gradient-tab-active)] text-white shadow-sm'
+              : 'text-[var(--main-page-text-soft)] hover:text-[var(--color-text)]'
+          }`
+        }
+      >
+        {admin.stocks.title}
+      </NavLink>
     </nav>
   );
 }

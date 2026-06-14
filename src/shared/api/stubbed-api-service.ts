@@ -27,6 +27,10 @@ import {
   type UpdateConfigInput,
   AdminSnapshotSchema,
   type CreateSnapshotInput,
+  AdminStockSchema,
+  AdminStockListResponseSchema,
+  type CreateStockInput,
+  type UpdateStockPriceInput,
 } from './validators';
 import {
   STUB_AUTH_RESPONSE,
@@ -43,6 +47,7 @@ import {
   STUB_ADMIN_SNAPSHOTS,
   buildStubHistory,
   STUB_ADMIN_CONFIG_HISTORY,
+  STUB_ADMIN_STOCKS,
 } from './stub-data';
 
 const NETWORK_LATENCY_MS = 250;
@@ -274,5 +279,80 @@ export const adminConfigService = {
     await delay(NETWORK_LATENCY_MS);
     const snapshot = STUB_ADMIN_SNAPSHOTS[0];
     return AdminSnapshotSchema.parse(snapshot);
+  },
+};
+
+export const adminStockService = {
+  list: async (params?: { search?: string; source?: string; page?: number; limit?: number }) => {
+    await delay(NETWORK_LATENCY_MS);
+    let stocks = [...STUB_ADMIN_STOCKS];
+    if (params?.search) {
+      const q = params.search.toLowerCase();
+      stocks = stocks.filter((s) => s.symbol.toLowerCase().includes(q) || s.name.toLowerCase().includes(q));
+    }
+    if (params?.source) {
+      stocks = stocks.filter((s) => s.source === params.source);
+    }
+    const page = params?.page ?? 1;
+    const limit = params?.limit ?? 50;
+    const total = stocks.length;
+    const totalPages = Math.ceil(total / limit);
+    const data = stocks.slice((page - 1) * limit, page * limit);
+    return AdminStockListResponseSchema.parse({ data, meta: { total, page, limit, totalPages } });
+  },
+
+  create: async (data: CreateStockInput) => {
+    await delay(NETWORK_LATENCY_MS);
+    const existing = STUB_ADMIN_STOCKS.find((s) => s.symbol === data.symbol);
+    if (existing) {
+      throw new Error(`El símbolo "${data.symbol}" ya existe.`);
+    }
+    const stock = {
+      symbol: data.symbol.toUpperCase(),
+      name: data.name,
+      currency: data.currency ?? 'CLP',
+      close: data.close,
+      open: data.close,
+      high: data.close,
+      low: data.close,
+      previousClose: data.close,
+      dayChangePercentage: 0,
+      source: 'admin',
+      volume: 0,
+      baseVolatility: data.baseVolatility ?? 0.015,
+      baseDrift: data.baseDrift ?? 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    return AdminStockSchema.parse(stock);
+  },
+
+  updatePrice: async (symbol: string, data: UpdateStockPriceInput) => {
+    await delay(NETWORK_LATENCY_MS);
+    const index = STUB_ADMIN_STOCKS.findIndex((s) => s.symbol === symbol);
+    if (index === -1) {
+      throw new Error(`Stock "${symbol}" no encontrado.`);
+    }
+    const existing = STUB_ADMIN_STOCKS[index];
+    const updated = {
+      ...existing,
+      close: data.price,
+      previousClose: existing.close,
+      dayChangePercentage: ((data.price - existing.close) / existing.close) * 100,
+      updatedAt: new Date().toISOString(),
+    };
+    return AdminStockSchema.parse(updated);
+  },
+
+  remove: async (symbol: string) => {
+    await delay(NETWORK_LATENCY_MS);
+    const stock = STUB_ADMIN_STOCKS.find((s) => s.symbol === symbol);
+    if (!stock) {
+      throw new Error(`Stock "${symbol}" no encontrado.`);
+    }
+    if (stock.source !== 'admin') {
+      throw new Error(`No se puede eliminar un stock administrado por el proveedor.`);
+    }
+    return MessageResponseSchema.parse({ message: `Stock "${symbol}" eliminado.` });
   },
 };

@@ -348,6 +348,110 @@ export const STUB_ADMIN_CONFIG_HISTORY: Array<{
   updatedAt: cfg.updatedAt,
 }));
 
+export const STUB_ADMIN_STOCKS: Array<{
+  symbol: string;
+  name: string;
+  currency: 'CLP' | 'USD';
+  close: number;
+  open: number;
+  high: number;
+  low: number;
+  previousClose: number;
+  dayChangePercentage: number;
+  source: string;
+  volume: number;
+  baseVolatility: number;
+  baseDrift: number;
+  createdAt: string;
+  updatedAt: string;
+}> = [
+  {
+    symbol: 'COPEC.SN',
+    name: 'COPEC.SN',
+    currency: 'CLP',
+    close: 6113.44,
+    open: 6200,
+    high: 6220,
+    low: 6136,
+    previousClose: 6159,
+    dayChangePercentage: -0.74,
+    source: 'admin',
+    volume: 1371420,
+    baseVolatility: 0.015,
+    baseDrift: 0,
+    createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    symbol: 'BSANTANDER.SN',
+    name: 'BSANTANDER.SN',
+    currency: 'CLP',
+    close: 42.15,
+    open: 42,
+    high: 42.5,
+    low: 41.8,
+    previousClose: 42.15,
+    dayChangePercentage: 0,
+    source: 'admin',
+    volume: 5000000,
+    baseVolatility: 0.02,
+    baseDrift: 0,
+    createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    symbol: 'AAPL',
+    name: 'Apple Inc.',
+    currency: 'USD',
+    close: 193.12,
+    open: 192.5,
+    high: 194.8,
+    low: 191.9,
+    previousClose: 192.87,
+    dayChangePercentage: 0.13,
+    source: 'mock',
+    volume: 45000000,
+    baseVolatility: 0.012,
+    baseDrift: 0,
+    createdAt: new Date(Date.now() - 86400000 * 30).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    symbol: 'MSFT',
+    name: 'Microsoft Corporation',
+    currency: 'USD',
+    close: 421.64,
+    open: 420.1,
+    high: 423.5,
+    low: 419.2,
+    previousClose: 420.88,
+    dayChangePercentage: 0.18,
+    source: 'mock',
+    volume: 22000000,
+    baseVolatility: 0.01,
+    baseDrift: 0,
+    createdAt: new Date(Date.now() - 86400000 * 30).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    symbol: 'TSLA',
+    name: 'Tesla Inc.',
+    currency: 'USD',
+    close: 176.33,
+    open: 175.8,
+    high: 178.2,
+    low: 174.5,
+    previousClose: 176.33,
+    dayChangePercentage: 0,
+    source: 'eodhd',
+    volume: 85000000,
+    baseVolatility: 0.025,
+    baseDrift: 0,
+    createdAt: new Date(Date.now() - 86400000 * 30).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];
+
 export function buildStubHistory(symbol: string, limit = 24): PricePoint[] {
   const baseBySymbol: Record<string, number> = {
     AAPL: 193.12,
