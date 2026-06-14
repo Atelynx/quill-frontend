@@ -17,6 +17,9 @@ export function ConfigCreateForm({ onClose }: ConfigCreateFormProps) {
   const [tags, setTags] = useState('');
   const createMutation = useCreateAdminConfig();
 
+  const RESTART_KEYS = new Set(['MARKET_PROVIDER', 'SIMULATION_STRATEGY', 'CURRENCY_PROVIDER']);
+  const isRestartKey = RESTART_KEYS.has(key);
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -29,7 +32,7 @@ export function ConfigCreateForm({ onClose }: ConfigCreateFormProps) {
     e.preventDefault();
     await createMutation.mutateAsync({
       key,
-      value: isNaN(Number(value)) ? value : Number(value),
+      value: /^-?\d+(\.\d+)?$/.test(value) ? Number(value) : value,
       name: name || undefined,
       tags: tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : undefined,
     });
@@ -40,6 +43,12 @@ export function ConfigCreateForm({ onClose }: ConfigCreateFormProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
         <div className={`rounded-[var(--main-page-radius-lg)] shadow-[var(--main-page-shadow)] border border-[var(--main-page-border)] w-full max-w-lg [background:var(--main-page-surface-strong)] p-6`} onClick={(e) => e.stopPropagation()}>
         <h3 className="m-0 mb-4 text-text">{admin.config.create}</h3>
+
+        {isRestartKey ? (
+          <p className="mb-4 rounded-[var(--main-page-radius-md)] border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-600">
+            ⚠ {admin.config.restartWarning}
+          </p>
+        ) : null}
 
         <form onSubmit={handleSubmit} className="grid gap-4">
           <label className={fieldGroup}>

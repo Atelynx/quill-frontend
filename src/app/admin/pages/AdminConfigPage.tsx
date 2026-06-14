@@ -65,13 +65,13 @@ export function AdminConfigPage() {
                     </td>
                     <td className="p-[0.85rem_0.75rem] text-text">{cfg.name ?? '—'}</td>
                     <td className="p-[0.85rem_0.75rem] font-mono text-[0.88rem] text-text">
-                      {cfg.appliesOn === 'restart' ? (
-                        <span title={`${admin.config.fields.effectiveValue}: ${String(cfg.effectiveValue)}`}>
-                          {String(cfg.effectiveValue ?? cfg.value)}
+                      <span>{String(cfg.value)}</span>
+                      {cfg.appliesOn === 'restart' && cfg.effectiveValue !== undefined &&
+                       String(cfg.value) !== String(cfg.effectiveValue) ? (
+                        <span className="ml-2 text-[0.75rem] text-[var(--main-page-text-muted)]">
+                          ({admin.config.fields.effectiveValue}: {String(cfg.effectiveValue)})
                         </span>
-                      ) : (
-                        String(cfg.value)
-                      )}
+                      ) : null}
                     </td>
                     <td className="p-[0.85rem_0.75rem]">
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[0.78rem] font-medium ${cfg.inUse ? 'bg-[var(--main-page-accent-soft)] text-[var(--main-page-accent-strong)]' : 'bg-[var(--main-page-surface-muted)] text-[var(--main-page-text-muted)]'}`}>

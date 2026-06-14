@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authService, ordersService, usersService, adminConfigService } from '../api-service';
 import type { UpdateConfigInput, CreateSnapshotInput } from '../validators';
 import { logError } from '../error-logging';
+import { showToast } from '../../components/Toast';
 
 /**
  * Hook for user login mutation
@@ -198,6 +199,7 @@ export function useCreateAdminConfig() {
     mutationFn: adminConfigService.create,
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['admin', 'configs'] });
+      showToast('Configuración creada correctamente.');
     },
     onError: (error) => {
       logError('[Mutation] Admin config create failed:', error);
@@ -216,6 +218,7 @@ export function useUpdateAdminConfig() {
       adminConfigService.update(key, data),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['admin', 'configs'] });
+      showToast('Configuración actualizada correctamente.');
     },
     onError: (error) => {
       logError('[Mutation] Admin config update failed:', error);
@@ -233,6 +236,7 @@ export function useDeleteAdminConfig() {
     mutationFn: adminConfigService.remove,
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['admin', 'configs'] });
+      showToast('Configuración eliminada correctamente.');
     },
     onError: (error) => {
       logError('[Mutation] Admin config delete failed:', error);
@@ -269,6 +273,7 @@ export function useRestoreSnapshot() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['admin', 'configs'] });
       void queryClient.invalidateQueries({ queryKey: ['admin', 'snapshots'] });
+      showToast('Respaldo restaurado correctamente.');
     },
     onError: (error) => {
       logError('[Mutation] Snapshot restore failed:', error);
