@@ -380,23 +380,8 @@ export function DashboardPage() {
             </div>
           )}
         </SectionCard>
-
         <SectionCard
-          title="Nueva orden limitada"
-          description="Define el precio al que quieres entrar o salir. Quill la ejecutara automaticamente cuando el mercado llegue a ese valor."
-        >
-          <OrderForm
-            quotes={quotes}
-            rate={rate}
-            selectedSymbol={activeSymbol}
-            marketOpen={marketStatusQuery.data?.open ?? true}
-            onSymbolChange={setSelectedSymbol}
-          />
-        </SectionCard>
-      </div>
-
-      <div className={dashboardGridBalanced}>
-        <SectionCard
+          className="min-h-[335px] max-h-[595px] overflow-auto"
           title="Mercado disponible"
           description="Haz clic en una accion para enfocarte en su grafica y preparar una orden."
         >
@@ -409,6 +394,22 @@ export function DashboardPage() {
             selectedSymbol={activeSymbol}
             watchlist={user?.watchlist}
             onToggleWatchlist={handleToggleWatchlist}
+          />
+        </SectionCard>
+      </div>
+
+
+      <div className={dashboardGridBalanced}>
+        <SectionCard
+          title="Nueva orden limitada"
+          description="Define el precio al que quieres entrar o salir. Quill la ejecutara automaticamente cuando el mercado llegue a ese valor."
+        >
+          <OrderForm
+            quotes={quotes}
+            rate={rate}
+            selectedSymbol={activeSymbol}
+            marketOpen={marketStatusQuery.data?.open ?? true}
+            onSymbolChange={setSelectedSymbol}
           />
         </SectionCard>
 

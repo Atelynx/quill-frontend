@@ -78,14 +78,14 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
           ) : null}
         </nav>
 
-        <div className={`${surface.inverseCard} p-4 text-white`}>
+        {/* <div className={`${surface.inverseCard} p-4 text-white`}>
           <span className={sidebarLabel}>{appShell.focus.title}</span>
           <ul className="m-0 grid gap-[0.55rem] pl-4 text-[var(--main-page-inverse-text-soft)]">
             {appShell.focus.items.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
-        </div>
+        </div> */}
       </aside>
 
       <div className="p-6 max-[720px]:p-4">
