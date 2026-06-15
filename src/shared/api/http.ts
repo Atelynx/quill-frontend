@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { clearAuthSession, getStoredToken } from './auth-session';
+import { clearAuthSession, getAuthToken } from './auth-session';
 import { logError } from './error-logging';
 
 const apiBaseUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api';
@@ -10,7 +10,7 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-  const token = getStoredToken();
+  const token = getAuthToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

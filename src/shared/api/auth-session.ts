@@ -1,27 +1,56 @@
+import type { AuthResponse, UserProfile } from './validators'
+
 export const AUTH_STORAGE_KEY = 'quill_auth'
 export const UNAUTHORIZED_EVENT = 'quill:unauthorized'
 
-interface StoredToken {
-  token?: string
+export interface AuthSession {
+  token: string
+  user: UserProfile
 }
 
-export function getStoredToken() {
-  const raw = sessionStorage.getItem(AUTH_STORAGE_KEY)
-  if (!raw) return null
+let activeSession: AuthSession | null = null
 
-  try {
-    return (JSON.parse(raw) as StoredToken).token ?? null
-  } catch {
-    sessionStorage.removeItem(AUTH_STORAGE_KEY)
-    return null
+function removeLegacyStoredSession() {
+  const hadStoredSession = sessionStorage.getItem(AUTH_STORAGE_KEY) !== null
+  sessionStorage.removeItem(AUTH_STORAGE_KEY)
+  return hadStoredSession
+}
+
+export function getAuthSession() {
+  removeLegacyStoredSession()
+  return activeSession
+}
+
+export function getAuthToken() {
+  return getAuthSession()?.token ?? null
+}
+
+export function setAuthSession(response: AuthResponse) {
+  removeLegacyStoredSession()
+  activeSession = {
+    token: response.accessToken,
+    user: response.user,
   }
+  return activeSession
+}
+
+export function updateAuthUser(updates: Partial<UserProfile>) {
+  removeLegacyStoredSession()
+  if (!activeSession) return null
+
+  activeSession = {
+    ...activeSession,
+    user: { ...activeSession.user, ...updates },
+  }
+  return activeSession
 }
 
 export function clearAuthSession() {
-  const hadSession = sessionStorage.getItem(AUTH_STORAGE_KEY) !== null
-  sessionStorage.removeItem(AUTH_STORAGE_KEY)
+  const hadActiveSession = activeSession !== null
+  const hadStoredSession = removeLegacyStoredSession()
+  activeSession = null
 
-  if (hadSession) {
+  if (hadActiveSession || hadStoredSession) {
     window.dispatchEvent(new Event(UNAUTHORIZED_EVENT))
   }
 }
