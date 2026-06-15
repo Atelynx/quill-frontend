@@ -23,6 +23,7 @@ import type {
   TradeRecord,
 } from "../../shared/api/validators";
 import { SectionCard } from "../../shared/components/SectionCard";
+import { QueryErrorState } from "../../shared/components/QueryErrorState";
 import { AppShell } from "../../shared/layout/AppShell";
 import { gradient } from "../../shared/design-system/surfaces";
 import {
@@ -285,6 +286,24 @@ export function DashboardPage() {
     tradesQuery.isLoading
   ) {
     return <div className={loadingScreen}>Cargando datos de Quill...</div>;
+  }
+
+  if (portfolioQuery.isError || marketQuery.isError || ordersQuery.isError) {
+    return (
+      <AppShell
+        title="Panel principal"
+        subtitle="Lee el mercado, registra ordenes y sigue tu aprendizaje con una vista equilibrada y clara."
+      >
+        <QueryErrorState
+          message="No fue posible cargar los datos financieros necesarios para mostrar el panel."
+          onRetry={() => {
+            void portfolioQuery.refetch();
+            void marketQuery.refetch();
+            void ordersQuery.refetch();
+          }}
+        />
+      </AppShell>
+    );
   }
 
   return (
