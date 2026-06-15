@@ -51,6 +51,14 @@ El repositorio no contiene los origenes productivos de `VITE_API_URL` y
 `connect-src` conserva temporalmente las fuentes genericas `https:` y `wss:`.
 Esta configuracion no debe considerarse cerrada para produccion.
 
+Los valores de `headers` en `vercel.json` son estaticos y no interpolan
+variables de entorno. Vercel permite expansion de variables mediante
+`routes.transforms`, pero no se usa para esta CSP: `VITE_API_URL` puede incluir
+rutas como `/api`, y el origen permitido para Socket.IO debe distinguir HTTPS
+de WSS. Copiar esos valores directamente produciria una politica incorrecta o
+fragil. La allowlist productiva debe generarse con origenes normalizados y
+verificados antes del despliegue.
+
 Antes de promover un despliegue productivo:
 
 1. Obtener el origen de `VITE_API_URL`, eliminando cualquier ruta como `/api`.
