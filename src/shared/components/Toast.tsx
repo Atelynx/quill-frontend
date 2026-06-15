@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-
-type ToastType = 'success' | 'error';
+import { setShowToastHandler } from './toast-service';
+import type { ToastType } from './toast-service';
 
 interface Toast {
   id: number;
@@ -8,14 +8,7 @@ interface Toast {
   type: ToastType;
 }
 
-type ShowToastFn = (message: string, type?: ToastType) => void;
-
-let showToastFn: ShowToastFn | null = null;
 let toastId = 0;
-
-export function showToast(message: string, type: ToastType = 'success') {
-  showToastFn?.(message, type);
-}
 
 export function ToastContainer() {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -29,9 +22,9 @@ export function ToastContainer() {
   }, []);
 
   useEffect(() => {
-    showToastFn = addToast;
+    setShowToastHandler(addToast);
     return () => {
-      showToastFn = null;
+      setShowToastHandler(null);
     };
   }, [addToast]);
 

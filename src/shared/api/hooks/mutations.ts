@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authService, ordersService, usersService, adminConfigService, adminStockService } from '../api-service';
 import type { UpdateConfigInput, CreateSnapshotInput, CreateStockInput, UpdateStockPriceInput } from '../validators';
 import { logError } from '../error-logging';
-import { showToast } from '../../components/Toast';
+import { showToast } from '../../components/toast-service';
 
 /**
  * Hook for user login mutation

@@ -227,7 +227,9 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true, onS
   return (
     <form
       className={formGrid}
-      onSubmit={form.handleSubmit(handleSubmit)}
+      onSubmit={(event) => {
+        void form.handleSubmit(handleSubmit)(event);
+      }}
     >
       {demoMode ? (
         <p className={hintClass}>
@@ -256,7 +258,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true, onS
           className={inputBase}
           disabled={demoMode}
           onChange={(e) => {
-            formSymbolOnChange(e);
+            void formSymbolOnChange(e);
             onSymbolChange?.(e.target.value);
           }}
           {...symbolRest}
