@@ -381,6 +381,7 @@ export function DashboardPage() {
           )}
         </SectionCard>
         <SectionCard
+          className="min-h-[335px] max-h-[595px] overflow-auto"
           title="Mercado disponible"
           description="Haz clic en una accion para enfocarte en su grafica y preparar una orden."
         >
@@ -411,7 +412,7 @@ export function DashboardPage() {
             onSymbolChange={setSelectedSymbol}
           />
         </SectionCard>
-        
+
         <SectionCard
           title="Como leer este panel"
           description="Ayudas rapidas para usuarios que recien comienzan."
