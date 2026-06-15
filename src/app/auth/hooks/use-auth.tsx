@@ -6,6 +6,7 @@ import {
   useState,
 } from 'react';
 import type { PropsWithChildren } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   useLoginMutation,
   useRegisterMutation,
@@ -52,15 +53,19 @@ function readStoredState(): StoredAuthState | null {
 }
 
 export function AuthProvider({ children }: PropsWithChildren) {
+  const queryClient = useQueryClient();
   const [authState, setAuthState] = useState<StoredAuthState | null>(() => readStoredState());
   const loginMutation = useLoginMutation();
   const registerMutation = useRegisterMutation();
 
   useEffect(() => {
-    const handleUnauthorized = () => setAuthState(null);
+    const handleUnauthorized = () => {
+      queryClient.clear();
+      setAuthState(null);
+    };
     window.addEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
     return () => window.removeEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
-  }, []);
+  }, [queryClient]);
 
   const persistSession = (session: AuthResponse) => {
     const nextState = {
@@ -68,6 +73,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       user: session.user,
     };
 
+    queryClient.clear();
     sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(nextState));
     setAuthState(nextState);
   };
@@ -82,6 +88,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   const logout = () => {
+    queryClient.clear();
     sessionStorage.removeItem(AUTH_STORAGE_KEY);
     setAuthState(null);
   };

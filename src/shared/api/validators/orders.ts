@@ -22,12 +22,21 @@ export type OrderRecord = z.infer<typeof OrderRecordSchema>;
 /**
  * Schema for creating a new order (client input)
  */
-export const CreateOrderInputSchema = z.object({
+const CreateOrderBaseSchema = z.object({
   symbol: z.string().min(1, 'Symbol is required'),
   side: z.enum(['BUY', 'SELL']),
-  type: z.enum(['LIMIT', 'MARKET']).default('LIMIT'),
   quantity: z.number().int().positive('Quantity must be positive'),
-  limitPrice: z.number().positive('Price must be positive').optional(),
 });
+
+export const CreateOrderInputSchema = z.discriminatedUnion('type', [
+  CreateOrderBaseSchema.extend({
+    type: z.literal('LIMIT'),
+    limitPrice: z.number().positive('Price must be positive'),
+  }),
+  CreateOrderBaseSchema.extend({
+    type: z.literal('MARKET'),
+    limitPrice: z.number().positive('Price must be positive').optional(),
+  }),
+]);
 
 export type CreateOrderInput = z.infer<typeof CreateOrderInputSchema>;

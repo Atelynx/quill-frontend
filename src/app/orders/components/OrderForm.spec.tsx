@@ -98,6 +98,38 @@ describe('OrderForm', () => {
     ).toBeInTheDocument();
   });
 
+  it('envia ordenes MARKET sin precio limite cuando el mercado esta abierto', async () => {
+    const user = userEvent.setup();
+    postMock.mockResolvedValue({ data: { id: 'order-1' } });
+
+    renderWithProviders(
+      <OrderForm quotes={quotes} rate={950} selectedSymbol={quotes[0].symbol} marketOpen />,
+    );
+
+    await act(async () => {
+      await user.selectOptions(screen.getByLabelText('Modalidad'), 'MARKET');
+      await user.click(screen.getByRole('button', { name: 'Crear orden' }));
+    });
+
+    await waitFor(() => {
+      expect(postMock).toHaveBeenCalledWith('/orders', {
+        symbol: 'AAPL',
+        side: 'BUY',
+        type: 'MARKET',
+        quantity: 1,
+      });
+    });
+  });
+
+  it('bloquea ordenes MARKET cuando el estado del mercado no esta confirmado', () => {
+    renderWithProviders(
+      <OrderForm quotes={quotes} rate={950} selectedSymbol={quotes[0].symbol} />,
+    );
+
+    expect(screen.getByText(/No fue posible confirmar el estado del mercado/)).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'Mercado (no disponible)' })).toBeDisabled();
+  });
+
   it('alterna entre modo cantidad y modo monto', async () => {
     const user = userEvent.setup();
 

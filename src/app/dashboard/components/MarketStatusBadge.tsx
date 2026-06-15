@@ -28,7 +28,7 @@ export function MarketStatusBadge({ status }: MarketStatusBadgeProps) {
           color: 'var(--main-page-text-soft)',
         }}
       >
-        Cargando...
+        Estado no confirmado
       </span>
     );
   }

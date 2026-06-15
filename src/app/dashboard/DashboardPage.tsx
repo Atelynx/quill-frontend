@@ -90,6 +90,10 @@ export function DashboardPage() {
   const marketStatusQuery = useMarketStatus();
   const ordersQuery = usePendingOrders();
   const tradesQuery = useRecentTrades(8);
+  const confirmedMarketStatus =
+    marketStatusQuery.isSuccess && !marketStatusQuery.isFetching
+      ? marketStatusQuery.data
+      : undefined;
 
   const quotes = useMemo<StockQuote[]>(
     () => marketQuery.data ?? [],
@@ -305,7 +309,7 @@ export function DashboardPage() {
           </p>
         </div>
         <div className={heroPanelMeta}>
-          <MarketStatusBadge status={marketStatusQuery.data} />
+          <MarketStatusBadge status={confirmedMarketStatus} />
           <span className={heroChip}>
             Moneda de cambio (USD): {formatCurrency(rate, { currency: "CLP" })}{" "}
             CLP{" "}
@@ -389,7 +393,7 @@ export function DashboardPage() {
             quotes={quotes}
             rate={rate}
             selectedSymbol={activeSymbol}
-            marketOpen={marketStatusQuery.data?.open ?? true}
+            marketOpen={confirmedMarketStatus?.open}
             onSymbolChange={setSelectedSymbol}
           />
         </SectionCard>
