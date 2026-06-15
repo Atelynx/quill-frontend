@@ -242,8 +242,8 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true, onS
       ) : null}
 
       <div>
-        <strong>Precio actual</strong>
-        <span className={hintClass}>
+        <strong className="block">Precio actual</strong>
+        <span className={`${hintClass} block`}>
           {currentQuote
             ? <>{currentQuote.symbol} · <AnimatedCurrency value={currentQuote.close} currency={priceCurrency} sourceCurrency={priceCurrency} rate={rate} /> (<AnimatedCurrency value={currentQuote.close} currency={secondaryCurrency} sourceCurrency={priceCurrency} rate={rate} />)</>
             : 'Selecciona una accion para continuar.'}
