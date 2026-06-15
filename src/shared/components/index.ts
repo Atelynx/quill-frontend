@@ -5,5 +5,6 @@ export { ErrorBoundary } from './ErrorBoundary';
 export { Input } from './Input';
 export { default as PagesBar } from './PagesBar';
 export { PasswordField } from './PasswordField';
+export { SideBarLink } from './SideBarLink';
 export { SectionCard } from './SectionCard';
 export { ThemeToggle } from './ThemeToggle';

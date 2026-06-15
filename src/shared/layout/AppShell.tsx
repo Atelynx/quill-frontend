@@ -1,7 +1,6 @@
 import { useState, useEffect, type PropsWithChildren } from 'react';
-import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../app/auth/hooks/use-auth';
-import { ThemeToggle, CurrencySelector } from '../components';
+import { ThemeToggle, CurrencySelector, SideBarLink } from '../components';
 import { appShell, labels, admin } from '../content/strings';
 import { button, surface, gradient } from '../design-system/surfaces';
 import { eyebrow, sidebarLabel } from '../design-system/typography';
@@ -59,73 +58,23 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
         </div>
 
         <nav className="flex flex-col gap-2">
-          <NavLink
-            to="/dashboard"
-            onClick={closeSidebar}
-            className={({ isActive }) =>
-              `rounded-[var(--main-page-radius-md)] px-4 py-2.5 text-white transition-colors ${
-                isActive
-                  ? 'bg-white/10 font-semibold'
-                  : 'text-[var(--main-page-inverse-text-soft)] hover:bg-white/5'
-              }`
-            }
-          >
+          <SideBarLink to="/dashboard" onClick={closeSidebar}>
             {appShell.nav.dashboard}
-          </NavLink>
-          <NavLink
-            to="/watchlist"
-            onClick={closeSidebar}
-            className={({ isActive }) =>
-              `rounded-[var(--main-page-radius-md)] px-4 py-2.5 text-white transition-colors ${
-                isActive
-                  ? 'bg-white/10 font-semibold'
-                  : 'text-[var(--main-page-inverse-text-soft)] hover:bg-white/5'
-              }`
-            }
-          >
+          </SideBarLink>
+          <SideBarLink to="/watchlist" onClick={closeSidebar}>
             {appShell.nav.watchlist}
-          </NavLink>
-          <NavLink
-            to="/friends"
-            onClick={closeSidebar}
-            className={({ isActive }) =>
-              `rounded-[var(--main-page-radius-md)] px-4 py-2.5 text-white transition-colors ${
-                isActive
-                  ? 'bg-white/10 font-semibold'
-                  : 'text-[var(--main-page-inverse-text-soft)] hover:bg-white/5'
-              }`
-            }
-          >
+          </SideBarLink>
+          <SideBarLink to="/friends" onClick={closeSidebar}>
             {appShell.nav.friends}
-          </NavLink>
-          <NavLink
-            to="/settings"
-            onClick={closeSidebar}
-            className={({ isActive }) =>
-              `rounded-[var(--main-page-radius-md)] px-4 py-2.5 text-white transition-colors ${
-                isActive
-                  ? 'bg-white/10 font-semibold'
-                  : 'text-[var(--main-page-inverse-text-soft)] hover:bg-white/5'
-              }`
-            }
-          >
+          </SideBarLink>
+          <SideBarLink to="/settings" onClick={closeSidebar}>
             {appShell.nav.settings}
-          </NavLink>
+          </SideBarLink>
 
           {user?.role === 'admin' ? (
-            <NavLink
-              to="/admin/config"
-              onClick={closeSidebar}
-              className={({ isActive }) =>
-                `rounded-[var(--main-page-radius-md)] px-4 py-2.5 text-white transition-colors ${
-                  isActive
-                    ? 'bg-white/10 font-semibold'
-                    : 'text-[var(--main-page-inverse-text-soft)] hover:bg-white/5'
-                }`
-              }
-            >
+            <SideBarLink to="/admin/config" onClick={closeSidebar}>
               {admin.nav}
-            </NavLink>
+            </SideBarLink>
           ) : null}
         </nav>
 
