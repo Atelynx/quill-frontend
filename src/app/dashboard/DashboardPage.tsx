@@ -473,10 +473,12 @@ export function DashboardPage() {
           />
         </SectionCard>
       </div>
-      <span className={heroChip}>Marca principal: Quill</span>
-      <span className={`${heroChip} ${heroChipSecondary}`}>
-        Equipo desarrollador: Atelynx
-      </span>
+      <div className="flex flex-wrap gap-2 justify-center">
+        <span className={heroChip}>Marca principal: Quill</span>
+        <span className={`${heroChip} ${heroChipSecondary}`}>
+          Equipo desarrollador: Atelynx
+        </span>
+      </div>
     </AppShell>
   );
 }
