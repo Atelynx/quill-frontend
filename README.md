@@ -14,6 +14,18 @@ npx tsc -b --noEmit
 npm run build
 ```
 
+## Integracion continua
+
+El workflow `Frontend CI` valida pull requests y pushes con Node 24. Instala
+dependencias mediante `npm ci` y ejecuta lint, tests, typecheck y build usando
+los scripts existentes:
+
+```bash
+npm run lint
+npm run test:run
+npm run build
+```
+
 ## Monedas y ordenes
 
 Los precios de mercado conservan la moneda indicada por `quote.currency`.
