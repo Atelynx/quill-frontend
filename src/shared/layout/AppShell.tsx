@@ -30,7 +30,7 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
   const closeSidebar = () => setSidebarOpen(false);
 
   return (
-    <div className="grid min-h-screen grid-cols-[minmax(240px,280px)_1fr] max-[1180px]:grid-cols-1">
+    <div className="grid min-h-screen w-full min-w-0 grid-cols-[minmax(240px,280px)_1fr] max-[1180px]:grid-cols-1">
       <aside className={`${gradient.sidebar} sticky top-0 flex h-screen flex-col gap-4 overflow-y-auto p-6 text-white max-[1180px]:static max-[1180px]:h-auto max-[1180px]:order-2 max-[720px]:fixed max-[720px]:inset-y-0 max-[720px]:left-0 max-[720px]:z-50 max-[720px]:w-[280px] max-[720px]:p-4 max-[720px]:shadow-2xl max-[720px]:transition-transform max-[720px]:duration-300 ${sidebarOpen ? 'max-[720px]:translate-x-0' : 'max-[720px]:-translate-x-full'}`}>
         <button
           type="button"
@@ -88,7 +88,7 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
         </div> */}
       </aside>
 
-      <div className="p-6 max-[720px]:p-4">
+      <div className="min-w-0 p-6 max-[720px]:p-4">
         <header className="mb-5 flex items-start justify-between gap-4 max-[820px]:flex-col max-[820px]:items-stretch">
           <div className="flex items-center gap-3">
             <button
@@ -118,7 +118,7 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
           </div>
         </header>
 
-        <div className="grid gap-[1.2rem]">{children}</div>
+        <div className="grid min-w-0 gap-[1.2rem]">{children}</div>
       </div>
 
       {sidebarOpen && (
