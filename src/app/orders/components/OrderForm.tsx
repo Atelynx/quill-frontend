@@ -31,7 +31,7 @@ interface OrderFormProps {
   onSymbolChange?: (symbol: string) => void;
 }
 
-export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true, onSymbolChange }: OrderFormProps) {
+export function OrderForm({ quotes, rate, selectedSymbol, marketOpen, onSymbolChange }: OrderFormProps) {
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const [buyMode, setBuyMode] = useState<'shares' | 'amount'>('shares');
   const [investAmount, setInvestAmount] = useState<string>('');
@@ -100,7 +100,10 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true, onS
     }
 
     try {
-      const submitValues = { ...values };
+      const submitValues = {
+        ...values,
+        limitPrice: values.type === 'MARKET' ? undefined : values.limitPrice,
+      };
 
       if (buyMode === 'amount') {
         const price =
@@ -129,7 +132,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true, onS
         submitValues.quantity = calculatedQty;
       }
 
-      await orderMutation.mutateAsync(submitValues);
+      await orderMutation.mutateAsync(CreateOrderInputSchema.parse(submitValues));
       setFeedbackMessage(
         values.type === 'MARKET'
           ? 'Orden ejecutada al precio de mercado.'
@@ -227,7 +230,9 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true, onS
   return (
     <form
       className={formGrid}
-      onSubmit={form.handleSubmit(handleSubmit)}
+      onSubmit={(event) => {
+        void form.handleSubmit(handleSubmit)(event);
+      }}
     >
       {demoMode ? (
         <p className={hintClass}>
@@ -235,7 +240,11 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true, onS
         </p>
       ) : null}
 
-      {!marketOpen ? (
+      {marketOpen === undefined ? (
+        <p className={hintClass} style={{ color: 'var(--main-page-danger)' }}>
+          No fue posible confirmar el estado del mercado. Las órdenes MARKET no están disponibles.
+        </p>
+      ) : !marketOpen ? (
         <p className={hintClass} style={{ color: 'var(--main-page-danger)' }}>
           El mercado está cerrado. Solo puedes registrar órdenes limitadas; las órdenes MARKET se rechazarán.
         </p>
@@ -256,7 +265,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true, onS
           className={inputBase}
           disabled={demoMode}
           onChange={(e) => {
-            formSymbolOnChange(e);
+            void formSymbolOnChange(e);
             onSymbolChange?.(e.target.value);
           }}
           {...symbolRest}
@@ -281,7 +290,7 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true, onS
         Modalidad
         <select className={inputBase} disabled={demoMode} {...form.register('type')}>
           <option value="LIMIT">Limite</option>
-          <option value="MARKET" disabled={!marketOpen}>Mercado{!marketOpen ? ' (no disponible)' : ''}</option>
+          <option value="MARKET" disabled={marketOpen !== true}>Mercado{marketOpen !== true ? ' (no disponible)' : ''}</option>
         </select>
       </label>
 
@@ -384,8 +393,8 @@ export function OrderForm({ quotes, rate, selectedSymbol, marketOpen = true, onS
           ? 'Modo demo'
           : orderMutation.isPending
             ? 'Creando orden...'
-            : !marketOpen && orderType === 'MARKET'
-              ? 'Mercado cerrado'
+            : marketOpen !== true && orderType === 'MARKET'
+              ? marketOpen === undefined ? 'Estado no disponible' : 'Mercado cerrado'
               : 'Crear orden'}
       </button>
     </form>

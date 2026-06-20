@@ -5,6 +5,7 @@ import { AppShell } from '../../../shared/layout/AppShell';
 import { SectionCard } from '../../../shared/components/SectionCard';
 import { EmptyState } from '../../../shared/components/EmptyState';
 import { Button } from '../../../shared/components/Button';
+import { QueryErrorState } from '../../../shared/components/QueryErrorState';
 import { loadingScreen } from '../../../shared/design-system/layout';
 import { surface } from '../../../shared/design-system/surfaces';
 import { formatPercentage } from '../../../shared/utils/format';
@@ -16,8 +17,8 @@ import { useMemo } from 'react';
 
 export function WatchlistPage() {
   const { user, updateUser } = useAuth();
-  const { data: watchlistStocks, isLoading: watchlistLoading } = useWatchlist();
-  const { data: allStocks, isLoading: marketLoading } = useMarketStocks();
+  const watchlistQuery = useWatchlist();
+  const marketQuery = useMarketStocks();
   const addMutation = useAddToWatchlistMutation();
   const removeMutation = useRemoveFromWatchlistMutation();
   const { preferredCurrency: currency, usdclpRate: rate } = useAppSelector(
@@ -28,13 +29,27 @@ export function WatchlistPage() {
 
   const availableStocks = useMemo(() => {
     const symbols = watchlistSymbols ?? [];
-    return (allStocks ?? []).filter((stock: StockQuote) => !symbols.includes(stock.symbol));
-  }, [allStocks, watchlistSymbols]);
+    return (marketQuery.data ?? []).filter((stock: StockQuote) => !symbols.includes(stock.symbol));
+  }, [marketQuery.data, watchlistSymbols]);
 
-  if (watchlistLoading || marketLoading) {
+  if (watchlistQuery.isLoading || marketQuery.isLoading) {
     return (
       <AppShell title="Lista de seguimiento" subtitle="Tus acciones favoritas.">
         <div className={loadingScreen}>Cargando lista de seguimiento...</div>
+      </AppShell>
+    );
+  }
+
+  if (watchlistQuery.isError || marketQuery.isError) {
+    return (
+      <AppShell title="Lista de seguimiento" subtitle="Tus acciones favoritas.">
+        <QueryErrorState
+          message="No fue posible cargar la lista de seguimiento y los datos del mercado."
+          onRetry={() => {
+            void watchlistQuery.refetch();
+            void marketQuery.refetch();
+          }}
+        />
       </AppShell>
     );
   }
@@ -49,7 +64,7 @@ export function WatchlistPage() {
     updateUser({ watchlist: result.watchlist });
   };
 
-  const stocks = (watchlistStocks ?? []) as StockQuote[];
+  const stocks = watchlistQuery.data as StockQuote[];
 
   return (
     <AppShell

@@ -4,12 +4,14 @@ import { admin } from "../../../shared/content/strings";
 import { surface } from "../../../shared/design-system/surfaces";
 import { loadingScreen } from "../../../shared/design-system/layout";
 import { SectionCard } from "../../../shared/components/SectionCard";
+import { QueryErrorState } from "../../../shared/components/QueryErrorState";
 import { ConfigEditModal } from "../components/ConfigEditModal";
 import { ConfigHistoryView } from "../components/ConfigHistoryView";
 import type { AdminConfig } from "../../../shared/api/validators";
 
 export function AdminConfigPage() {
-  const { data: configs, isLoading } = useAdminConfigs();
+  const configsQuery = useAdminConfigs();
+  const { data: configs, isLoading } = configsQuery;
   const [editTarget, setEditTarget] = useState<AdminConfig | null>(null);
   const [historyTarget, setHistoryTarget] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState("all");
@@ -29,6 +31,17 @@ export function AdminConfigPage() {
 
   if (isLoading) {
     return <div className={loadingScreen}>Cargando configuraciones...</div>;
+  }
+
+  if (configsQuery.isError) {
+    return (
+      <QueryErrorState
+        message="No fue posible cargar las configuraciones administrativas."
+        onRetry={() => {
+          void configsQuery.refetch();
+        }}
+      />
+    );
   }
 
   return (

@@ -6,18 +6,25 @@ import {
   useState,
 } from 'react';
 import type { PropsWithChildren } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   useLoginMutation,
   useRegisterMutation,
 } from '../../../shared/api/hooks';
 import type {
-  AuthResponse,
   LoginInput,
   RegisterResponse,
   RegisterInput,
   UserProfile,
 } from '../../../shared/api/validators';
-import { AUTH_STORAGE_KEY, UNAUTHORIZED_EVENT } from '../../../shared/api/auth-session';
+import {
+  clearAuthSession,
+  getAuthSession,
+  setAuthSession,
+  UNAUTHORIZED_EVENT,
+  updateAuthUser,
+} from '../../../shared/api/auth-session';
+import type { AuthSession } from '../../../shared/api/auth-session';
 
 interface AuthContextValue {
   user: UserProfile | null;
@@ -29,52 +36,31 @@ interface AuthContextValue {
   updateUser: (updates: Partial<UserProfile>) => void;
 }
 
-interface StoredAuthState {
-  token: string;
-  user: UserProfile;
-}
-
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function readStoredState(): StoredAuthState | null {
-  const raw = sessionStorage.getItem(AUTH_STORAGE_KEY);
-
-  if (!raw) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(raw) as StoredAuthState;
-  } catch {
-    sessionStorage.removeItem(AUTH_STORAGE_KEY);
-    return null;
-  }
-}
-
 export function AuthProvider({ children }: PropsWithChildren) {
-  const [authState, setAuthState] = useState<StoredAuthState | null>(() => readStoredState());
+  const queryClient = useQueryClient();
+  const [authState, setAuthState] = useState<AuthSession | null>(() => getAuthSession());
   const loginMutation = useLoginMutation();
   const registerMutation = useRegisterMutation();
 
   useEffect(() => {
-    const handleUnauthorized = () => setAuthState(null);
+    const handleUnauthorized = () => {
+      queryClient.clear();
+      setAuthState(null);
+    };
     window.addEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
     return () => window.removeEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
-  }, []);
+  }, [queryClient]);
 
-  const persistSession = (session: AuthResponse) => {
-    const nextState = {
-      token: session.accessToken,
-      user: session.user,
-    };
-
-    sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(nextState));
-    setAuthState(nextState);
+  const startSession = (session: Parameters<typeof setAuthSession>[0]) => {
+    queryClient.clear();
+    setAuthState(setAuthSession(session));
   };
 
   const login = async (input: LoginInput) => {
     const response = await loginMutation.mutateAsync(input);
-    persistSession(response);
+    startSession(response);
   };
 
   const register = async (input: RegisterInput) => {
@@ -82,22 +68,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   const logout = () => {
-    sessionStorage.removeItem(AUTH_STORAGE_KEY);
+    queryClient.clear();
+    clearAuthSession();
     setAuthState(null);
   };
 
   const updateUser = (updates: Partial<UserProfile>) => {
-    setAuthState((current) => {
-      if (!current) return current;
-
-      const nextState = {
-        ...current,
-        user: { ...current.user, ...updates },
-      };
-
-      sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(nextState));
-      return nextState;
-    });
+    setAuthState(updateAuthUser(updates));
   };
 
   const value: AuthContextValue = {

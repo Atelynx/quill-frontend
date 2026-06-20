@@ -3,8 +3,9 @@ import { admin } from '../../../shared/content/strings';
 import { button } from '../../../shared/design-system/surfaces';
 import { fieldLabel, hint } from '../../../shared/design-system/typography';
 import { fieldGroup } from '../../../shared/design-system/layout';
-import { inputBase } from '../../../shared/design-system/forms';
+import { errorMessage, inputBase } from '../../../shared/design-system/forms';
 import { useUpdateAdminConfig } from '../../../shared/api/hooks';
+import { UpdateConfigInputSchema } from '../../../shared/api/validators';
 import type { AdminConfig } from '../../../shared/api/validators';
 
 interface ConfigEditModalProps {
@@ -16,6 +17,7 @@ export function ConfigEditModal({ config, onClose }: ConfigEditModalProps) {
   const [value, setValue] = useState(String(config.value));
   const [name, setName] = useState(config.name ?? '');
   const [tags, setTags] = useState(config.tags?.join(', ') ?? '');
+  const [validationError, setValidationError] = useState<string | null>(null);
   const updateMutation = useUpdateAdminConfig();
 
   useEffect(() => {
@@ -28,15 +30,27 @@ export function ConfigEditModal({ config, onClose }: ConfigEditModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const parsedValue =
+      typeof config.value === 'boolean'
+        ? value === 'true'
+        : typeof config.value === 'number'
+          ? Number(value)
+          : value;
+    const parsedInput = UpdateConfigInputSchema.safeParse({
+      value: parsedValue,
+      name: name || undefined,
+      tags: tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : undefined,
+    });
+
+    if (!parsedInput.success) {
+      setValidationError('El valor ingresado no es válido para esta configuración.');
+      return;
+    }
+
+    setValidationError(null);
     await updateMutation.mutateAsync({
       key: config.key,
-      data: {
-        value: typeof config.value === 'number' && /^-?\d+(\.\d+)?$/.test(value)
-          ? Number(value)
-          : value,
-        name: name || undefined,
-        tags: tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : undefined,
-      },
+      data: parsedInput.data,
     });
     onClose();
   };
@@ -57,15 +71,24 @@ export function ConfigEditModal({ config, onClose }: ConfigEditModalProps) {
         <form onSubmit={handleSubmit} className="grid gap-4">
           <label className={fieldGroup}>
             <span className={fieldLabel}>{admin.config.fields.value}</span>
-            <input
-              className={inputBase}
-              type={typeof config.value === 'number' ? 'number' : 'text'}
-              step={typeof config.value === 'number' ? 'any' : undefined}
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              required
-            />
+            {typeof config.value === 'boolean' ? (
+              <select className={inputBase} value={value} onChange={(e) => setValue(e.target.value)}>
+                <option value="true">true</option>
+                <option value="false">false</option>
+              </select>
+            ) : (
+              <input
+                className={inputBase}
+                type={typeof config.value === 'number' ? 'number' : 'text'}
+                step={typeof config.value === 'number' ? 'any' : undefined}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                required
+              />
+            )}
           </label>
+
+          {validationError ? <p className={errorMessage}>{validationError}</p> : null}
 
           <label className={fieldGroup}>
             <span className={fieldLabel}>{admin.config.fields.name}</span>
