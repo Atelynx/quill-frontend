@@ -31,7 +31,6 @@ import {
   heroPanelContent,
   heroPanelMeta,
   heroChip,
-  heroChipSecondary,
   summaryGrid,
   dashboardGridWide,
   dashboardGridBalanced,
@@ -52,6 +51,12 @@ import { useForexDispatch } from "@/shared/hooks/useForexRate";
 import { useAppSelector } from "@/store/hooks";
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL ?? "http://localhost:3000";
+
+const panelLabels: Record<string, string> = {
+  portfolio: 'Portafolio',
+  orders: 'Ordenes abiertas',
+  trades: 'Operaciones recientes',
+};
 
 interface MarketPriceUpdate {
   symbol: string;
@@ -416,16 +421,18 @@ export function DashboardPage() {
           )}
 
 
-            <MarketTable
-              currency={currency}
-              movementBySymbol={movementBySymbol}
-              onSelect={setSelectedSymbol}
-              quotes={quotes}
-              rate={rate}
-              selectedSymbol={activeSymbol}
-              watchlist={user?.watchlist}
-              onToggleWatchlist={handleToggleWatchlist}
-            />
+            <div className="max-h-[45vh] max-[720px]:max-h-[35vh] overflow-auto">
+              <MarketTable
+                currency={currency}
+                movementBySymbol={movementBySymbol}
+                onSelect={setSelectedSymbol}
+                quotes={quotes}
+                rate={rate}
+                selectedSymbol={activeSymbol}
+                watchlist={user?.watchlist}
+                onToggleWatchlist={handleToggleWatchlist}
+              />
+            </div>
  
         </SectionCard>
 
@@ -488,28 +495,24 @@ export function DashboardPage() {
         </SectionCard>
       </div> */}
 
-      <div className="flex flex-wrap justify-center gap-2">
-        <button
-          type="button"
-          className={`${heroChip} ${selectedPanel === "portfolio" ? heroChipSecondary : ""}`}
-          onClick={() => setSelectedPanel("portfolio")}
-        >
-          Portafolio
-        </button>
-        <button
-          type="button"
-          className={`${heroChip} ${selectedPanel === "orders" ? heroChipSecondary : ""}`}
-          onClick={() => setSelectedPanel("orders")}
-        >
-          Ordenes abiertas
-        </button>
-        <button
-          type="button"
-          className={`${heroChip} ${selectedPanel === "trades" ? heroChipSecondary : ""}`}
-          onClick={() => setSelectedPanel("trades")}
-        >
-          Operaciones recientes
-        </button>
+      <div className="sticky top-0 z-10 flex gap-6 border-b border-[var(--main-page-border)] bg-[var(--color-background)] pt-2">
+        {Object.entries(panelLabels).map(([panel, label]) => {
+          const isActive = selectedPanel === panel;
+          return (
+            <button
+              key={panel}
+              type="button"
+              onClick={() => setSelectedPanel(panel as typeof selectedPanel)}
+              className={`pb-3 text-[0.9rem] font-semibold transition-colors ${
+                isActive
+                  ? 'border-b-2 border-[var(--color-accent)] text-[var(--color-accent)]'
+                  : 'text-[var(--main-page-text-soft)] hover:text-[var(--color-text)]'
+              }`}
+            >
+              {label}
+            </button>
+          );
+        })}
       </div>
 
       {selectedPanel === "portfolio" && (

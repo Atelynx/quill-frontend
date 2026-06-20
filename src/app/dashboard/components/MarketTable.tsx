@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react';
 import type { StockQuote } from '../../../shared/api/types';
 import { formatPercentage } from '../../../shared/utils/format';
 import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
@@ -32,9 +33,29 @@ export function MarketTable({
   watchlist,
   onToggleWatchlist,
 }: MarketTableProps) {
+  const [search, setSearch] = useState('');
+  const filteredQuotes = useMemo(
+    () => search
+      ? quotes.filter(
+          (q) =>
+            q.symbol.toLowerCase().includes(search.toLowerCase()) ||
+            q.name.toLowerCase().includes(search.toLowerCase()),
+        )
+      : quotes,
+    [quotes, search],
+  );
+
   const marketTableText1 = "p-[0.5rem_0.6rem] text-left text-[0.78rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]";
   return (
     <div className={`${surface.tableWrapper} responsive-table`}>
+      <div className="sticky top-0 z-10 border-b border-[var(--main-page-border)] bg-[var(--main-page-surface-strong)]">
+        <input
+          className="w-full bg-transparent px-3 py-2 text-[0.85rem] text-[var(--color-text)] outline-none placeholder:text-[var(--main-page-text-muted)]"
+          placeholder="Buscar accion..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
       <table className="w-full border-separate border-spacing-0">
         <thead>
           <tr>
@@ -48,7 +69,7 @@ export function MarketTable({
           </tr>
         </thead>
         <tbody>
-          {quotes.map((quote) => {
+          {filteredQuotes.map((quote) => {
             const isSelected = quote.symbol === selectedSymbol;
             const isWatched = watchlist?.includes(quote.symbol) ?? false;
 
