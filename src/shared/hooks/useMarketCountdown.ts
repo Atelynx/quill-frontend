@@ -13,9 +13,17 @@ function toSeconds(hhmm: string): number {
   return h * 3600 + m * 60;
 }
 
+function isClosedDay(closedDays: number[]): boolean {
+  if (closedDays.length === 0) return false;
+  const jsDay = new Date().getDay();
+  const backendDay = jsDay === 0 ? 7 : jsDay;
+  return closedDays.includes(backendDay);
+}
+
 export function useMarketCountdown(
   openTime: string,
   closeTime: string,
+  closedDays: number[] = [],
 ): MarketCountdown | null {
   const [countdown, setCountdown] = useState<MarketCountdown | null>(null);
 
@@ -23,6 +31,11 @@ export function useMarketCountdown(
     if (!openTime || !closeTime) return;
 
     const tick = () => {
+      if (isClosedDay(closedDays)) {
+        setCountdown(null);
+        return;
+      }
+
       const now = new Date();
       const nowSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
       const openSec = toSeconds(openTime);
@@ -57,7 +70,7 @@ export function useMarketCountdown(
     tick();
     const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
-  }, [openTime, closeTime]);
+  }, [openTime, closeTime, closedDays]);
 
   return countdown;
 }

@@ -78,6 +78,7 @@ export const marketService = {
       open: false,
       openTime: '09:30',
       closeTime: '16:00',
+      closedDays: [6, 7],
       currentTime: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', hour12: false }),
     });
   },

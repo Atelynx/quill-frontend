@@ -40,6 +40,7 @@ export const MarketStatusSchema = z.object({
   openTime: z.string(),
   closeTime: z.string(),
   currentTime: z.string(),
+  closedDays: z.array(z.number()).optional(),
 });
 
 export type MarketStatus = z.infer<typeof MarketStatusSchema>;

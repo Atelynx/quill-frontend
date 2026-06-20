@@ -16,6 +16,7 @@ export function MarketStatusBadge({ status }: MarketStatusBadgeProps) {
   const countdown = useMarketCountdown(
     status?.openTime ?? '',
     status?.closeTime ?? '',
+    status?.closedDays ?? [],
   );
 
   if (!status) {
