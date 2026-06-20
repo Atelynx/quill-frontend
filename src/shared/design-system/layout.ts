@@ -8,13 +8,13 @@ export const authTopbar = 'md:col-span-2 flex items-center justify-between max-[
 
 export const authHero = 'text-white p-10 flex flex-col justify-between gap-6 max-[720px]:p-6'
 
-export const authCard = 'p-8 flex flex-col justify-center max-[720px]:p-6'
+export const authCard = 'p-8 flex flex-col max-[720px]:p-6'
 
 export const authTabs = 'grid grid-cols-2 gap-3'
 
-export const authTabButton = 'min-h-[48px] px-4 py-3.5 rounded-full border border-[var(--main-page-border)] text-[var(--main-page-text-soft)] bg-[var(--gradient-tab-inactive)] transition-all duration-[var(--main-page-transition)]'
+export const authTabButton = 'min-h-[48px] px-4 py-3.5 rounded-full border text-[var(--main-page-text-muted)] border-[var(--main-page-border)] bg-[var(--main-page-surface-soft)] transition-all duration-[var(--main-page-transition)]'
 
-export const authTabActive = 'bg-[var(--gradient-tab-active)] text-white border-[color-mix(in_srgb,_var(--color-accent)_24%,_transparent)]'
+export const authTabActive = 'bg-[var(--color-accent)] text-white border-[var(--color-accent)]'
 
 export const authStatusStack = 'min-h-[12px] mt-4'
 

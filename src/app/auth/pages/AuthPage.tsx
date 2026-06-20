@@ -9,8 +9,8 @@ import { PasswordField } from '../../../shared/components/PasswordField';
 import { ThemeToggle } from '../../../shared/components/ThemeToggle';
 import { useAuth } from '../hooks/use-auth';
 import { button, surface, gradient } from '../../../shared/design-system/surfaces';
-import { eyebrow, fieldLabel, fieldError, textSoft } from '../../../shared/design-system/typography';
-import { authGrid, authTopbar, authHero, authCard, authTabs, authTabButton, authTabActive, authStatusStack, heroMetrics, heroMetricCard, formGrid, fieldGroup } from '../../../shared/design-system/layout';
+import { fieldLabel, fieldError, textSoft } from '../../../shared/design-system/typography';
+import { authGrid, authHero, authCard, authTabs, authTabButton, authTabActive, authStatusStack, heroMetrics, heroMetricCard, formGrid, fieldGroup } from '../../../shared/design-system/layout';
 import { inputBase, successMessage as successMsgClass, errorMessage as errorMsgClass } from '../../../shared/design-system/forms';
 
 const loginSchema = z.object({
@@ -116,17 +116,12 @@ export function AuthPage() {
 
   return (
     <main className={authGrid}>
-      <div className={authTopbar}>
-        <div>
-          <p className={eyebrow}>{auth.hero.eyebrow}</p>
-          <h2 className="mt-[0.15rem] text-[1.3rem] m-0">{auth.hero.title}</h2>
-        </div>
-        <ThemeToggle />
-      </div>
-
       <section className={`${surface.xl} ${gradient.hero} ${authHero}`}>
         <div>
-          <p className={eyebrow}>{auth.hero.subtitle}</p>
+          {/* <p className="mt-5 text-[0.8rem] tracking-[0.12em] uppercase font-semibold text-[var(--main-page-inverse-text-muted)]">
+            Quill · Atelynx
+          </p> */}
+          <p className="m-0 text-[0.85rem] tracking-[0.16em] uppercase font-bold text-[var(--main-page-inverse-text-muted)]">{auth.hero.subtitle}</p>
           <h1 className="my-4 text-[clamp(2.3rem,4vw,4.5rem)] leading-[0.95]">{auth.hero.headline}</h1>
           <p className="m-0 text-[1.08rem] text-[var(--main-page-inverse-text-soft)]">
             {auth.hero.description}
@@ -176,86 +171,92 @@ export function AuthPage() {
           {errorMessage ? <p className={errorMsgClass}>{errorMessage}</p> : null}
         </div>
 
-        {mode === 'login' ? (
-          <form className={formGrid} onSubmit={handleLogin}>
-            <label className={fieldGroup}>
-              <span className={fieldLabel}>{auth.login.emailLabel}</span>
-              <input className={inputBase} type="email" {...loginForm.register('email')} />
-              <span className={fieldError}>
-                {loginForm.formState.errors.email?.message}
-              </span>
-            </label>
+        <div className="flex min-h-0 flex-1 flex-col justify-start">
+          {mode === 'login' ? (
+            <form className={formGrid} onSubmit={handleLogin}>
+              <label className={fieldGroup}>
+                <span className={fieldLabel}>{auth.login.emailLabel}</span>
+                <input className={inputBase} type="email" {...loginForm.register('email')} />
+                <span className={fieldError}>
+                  {loginForm.formState.errors.email?.message}
+                </span>
+              </label>
 
-            <PasswordField
-              error={loginForm.formState.errors.password?.message}
-              hint={auth.login.passwordHint}
-              label={auth.login.passwordLabel}
-              {...loginForm.register('password')}
-            />
+              <PasswordField
+                error={loginForm.formState.errors.password?.message}
+                hint={auth.login.passwordHint}
+                label={auth.login.passwordLabel}
+                {...loginForm.register('password')}
+              />
 
-            <button
-              className={`${button.base} ${button.primary}`}
-              disabled={loginForm.formState.isSubmitting}
-              type="submit"
-            >
-              {loginForm.formState.isSubmitting ? labels.action.loggingIn : labels.action.enterQuill}
-            </button>
-          </form>
-        ) : (
-          <form className={formGrid} onSubmit={handleRegister}>
-            <label className={fieldGroup}>
-              <span className={fieldLabel}>{labels.field.fullName}</span>
-              <input className={inputBase} type="text" {...registerForm.register('fullName')} />
-              <span className={fieldError}>
-                {registerForm.formState.errors.fullName?.message}
-              </span>
-            </label>
+              <button
+                className={`${button.base} ${button.primary}`}
+                disabled={loginForm.formState.isSubmitting}
+                type="submit"
+              >
+                {loginForm.formState.isSubmitting ? labels.action.loggingIn : labels.action.enterQuill}
+              </button>
+            </form>
+          ) : (
+            <form className={formGrid} onSubmit={handleRegister}>
+              <label className={fieldGroup}>
+                <span className={fieldLabel}>{labels.field.fullName}</span>
+                <input className={inputBase} type="text" {...registerForm.register('fullName')} />
+                <span className={fieldError}>
+                  {registerForm.formState.errors.fullName?.message}
+                </span>
+              </label>
 
-            <label className={fieldGroup}>
-              <span className={fieldLabel}>{auth.register.usernameLabel}</span>
-              <input className={inputBase} type="text" placeholder={labels.field.usernamePlaceholder} {...registerForm.register('username')} />
-              <span className={fieldError}>
-                {registerForm.formState.errors.username?.message}
-              </span>
-            </label>
+              <label className={fieldGroup}>
+                <span className={fieldLabel}>{auth.register.usernameLabel}</span>
+                <input className={inputBase} type="text" placeholder={labels.field.usernamePlaceholder} {...registerForm.register('username')} />
+                <span className={fieldError}>
+                  {registerForm.formState.errors.username?.message}
+                </span>
+              </label>
 
-            <label className={fieldGroup}>
-              <span className={fieldLabel}>{auth.register.emailLabel}</span>
-              <input className={inputBase} type="email" {...registerForm.register('email')} />
-              <span className={fieldError}>
-                {registerForm.formState.errors.email?.message}
-              </span>
-            </label>
+              <label className={fieldGroup}>
+                <span className={fieldLabel}>{auth.register.emailLabel}</span>
+                <input className={inputBase} type="email" {...registerForm.register('email')} />
+                <span className={fieldError}>
+                  {registerForm.formState.errors.email?.message}
+                </span>
+              </label>
 
-            <PasswordField
-              error={registerForm.formState.errors.password?.message}
-              hint={auth.register.passwordHint}
-              label={auth.register.passwordLabel}
-              {...registerForm.register('password')}
-            />
+              <PasswordField
+                error={registerForm.formState.errors.password?.message}
+                hint={auth.register.passwordHint}
+                label={auth.register.passwordLabel}
+                {...registerForm.register('password')}
+              />
 
-            <PasswordField
-              error={registerForm.formState.errors.confirmPassword?.message}
-              hint={auth.register.confirmHint}
-              label={labels.field.confirmPassword}
-              {...registerForm.register('confirmPassword')}
-            />
+              <PasswordField
+                error={registerForm.formState.errors.confirmPassword?.message}
+                hint={auth.register.confirmHint}
+                label={labels.field.confirmPassword}
+                {...registerForm.register('confirmPassword')}
+              />
 
-            <button
-              className={`${button.base} ${button.primary}`}
-              disabled={registerForm.formState.isSubmitting}
-              type="submit"
-            >
-              {registerForm.formState.isSubmitting
-                ? labels.action.creatingAccount
-                : labels.action.register}
-            </button>
-          </form>
-        )}
+              <button
+                className={`${button.base} ${button.primary}`}
+                disabled={registerForm.formState.isSubmitting}
+                type="submit"
+              >
+                {registerForm.formState.isSubmitting
+                  ? labels.action.creatingAccount
+                  : labels.action.register}
+              </button>
+            </form>
+          )}
+        </div>
 
         <p className={`mt-4 text-[0.95rem] ${textSoft}`}>
           {auth.footer}
         </p>
+
+        <div className="mt-5 pt-4 border-t border-[var(--main-page-border)]">
+          <ThemeToggle />
+        </div>
       </section>
     </main>
   );

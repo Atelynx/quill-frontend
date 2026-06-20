@@ -280,7 +280,7 @@ export const auth = {
   hero: {
     eyebrow: 'Atelynx presenta',
     title: 'Quill',
-    subtitle: 'Simulador educativo',
+    subtitle: 'Quill • Simulador educativo',
     headline: 'Aprende a invertir entendiendo cada decisión.',
     description:
       'Quill combina mercado simulado, órdenes límite, comisiones y portafolio para practicar con una experiencia clara, seria y sin dinero real.',
