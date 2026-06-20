@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { admin } from '../../../shared/content/strings';
 import { button, surface } from '../../../shared/design-system/surfaces';
-import { fieldLabel, hint, textSoft, textMuted } from '../../../shared/design-system/typography';
+import { fieldLabel, hint } from '../../../shared/design-system/typography';
 import { fieldGroup } from '../../../shared/design-system/layout';
 import { errorMessage, inputBase } from '../../../shared/design-system/forms';
 import { useUpdateAdminConfig } from '../../../shared/api/hooks';

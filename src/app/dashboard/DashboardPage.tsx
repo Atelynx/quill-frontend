@@ -34,7 +34,6 @@ import {
   summaryGrid,
   dashboardGridWide,
   dashboardGridBalanced,
-  guideList,
   flexGrowCol,
 } from "../../shared/design-system/layout";
 import { eyebrow, textSoft, textMuted } from "../../shared/design-system/typography";

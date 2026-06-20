@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAdminSnapshots, useCreateSnapshot } from '../../../shared/api/hooks';
 import { admin } from '../../../shared/content/strings';
 import { button, gradient, surface } from '../../../shared/design-system/surfaces';
-import { loadingScreen, sectionGap } from '../../../shared/design-system/layout';
+import { loadingScreen } from '../../../shared/design-system/layout';
 import { textSoft, textMuted } from '../../../shared/design-system/typography';
 import { SectionCard } from '../../../shared/components/SectionCard';
 import { SnapshotRestoreDialog } from '../components/SnapshotRestoreDialog';

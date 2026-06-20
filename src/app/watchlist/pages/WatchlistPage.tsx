@@ -10,7 +10,7 @@ import { loadingScreen } from '../../../shared/design-system/layout';
 import { surface } from '../../../shared/design-system/surfaces';
 import { formatPercentage } from '../../../shared/utils/format';
 import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
-import { textPositive, textNegative, textSoft, textMuted } from '../../../shared/design-system/typography';
+import { textPositive, textNegative } from '../../../shared/design-system/typography';
 import { table } from '../../../shared/design-system';
 import { useAppSelector } from '../../../store/hooks';
 import type { StockQuote } from '../../../shared/api/validators';

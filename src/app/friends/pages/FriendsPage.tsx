@@ -12,7 +12,7 @@ import { EmptyState } from '../../../shared/components/EmptyState';
 import { Button } from '../../../shared/components/Button';
 import { loadingScreen, formGrid, fieldGroup } from '../../../shared/design-system/layout';
 import { surface } from '../../../shared/design-system/surfaces';
-import { fieldLabel, textSoft, textMuted } from '../../../shared/design-system/typography';
+import { fieldLabel, textSoft } from '../../../shared/design-system/typography';
 import { table } from '../../../shared/design-system';
 import { errorMessage as errorMsgClass, inputBase } from '../../../shared/design-system/forms';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
