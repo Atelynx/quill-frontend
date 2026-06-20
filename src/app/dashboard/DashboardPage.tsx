@@ -421,18 +421,16 @@ export function DashboardPage() {
           )}
 
 
-            <div className="max-h-[45vh] max-[720px]:max-h-[35vh] overflow-auto">
-              <MarketTable
-                currency={currency}
-                movementBySymbol={movementBySymbol}
-                onSelect={setSelectedSymbol}
-                quotes={quotes}
-                rate={rate}
-                selectedSymbol={activeSymbol}
-                watchlist={user?.watchlist}
-                onToggleWatchlist={handleToggleWatchlist}
-              />
-            </div>
+            <MarketTable
+              currency={currency}
+              movementBySymbol={movementBySymbol}
+              onSelect={setSelectedSymbol}
+              quotes={quotes}
+              rate={rate}
+              selectedSymbol={activeSymbol}
+              watchlist={user?.watchlist}
+              onToggleWatchlist={handleToggleWatchlist}
+            />
  
         </SectionCard>
 

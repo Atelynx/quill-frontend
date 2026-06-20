@@ -23,6 +23,8 @@ const movementColor: Record<string, string> = {
   steady: '',
 }
 
+const MAX_VISIBLE_ROWS = 4;
+
 export function MarketTable({
   quotes,
   selectedSymbol,
@@ -34,14 +36,17 @@ export function MarketTable({
   onToggleWatchlist,
 }: MarketTableProps) {
   const [search, setSearch] = useState('');
-  const filteredQuotes = useMemo(
-    () => search
-      ? quotes.filter(
-          (q) =>
-            q.symbol.toLowerCase().includes(search.toLowerCase()) ||
-            q.name.toLowerCase().includes(search.toLowerCase()),
-        )
-      : quotes,
+  const displayQuotes = useMemo(
+    () => {
+      const matches = search
+        ? quotes.filter(
+            (q) =>
+              q.symbol.toLowerCase().includes(search.toLowerCase()) ||
+              q.name.toLowerCase().includes(search.toLowerCase()),
+          )
+        : quotes;
+      return matches.slice(0, MAX_VISIBLE_ROWS);
+    },
     [quotes, search],
   );
 
@@ -69,11 +74,24 @@ export function MarketTable({
           </tr>
         </thead>
         <tbody>
-          {filteredQuotes.map((quote) => {
+          {Array.from({ length: MAX_VISIBLE_ROWS }).map((_, i) => {
+            const quote = displayQuotes[i];
+            if (!quote) {
+              return (
+                <tr key={`empty-${i}`} className="invisible">
+                  {watchlist !== undefined ? <td className="p-[0.5rem_0.6rem]" /> : null}
+                  <td className="p-[0.5rem_0.6rem]">&nbsp;</td>
+                  <td className="p-[0.5rem_0.6rem]">&nbsp;</td>
+                  <td className="p-[0.5rem_0.6rem]">&nbsp;</td>
+                  <td className="p-[0.5rem_0.6rem]">&nbsp;</td>
+                </tr>
+              );
+            }
+
             const isSelected = quote.symbol === selectedSymbol;
             const isWatched = watchlist?.includes(quote.symbol) ?? false;
-
             const marketTableBodyText1 = "p-[0.5rem_0.6rem] text-left border-b border-[var(--main-page-border)]";
+
             return (
             <tr
               key={quote.symbol}
