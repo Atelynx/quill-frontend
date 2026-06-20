@@ -437,6 +437,7 @@ export function DashboardPage() {
         <SectionCard
           title="Nueva orden limitada"
           description="Define el precio al que quieres entrar o salir. Quill la ejecutara automaticamente cuando el mercado llegue a ese valor."
+          className="p-5 pt-4"
         >
           <OrderForm
             quotes={quotes}
