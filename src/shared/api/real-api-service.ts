@@ -122,6 +122,16 @@ export const ordersService = {
       throw error;
     }
   },
+
+  cancel: async (id: string) => {
+    try {
+      const response = await apiClient.patch(`/orders/${id}/cancel`);
+      return OrderRecordSchema.parse(response.data);
+    } catch (error) {
+      logError(`[API] Order cancellation failed: ${id}`, error);
+      throw error;
+    }
+  },
 };
 
 export const tradesService = {

@@ -189,6 +189,22 @@ export function useCreateOrderMutation() {
   });
 }
 
+export function useCancelOrderMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => ordersService.cancel(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['orders', 'pending'] });
+      void queryClient.invalidateQueries({ queryKey: ['portfolio', 'summary'] });
+      void queryClient.invalidateQueries({ queryKey: ['trades', 'recent'] });
+    },
+    onError: (error) => {
+      logError('[Mutation] Order cancellation failed:', error);
+    },
+  });
+}
+
 /**
  * Hook for updating an admin config
  */

@@ -102,6 +102,13 @@ export const ordersService = {
   create: async (_order: CreateOrderInput) => {
     await delay(NETWORK_LATENCY_MS);
   },
+
+  cancel: async (id: string) => {
+    await delay(NETWORK_LATENCY_MS);
+    const order = STUB_ORDERS.find((o) => o._id === id);
+    if (!order) throw new Error(`Order not found: ${id}`);
+    return OrderRecordSchema.parse({ ...order, status: 'CANCELLED' });
+  },
 };
 
 export const tradesService = {
