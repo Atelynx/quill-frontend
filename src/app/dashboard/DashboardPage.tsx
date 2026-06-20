@@ -36,8 +36,9 @@ import {
   dashboardGridWide,
   dashboardGridBalanced,
   guideList,
+  flexGrowCol,
 } from "../../shared/design-system/layout";
-import { eyebrow } from "../../shared/design-system/typography";
+import { eyebrow, textSoft, textMuted } from "../../shared/design-system/typography";
 import { AnimatedCurrency } from "../../shared/components/AnimatedCurrency";
 import { formatCurrency } from "../../shared/utils/format";
 import { MarketChart } from "./components/MarketChart";
@@ -80,6 +81,9 @@ export function DashboardPage() {
     Record<string, "up" | "down" | "steady">
   >({});
   const [selectedSymbol, setSelectedSymbol] = useState("");
+  const [selectedPanel, setSelectedPanel] = useState<
+    "portfolio" | "orders" | "trades"
+  >("portfolio");
   const { handleForexUpdate } = useForexDispatch();
   const { preferredCurrency: currency, usdclpRate: rate } = useAppSelector(
     (state) => state.currency,
@@ -380,7 +384,7 @@ export function DashboardPage() {
           className="flex flex-col"
         >
           {activeSymbol ? (
-            <div className="flex min-h-0 flex-1 flex-col">
+            <div className={`${flexGrowCol} max-[720px]:flex-none max-[720px]:min-h-[380px]`}>
               <MarketChart
                 currency={currency}
                 data={(historyQuery.data as PricePoint[]) ?? []}
@@ -390,19 +394,41 @@ export function DashboardPage() {
               />
             </div>
           ) : (
-            <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3">
-              <svg className="h-10 w-10 text-[var(--main-page-text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <div className={`${flexGrowCol} items-center justify-center gap-3`}>
+              <svg
+                className={`h-10 w-10 ${textMuted}`}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M3 3v18h18" />
                 <path d="M7 16l4-8 4 4 4-6" />
               </svg>
-              <p className="m-0 max-w-[28ch] text-center text-[1.1rem] leading-relaxed text-[var(--main-page-text-soft)]">
+              <p className={`m-0 max-w-[28ch] text-center text-[1.1rem] leading-relaxed ${textSoft}`}>
                 Sin selección activa.
                 <br />
                 Elige una acción en la tabla para revisar su evolución.
               </p>
             </div>
           )}
+
+
+            <MarketTable
+              currency={currency}
+              movementBySymbol={movementBySymbol}
+              onSelect={setSelectedSymbol}
+              quotes={quotes}
+              rate={rate}
+              selectedSymbol={activeSymbol}
+              watchlist={user?.watchlist}
+              onToggleWatchlist={handleToggleWatchlist}
+            />
+ 
         </SectionCard>
+
         <SectionCard
           title="Nueva orden limitada"
           description="Define el precio al que quieres entrar o salir. Quill la ejecutara automaticamente cuando el mercado llegue a ese valor."
@@ -415,28 +441,10 @@ export function DashboardPage() {
             onSymbolChange={setSelectedSymbol}
           />
         </SectionCard>
+        <div className={dashboardGridBalanced}></div>
       </div>
 
-      <div className={dashboardGridBalanced}>
-        <SectionCard
-          className="min-h-[335px] max-h-[595px] overflow-auto"
-          title="Mercado disponible"
-          description="Haz clic en una accion para enfocarte en su grafica y preparar una orden."
-        >
-          <MarketTable
-            currency={currency}
-            movementBySymbol={movementBySymbol}
-            onSelect={setSelectedSymbol}
-            quotes={quotes}
-            rate={rate}
-            selectedSymbol={activeSymbol}
-            watchlist={user?.watchlist}
-            onToggleWatchlist={handleToggleWatchlist}
-          />
-        </SectionCard>
-      </div>
-
-
+      {/* 
       <div className={dashboardGridBalanced}>
         <SectionCard
           title="Nueva orden limitada"
@@ -478,27 +486,55 @@ export function DashboardPage() {
             </article>
           </div>
         </SectionCard>
+      </div> */}
+
+      <div className="flex flex-wrap justify-center gap-2">
+        <button
+          type="button"
+          className={`${heroChip} ${selectedPanel === "portfolio" ? heroChipSecondary : ""}`}
+          onClick={() => setSelectedPanel("portfolio")}
+        >
+          Portafolio
+        </button>
+        <button
+          type="button"
+          className={`${heroChip} ${selectedPanel === "orders" ? heroChipSecondary : ""}`}
+          onClick={() => setSelectedPanel("orders")}
+        >
+          Ordenes abiertas
+        </button>
+        <button
+          type="button"
+          className={`${heroChip} ${selectedPanel === "trades" ? heroChipSecondary : ""}`}
+          onClick={() => setSelectedPanel("trades")}
+        >
+          Operaciones recientes
+        </button>
       </div>
 
-      <SectionCard
-        title="Portafolio"
-        description="Tus posiciones activas, costo promedio y valor de mercado actual."
-      >
-        <PortfolioTable
-          currency={currency}
-          positions={portfolio?.positions ?? []}
-          rate={rate}
-        />
-      </SectionCard>
+      {selectedPanel === "portfolio" && (
+        <SectionCard
+          title="Portafolio"
+          description="Tus posiciones activas, costo promedio y valor de mercado actual."
+        >
+          <PortfolioTable
+            currency={currency}
+            positions={portfolio?.positions ?? []}
+            rate={rate}
+          />
+        </SectionCard>
+      )}
 
-      <div className={dashboardGridBalanced}>
+      {selectedPanel === "orders" && (
         <SectionCard
           title="Ordenes abiertas"
           description="Quedaran aqui mientras esperan que el precio cumpla tu condicion."
         >
           <OrdersTable currency={currency} orders={openOrders} rate={rate} />
         </SectionCard>
+      )}
 
+      {selectedPanel === "trades" && (
         <SectionCard
           title="Operaciones recientes"
           description="Registro de compras y ventas ya ejecutadas por el motor del simulador."
@@ -510,13 +546,7 @@ export function DashboardPage() {
             trades={recentTrades}
           />
         </SectionCard>
-      </div>
-      <div className="flex flex-wrap gap-2 justify-center">
-        <span className={heroChip}>Marca principal: Quill</span>
-        <span className={`${heroChip} ${heroChipSecondary}`}>
-          Equipo desarrollador: Atelynx
-        </span>
-      </div>
+      )}
     </AppShell>
   );
 }

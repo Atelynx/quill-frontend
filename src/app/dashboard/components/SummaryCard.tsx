@@ -1,5 +1,5 @@
 import { surface } from '../../../shared/design-system/surfaces';
-import { textPositive, textNegative } from '../../../shared/design-system/typography';
+import { textPositive, textNegative, textSoft } from '../../../shared/design-system/typography';
 import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
 import { AnimatedInteger } from '../../../shared/components/AnimatedInteger';
 
@@ -26,7 +26,7 @@ const borderClass: Record<string, string> = {
 export function SummaryCard({ label, value, tone = 'neutral', currency, rate }: SummaryCardProps) {
   return (
     <article className={`${surface.summaryCard} ${borderClass[tone]}`}>
-      <span className="block text-[0.9rem] text-[var(--main-page-text-soft)]">{label}</span>
+      <span className={`block text-[0.9rem] ${textSoft}`}>{label}</span>
       <strong className={`mt-[0.45rem] block text-[1.45rem] ${strongClass[tone]}`}>
         {currency ? (
           <AnimatedCurrency value={value} currency={currency} rate={rate} />

@@ -10,6 +10,8 @@ export {
   textNegative,
   sidebarCopy,
   sidebarLabel,
+  textSoft,
+  textMuted,
 } from './typography';
 export {
   fieldGroup,
@@ -39,5 +41,9 @@ export {
   guideList,
   summaryCardPositive,
   summaryCardNegative,
+  flexGrowCol,
+  sectionGap,
+  adminToolbar,
 } from './layout';
 export { inputBase, messageBase, successMessage, errorMessage } from './forms';
+export { table } from './table';

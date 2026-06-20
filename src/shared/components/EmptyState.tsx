@@ -1,4 +1,5 @@
 import { surface, gradient } from '../design-system/surfaces';
+import { textSoft } from '../design-system/typography';
 
 interface EmptyStateProps {
   title: string;
@@ -18,7 +19,7 @@ export function EmptyState({ title, description }: EmptyStateProps) {
         </svg>
       </div>
       <h4 className="m-0 text-text">{title}</h4>
-      <p className="m-0 text-[var(--main-page-text-soft)]">{description}</p>
+      <p className={`m-0 ${textSoft}`}>{description}</p>
     </div>
   );
 }

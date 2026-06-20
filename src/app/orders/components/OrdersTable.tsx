@@ -3,6 +3,7 @@ import type { OrderRecord } from '../../../shared/api/types';
 import { formatDateTime } from '../../../shared/utils/format';
 import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
 import { surface } from '../../../shared/design-system/surfaces';
+import { table } from '../../../shared/design-system';
 import '../../../shared/design-system/table.css';
 
 interface OrdersTableProps {
@@ -26,33 +27,33 @@ export function OrdersTable({ orders, currency, rate }: OrdersTableProps) {
       <table className="w-full min-w-[640px] border-separate border-spacing-0">
         <thead>
           <tr>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Accion</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Lado</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Modalidad</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Cantidad</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Limite</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Estado</th>
-            <th className="whitespace-nowrap p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Creada</th>
+            <th className={table.header}>Accion</th>
+            <th className={table.header}>Lado</th>
+            <th className={table.header}>Modalidad</th>
+            <th className={table.header}>Cantidad</th>
+            <th className={table.header}>Limite</th>
+            <th className={table.header}>Estado</th>
+            <th className={`whitespace-nowrap ${table.header}`}>Creada</th>
           </tr>
         </thead>
         <tbody>
           {orders.map((order) => (
-            <tr key={order._id} className="border-b border-[var(--main-page-border)] transition-colors duration-[var(--main-page-transition)]">
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Accion">{order.symbol}</td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Lado">
+            <tr key={order._id} className={`${table.rowBorder} transition-colors duration-[var(--main-page-transition)]`}>
+              <td className={table.cell} data-label="Accion">{order.symbol}</td>
+              <td className={table.cell} data-label="Lado">
                 {order.side === 'BUY' ? 'Compra' : 'Venta'}
               </td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Modalidad">
+              <td className={table.cell} data-label="Modalidad">
                 {order.type === 'MARKET' ? 'Mercado' : 'Limite'}
               </td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Cantidad">{order.quantity}</td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Limite">
+              <td className={table.cell} data-label="Cantidad">{order.quantity}</td>
+              <td className={table.cell} data-label="Limite">
                 {order.type === 'MARKET' || order.limitPrice == null
                   ? '—'
                   : <AnimatedCurrency value={order.limitPrice} currency={currency} rate={rate} />}
               </td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Estado">{order.status}</td>
-              <td className="whitespace-nowrap p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Creada">{formatDateTime(order.createdAt)}</td>
+              <td className={table.cell} data-label="Estado">{order.status}</td>
+              <td className={`whitespace-nowrap ${table.cell}`} data-label="Creada">{formatDateTime(order.createdAt)}</td>
             </tr>
           ))}
         </tbody>

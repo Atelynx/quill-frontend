@@ -13,3 +13,7 @@ export const textNegative = 'text-[var(--main-page-danger)] font-semibold'
 export const sidebarCopy = 'text-[var(--main-page-text-soft)]'
 
 export const sidebarLabel = 'block mb-[0.35rem] text-[0.78rem] tracking-[0.08em] uppercase text-[var(--main-page-inverse-text-muted)]'
+
+export const textSoft = 'text-[var(--main-page-text-soft)]'
+
+export const textMuted = 'text-[var(--main-page-text-muted)]'

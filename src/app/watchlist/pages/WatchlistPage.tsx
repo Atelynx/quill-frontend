@@ -10,7 +10,8 @@ import { loadingScreen } from '../../../shared/design-system/layout';
 import { surface } from '../../../shared/design-system/surfaces';
 import { formatPercentage } from '../../../shared/utils/format';
 import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
-import { textPositive, textNegative } from '../../../shared/design-system/typography';
+import { textPositive, textNegative, textSoft, textMuted } from '../../../shared/design-system/typography';
+import { table } from '../../../shared/design-system';
 import { useAppSelector } from '../../../store/hooks';
 import type { StockQuote } from '../../../shared/api/validators';
 import { useMemo } from 'react';
@@ -85,29 +86,29 @@ export function WatchlistPage() {
             <table className="w-full min-w-[640px] border-separate border-spacing-0">
               <thead>
                 <tr>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Simbolo</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Empresa</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Precio</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Variacion</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]"></th>
+                  <th className={table.header}>Simbolo</th>
+                  <th className={table.header}>Empresa</th>
+                  <th className={table.header}>Precio</th>
+                  <th className={table.header}>Variacion</th>
+                  <th className={table.header}></th>
                 </tr>
               </thead>
               <tbody>
                 {stocks.map((stock) => (
-                  <tr key={stock.symbol} className="border-b border-[var(--main-page-border)]">
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] font-semibold" data-label="Simbolo">
+                  <tr key={stock.symbol} className={table.rowBorder}>
+                    <td className={`${table.cell} font-semibold`} data-label="Simbolo">
                       {stock.symbol}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="Empresa">
+                    <td className={table.cell} data-label="Empresa">
                       {stock.name}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="Precio">
+                    <td className={table.cell} data-label="Precio">
                       <AnimatedCurrency value={stock.close} currency={currency} sourceCurrency={stock.currency} rate={rate} />
                     </td>
-                    <td className={`p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] ${stock.dayChangePercentage >= 0 ? textPositive : textNegative}`} data-label="Variacion">
+                    <td className={`${table.cell} ${stock.dayChangePercentage >= 0 ? textPositive : textNegative}`} data-label="Variacion">
                       {formatPercentage(stock.dayChangePercentage)}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="">
+                    <td className={table.cell} data-label="">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -134,25 +135,25 @@ export function WatchlistPage() {
             <table className="w-full min-w-[640px] border-separate border-spacing-0">
               <thead>
                 <tr>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Simbolo</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Empresa</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">Precio</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]"></th>
+                  <th className={table.header}>Simbolo</th>
+                  <th className={table.header}>Empresa</th>
+                  <th className={table.header}>Precio</th>
+                  <th className={table.header}></th>
                 </tr>
               </thead>
               <tbody>
                 {availableStocks.map((stock) => (
-                  <tr key={stock.symbol} className="border-b border-[var(--main-page-border)]">
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] font-semibold" data-label="Simbolo">
+                  <tr key={stock.symbol} className={table.rowBorder}>
+                    <td className={`${table.cell} font-semibold`} data-label="Simbolo">
                       {stock.symbol}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="Empresa">
+                    <td className={table.cell} data-label="Empresa">
                       {stock.name}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="Precio">
+                    <td className={table.cell} data-label="Precio">
                       <AnimatedCurrency value={stock.close} currency={currency} sourceCurrency={stock.currency} rate={rate} />
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="">
+                    <td className={table.cell} data-label="">
                       <Button
                         variant="primary"
                         size="sm"

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { admin } from '../../../shared/content/strings';
-import { button } from '../../../shared/design-system/surfaces';
-import { fieldLabel, hint } from '../../../shared/design-system/typography';
+import { button, surface } from '../../../shared/design-system/surfaces';
+import { fieldLabel, hint, textSoft, textMuted } from '../../../shared/design-system/typography';
 import { fieldGroup } from '../../../shared/design-system/layout';
 import { errorMessage, inputBase } from '../../../shared/design-system/forms';
 import { useUpdateAdminConfig } from '../../../shared/api/hooks';
@@ -58,8 +58,8 @@ export function ConfigEditModal({ config, onClose }: ConfigEditModalProps) {
   const isRestartRequired = config.appliesOn === 'restart';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div className={`rounded-[var(--main-page-radius-lg)] shadow-[var(--main-page-shadow)] border border-[var(--main-page-border)] w-full max-w-lg [background:var(--main-page-surface-strong)] p-6`} onClick={(e) => e.stopPropagation()}>
+    <div className={surface.modalOverlay} onClick={onClose}>
+      <div className={surface.modalContent} onClick={(e) => e.stopPropagation()}>
         <h3 className="m-0 mb-4 text-text">{admin.config.edit} — {config.key}</h3>
 
         {isRestartRequired ? (

@@ -51,3 +51,9 @@ export const summaryCardNegative = 'border-[rgba(181,58,38,0.22)]'
 export const buyModeToggle = 'flex gap-2'
 
 export const buyModeButton = 'flex-1 min-h-[42px] px-4 py-2.5 text-[0.92rem]'
+
+export const flexGrowCol = 'flex min-h-0 flex-1 flex-col'
+
+export const sectionGap = 'grid gap-[1.2rem]'
+
+export const adminToolbar = 'mb-4 flex flex-wrap items-center gap-2'

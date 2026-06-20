@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useAdminSnapshots, useCreateSnapshot } from '../../../shared/api/hooks';
 import { admin } from '../../../shared/content/strings';
-import { button, gradient } from '../../../shared/design-system/surfaces';
-import { loadingScreen } from '../../../shared/design-system/layout';
+import { button, gradient, surface } from '../../../shared/design-system/surfaces';
+import { loadingScreen, sectionGap } from '../../../shared/design-system/layout';
+import { textSoft, textMuted } from '../../../shared/design-system/typography';
 import { SectionCard } from '../../../shared/components/SectionCard';
 import { SnapshotRestoreDialog } from '../components/SnapshotRestoreDialog';
 import type { AdminSnapshot } from '../../../shared/api/validators';
@@ -73,7 +74,7 @@ export function AdminSnapshotsPage() {
         ) : null}
 
         {!snapshots?.length ? (
-          <p className="text-[var(--main-page-text-soft)]">{admin.snapshots.empty}</p>
+          <p className={textSoft}>{admin.snapshots.empty}</p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {snapshots.map((snapshot) => (
@@ -82,10 +83,10 @@ export function AdminSnapshotsPage() {
                 className={`${gradient.pulseCard} rounded-[var(--main-page-radius-lg)] border border-[var(--main-page-border)] p-5 shadow-[var(--main-page-shadow-soft)]`}
               >
                 <strong className="block text-text">{snapshot.name}</strong>
-                <span className="block text-[0.85rem] text-[var(--main-page-text-soft)]">
+                <span className={`block text-[0.85rem] ${textSoft}`}>
                   {new Date(snapshot.createdAt).toLocaleString('es-CL')}
                 </span>
-                <span className="mt-1 block text-[0.82rem] text-[var(--main-page-text-muted)]">
+                <span className={`mt-1 block text-[0.82rem] ${textMuted}`}>
                   {Object.keys(snapshot.configs).length} configuraciones
                 </span>
 
@@ -124,10 +125,10 @@ export function AdminSnapshotsPage() {
 
 function SnapshotViewDialog({ snapshot, onClose }: { snapshot: AdminSnapshot; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div className={`rounded-[var(--main-page-radius-lg)] shadow-[var(--main-page-shadow)] border border-[var(--main-page-border)] w-full max-w-lg [background:var(--main-page-surface-strong)] p-6`} onClick={(e) => e.stopPropagation()}>
+    <div className={surface.modalOverlay} onClick={onClose}>
+      <div className={surface.modalContent} onClick={(e) => e.stopPropagation()}>
         <h3 className="m-0 mb-1 text-text">{snapshot.name}</h3>
-        <span className="block text-[0.85rem] text-[var(--main-page-text-soft)]">
+        <span className={`block text-[0.85rem] ${textSoft}`}>
           {new Date(snapshot.createdAt).toLocaleString('es-CL')}
         </span>
 
@@ -135,7 +136,7 @@ function SnapshotViewDialog({ snapshot, onClose }: { snapshot: AdminSnapshot; on
           {Object.entries(snapshot.configs).map(([key, value]) => (
             <div key={key} className="flex items-center justify-between rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] px-4 py-3">
               <span className="font-mono text-[0.88rem] font-semibold text-text">{key}</span>
-              <span className="font-mono text-[0.88rem] text-[var(--main-page-text-soft)]">{String(value)}</span>
+              <span className={`font-mono text-[0.88rem] ${textSoft}`}>{String(value)}</span>
             </div>
           ))}
         </div>

@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { admin } from '../../../shared/content/strings';
+import { gradient } from '../../../shared/design-system/surfaces';
+import { textSoft } from '../../../shared/design-system/typography';
 
 export function AdminNav() {
   return (
@@ -10,8 +12,8 @@ export function AdminNav() {
         className={({ isActive }) =>
           `flex-1 rounded-[calc(var(--main-page-radius-md)-4px)] px-4 py-2.5 text-center text-[0.92rem] font-medium transition-colors ${
             isActive
-              ? 'bg-[var(--gradient-tab-active)] text-white shadow-sm'
-              : 'text-[var(--main-page-text-soft)] hover:text-[var(--color-text)]'
+              ? `${gradient.tabActive} text-white shadow-sm`
+              : `${textSoft} hover:text-[var(--color-text)]`
           }`
         }
       >
@@ -22,8 +24,8 @@ export function AdminNav() {
         className={({ isActive }) =>
           `flex-1 rounded-[calc(var(--main-page-radius-md)-4px)] px-4 py-2.5 text-center text-[0.92rem] font-medium transition-colors ${
             isActive
-              ? 'bg-[var(--gradient-tab-active)] text-white shadow-sm'
-              : 'text-[var(--main-page-text-soft)] hover:text-[var(--color-text)]'
+              ? `${gradient.tabActive} text-white shadow-sm`
+              : `${textSoft} hover:text-[var(--color-text)]`
           }`
         }
       >
@@ -34,8 +36,8 @@ export function AdminNav() {
         className={({ isActive }) =>
           `flex-1 rounded-[calc(var(--main-page-radius-md)-4px)] px-4 py-2.5 text-center text-[0.92rem] font-medium transition-colors ${
             isActive
-              ? 'bg-[var(--gradient-tab-active)] text-white shadow-sm'
-              : 'text-[var(--main-page-text-soft)] hover:text-[var(--color-text)]'
+              ? `${gradient.tabActive} text-white shadow-sm`
+              : `${textSoft} hover:text-[var(--color-text)]`
           }`
         }
       >

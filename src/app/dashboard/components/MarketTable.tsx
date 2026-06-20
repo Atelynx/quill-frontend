@@ -32,18 +32,19 @@ export function MarketTable({
   watchlist,
   onToggleWatchlist,
 }: MarketTableProps) {
+  const marketTableText1 = "p-[0.5rem_0.6rem] text-left text-[0.78rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]";
   return (
     <div className={`${surface.tableWrapper} responsive-table`}>
-      <table className="w-full min-w-[640px] border-separate border-spacing-0">
+      <table className="w-full border-separate border-spacing-0">
         <thead>
           <tr>
             {watchlist !== undefined ? (
-              <th className="w-10 p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]"></th>
+              <th className="w-8 p-[0.5rem_0.6rem] text-left text-[0.78rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]"></th>
             ) : null}
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Simbolo</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Empresa</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Precio</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Variacion</th>
+            <th className={marketTableText1}>Simbolo</th>
+            <th className={marketTableText1}>Empresa</th>
+            <th className={marketTableText1}>Precio</th>
+            <th className={marketTableText1}>Variacion</th>
           </tr>
         </thead>
         <tbody>
@@ -51,22 +52,23 @@ export function MarketTable({
             const isSelected = quote.symbol === selectedSymbol;
             const isWatched = watchlist?.includes(quote.symbol) ?? false;
 
+            const marketTableBodyText1 = "p-[0.5rem_0.6rem] text-left border-b border-[var(--main-page-border)]";
             return (
             <tr
               key={quote.symbol}
               onClick={() => onSelect(quote.symbol)}
               aria-selected={isSelected}
-              className={`border-b border-[var(--main-page-border)] transition-colors duration-[var(--main-page-transition)] hover:bg-[color-mix(in_srgb,var(--color-accent)_8%,_transparent)] ${isSelected ? 'bg-[color-mix(in_srgb,var(--color-accent)_10%,_transparent)] shadow-[inset_4px_0_0_var(--color-accent)]' : ''}`}
+              className={`border border-[var(--main-page-border)] transition-colors duration-[var(--main-page-transition)] hover:bg-[color-mix(in_srgb,var(--color-accent)_8%,_transparent)] ${isSelected ? 'bg-[color-mix(in_srgb,var(--color-accent)_10%,_transparent)] shadow-[inset_4px_0_0_var(--color-accent)]' : ''}`}
             >
               {watchlist !== undefined ? (
-                <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]">
+                <td className={marketTableBodyText1}>
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       onToggleWatchlist?.(quote.symbol);
                     }}
-                    className={`text-lg leading-none transition-colors ${
+                    className={`text-base leading-none transition-colors ${
                       isWatched
                         ? 'text-[var(--color-accent)]'
                         : 'text-[var(--main-page-text-muted)] hover:text-[var(--color-accent)]'
@@ -77,16 +79,16 @@ export function MarketTable({
                   </button>
                 </td>
               ) : null}
-              <td className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] ${isSelected ? 'font-semibold text-[var(--color-accent)]' : ''}`} data-label="Simbolo">{quote.symbol}</td>
-              <td className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] ${isSelected ? 'font-semibold' : ''}`} data-label="Empresa">{quote.name}</td>
+              <td className={`${marketTableBodyText1} ${isSelected ? 'font-semibold text-[var(--color-accent)]' : ''}`} data-label="Simbolo">{quote.symbol}</td>
+              <td className={`${marketTableBodyText1} ${isSelected ? 'font-semibold' : ''}`} data-label="Empresa">{quote.name}</td>
               <td
-                className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] transition-all duration-[var(--main-page-transition)] ${movementColor[movementBySymbol[quote.symbol] ?? 'steady']}`}
+                className={`${marketTableBodyText1} transition-all duration-[var(--main-page-transition)] ${movementColor[movementBySymbol[quote.symbol] ?? 'steady']}`}
                 data-label="Precio"
               >
                 <AnimatedCurrency value={quote.close} currency={currency} sourceCurrency={quote.currency} rate={rate} />
               </td>
               <td
-                className={`p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)] ${quote.dayChangePercentage >= 0 ? textPositive : textNegative}`}
+                className={`p-[0.5rem_0.6rem] text-left border-b border-[var(--main-page-border)] ${quote.dayChangePercentage >= 0 ? textPositive : textNegative}`}
                 data-label="Variacion"
               >
                 {formatPercentage(quote.dayChangePercentage)}

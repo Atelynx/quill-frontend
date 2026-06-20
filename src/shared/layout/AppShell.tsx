@@ -4,6 +4,7 @@ import { ThemeToggle, CurrencySelector, SideBarLink } from '../components';
 import { appShell, labels, admin } from '../content/strings';
 import { button, surface, gradient } from '../design-system/surfaces';
 import { eyebrow, sidebarLabel } from '../design-system/typography';
+import { sectionGap } from '../design-system/layout';
 
 interface AppShellProps extends PropsWithChildren {
   title: string;
@@ -118,7 +119,7 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
           </div>
         </header>
 
-        <div className="grid min-w-0 gap-[1.2rem]">{children}</div>
+        <div className={`${sectionGap} min-w-0`}>{children}</div>
       </div>
 
       {sidebarOpen && (

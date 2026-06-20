@@ -12,7 +12,8 @@ import { EmptyState } from '../../../shared/components/EmptyState';
 import { Button } from '../../../shared/components/Button';
 import { loadingScreen, formGrid, fieldGroup } from '../../../shared/design-system/layout';
 import { surface } from '../../../shared/design-system/surfaces';
-import { fieldLabel } from '../../../shared/design-system/typography';
+import { fieldLabel, textSoft, textMuted } from '../../../shared/design-system/typography';
+import { table } from '../../../shared/design-system';
 import { errorMessage as errorMsgClass, inputBase } from '../../../shared/design-system/forms';
 import { getApiErrorMessage } from '../../../shared/api/get-api-error-message';
 import { logError } from '../../../shared/api/error-logging';
@@ -113,21 +114,21 @@ export function FriendsPage() {
             <table className="w-full min-w-[500px] border-separate border-spacing-0">
               <thead>
                 <tr>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.name}</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.user}</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]"></th>
+                  <th className={table.header}>{labels.table.name}</th>
+                  <th className={table.header}>{labels.table.user}</th>
+                  <th className={table.header}></th>
                 </tr>
               </thead>
               <tbody>
                 {requestsList.map((req) => (
-                  <tr key={req._id} className="border-b border-[var(--main-page-border)]">
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label={labels.table.name}>
+                  <tr key={req._id} className={table.rowBorder}>
+                    <td className={table.cell} data-label={labels.table.name}>
                       {req.from.fullName}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] text-[var(--main-page-text-soft)]" data-label={labels.table.user}>
+                    <td className={`${table.cell} ${textSoft}`} data-label={labels.table.user}>
                       {req.from.username ?? '—'}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="">
+                    <td className={table.cell} data-label="">
                       <Button
                         variant="primary"
                         size="sm"
@@ -159,25 +160,25 @@ export function FriendsPage() {
             <table className="w-full min-w-[500px] border-separate border-spacing-0">
               <thead>
                 <tr>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.name}</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.email}</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{labels.table.user}</th>
-                  <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]"></th>
+                  <th className={table.header}>{labels.table.name}</th>
+                  <th className={table.header}>{labels.table.email}</th>
+                  <th className={table.header}>{labels.table.user}</th>
+                  <th className={table.header}></th>
                 </tr>
               </thead>
               <tbody>
                 {friendsList.map((friend) => (
-                  <tr key={friend._id} className="border-b border-[var(--main-page-border)]">
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label={labels.table.name}>
+                  <tr key={friend._id} className={table.rowBorder}>
+                    <td className={table.cell} data-label={labels.table.name}>
                       {friend.fullName}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] text-[var(--main-page-text-soft)]" data-label={labels.table.email}>
+                    <td className={`${table.cell} ${textSoft}`} data-label={labels.table.email}>
                       {friend.email}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)] text-[var(--main-page-text-soft)]" data-label={labels.table.user}>
+                    <td className={`${table.cell} ${textSoft}`} data-label={labels.table.user}>
                       {friend.username ?? '—'}
                     </td>
-                    <td className="p-[0.85rem_0.75rem] border-b border-[var(--main-page-border)]" data-label="">
+                    <td className={table.cell} data-label="">
                       <Button
                         variant="ghost"
                         size="sm"

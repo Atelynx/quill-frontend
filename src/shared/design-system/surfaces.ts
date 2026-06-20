@@ -25,4 +25,10 @@ export const surface = {
   inverseCard: 'rounded-[var(--main-page-radius-md)] border border-[var(--main-page-inverse-border)] [background:var(--gradient-metric-surface)]',
   tableWrapper: 'overflow-auto rounded-[calc(var(--main-page-radius-md)-2px)] border border-[var(--main-page-border)] bg-[var(--main-page-surface-strong)]',
   sidebarNavLink: 'rounded-[var(--main-page-radius-md)] px-4 py-2.5 text-white transition-colors',
+  modalOverlay: 'fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4',
+  modalContent: 'w-full max-w-lg rounded-[var(--main-page-radius-lg)] border border-[var(--main-page-border)] bg-[var(--main-page-surface-strong)] p-6 shadow-[var(--main-page-shadow)]',
+  modalContentMd: 'w-full max-w-md rounded-[var(--main-page-radius-lg)] border border-[var(--main-page-border)] bg-[var(--main-page-surface-strong)] p-6 shadow-[var(--main-page-shadow)]',
+  strong: '[background:var(--main-page-surface-strong)]',
+  innerCard: 'rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-4',
+  innerCardPulse: 'rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-[0.95rem_1rem] shadow-[var(--main-page-shadow-soft)] [background:var(--gradient-pulse-card)]',
 }

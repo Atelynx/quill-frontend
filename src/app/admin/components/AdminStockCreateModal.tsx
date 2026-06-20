@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { admin } from '../../../shared/content/strings';
-import { button } from '../../../shared/design-system/surfaces';
+import { button, surface } from '../../../shared/design-system/surfaces';
 import { fieldLabel, hint } from '../../../shared/design-system/typography';
 import { fieldGroup } from '../../../shared/design-system/layout';
 import { inputBase } from '../../../shared/design-system/forms';
@@ -42,8 +42,8 @@ export function AdminStockCreateModal({ onClose }: AdminStockCreateModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div className="w-full max-w-lg rounded-[var(--main-page-radius-lg)] border border-[var(--main-page-border)] bg-[var(--main-page-surface-strong)] p-6 shadow-[var(--main-page-shadow)]" onClick={(e) => e.stopPropagation()}>
+    <div className={surface.modalOverlay} onClick={onClose}>
+      <div className={surface.modalContent} onClick={(e) => e.stopPropagation()}>
         <h3 className="m-0 mb-4 text-text">{admin.stocks.createTitle}</h3>
 
         <form onSubmit={handleSubmit} className="grid gap-4">

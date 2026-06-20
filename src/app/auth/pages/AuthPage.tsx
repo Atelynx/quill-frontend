@@ -9,7 +9,7 @@ import { PasswordField } from '../../../shared/components/PasswordField';
 import { ThemeToggle } from '../../../shared/components/ThemeToggle';
 import { useAuth } from '../hooks/use-auth';
 import { button, surface, gradient } from '../../../shared/design-system/surfaces';
-import { eyebrow, fieldLabel, fieldError } from '../../../shared/design-system/typography';
+import { eyebrow, fieldLabel, fieldError, textSoft } from '../../../shared/design-system/typography';
 import { authGrid, authTopbar, authHero, authCard, authTabs, authTabButton, authTabActive, authStatusStack, heroMetrics, heroMetricCard, formGrid, fieldGroup } from '../../../shared/design-system/layout';
 import { inputBase, successMessage as successMsgClass, errorMessage as errorMsgClass } from '../../../shared/design-system/forms';
 
@@ -253,7 +253,7 @@ export function AuthPage() {
           </form>
         )}
 
-        <p className="mt-4 text-[0.95rem] text-[var(--main-page-text-soft)]">
+        <p className={`mt-4 text-[0.95rem] ${textSoft}`}>
           {auth.footer}
         </p>
       </section>

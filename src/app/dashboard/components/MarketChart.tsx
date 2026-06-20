@@ -9,6 +9,7 @@ import {
 } from 'recharts';
 import type { PricePoint } from '../../../shared/api/types';
 import { formatCurrency } from '../../../shared/utils/format';
+import { gradient } from '../../../shared/design-system/surfaces';
 
 interface MarketChartProps {
   data: PricePoint[];
@@ -37,7 +38,7 @@ export function MarketChart({ data, symbol, currency, sourceCurrency, rate }: Ma
     'rgba(16, 35, 58, 1)';
 
   return (
-    <div className="h-full w-full rounded-[calc(var(--main-page-radius-md)-2px)] p-[0.35rem_0.25rem_0_0] [background:var(--gradient-chart)]">
+    <div className={`h-full w-full rounded-[calc(var(--main-page-radius-md)-2px)] p-[0.35rem_0.25rem_0_0] ${gradient.chart}`}>
       <ResponsiveContainer height="100%" width="100%">
         <LineChart data={data}>
           <CartesianGrid stroke={chartGrid} vertical={false} />

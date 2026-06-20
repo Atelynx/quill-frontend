@@ -3,6 +3,7 @@ import type { TradeRecord } from '../../../shared/api/types';
 import { formatDateTime } from '../../../shared/utils/format';
 import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
 import { surface } from '../../../shared/design-system/surfaces';
+import { table } from '../../../shared/design-system';
 import '../../../shared/design-system/table.css';
 
 interface TradesTableProps {
@@ -41,31 +42,31 @@ export function TradesTable({
       <table className="w-full min-w-[640px] border-separate border-spacing-0">
         <thead>
           <tr>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Fecha</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Accion</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Lado</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Cantidad</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Precio</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Comision</th>
-            <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]">Neto</th>
+            <th className={table.header}>Fecha</th>
+            <th className={table.header}>Accion</th>
+            <th className={table.header}>Lado</th>
+            <th className={table.header}>Cantidad</th>
+            <th className={table.header}>Precio</th>
+            <th className={table.header}>Comision</th>
+            <th className={table.header}>Neto</th>
           </tr>
         </thead>
         <tbody>
           {trades.map((trade) => (
-            <tr key={trade._id} className="border-b border-[var(--main-page-border)] transition-colors duration-[var(--main-page-transition)]">
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Fecha">{formatDateTime(trade.executedAt)}</td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Accion">{trade.symbol}</td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Lado">
+            <tr key={trade._id} className={`${table.rowBorder} transition-colors duration-[var(--main-page-transition)]`}>
+              <td className={table.cell} data-label="Fecha">{formatDateTime(trade.executedAt)}</td>
+              <td className={table.cell} data-label="Accion">{trade.symbol}</td>
+              <td className={table.cell} data-label="Lado">
                 {trade.side === 'BUY' ? 'Compra' : 'Venta'}
               </td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Cantidad">{trade.quantity}</td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Precio">
+              <td className={table.cell} data-label="Cantidad">{trade.quantity}</td>
+              <td className={table.cell} data-label="Precio">
                 <AnimatedCurrency value={trade.executionPrice} currency={currency} rate={rate} />
               </td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Comision">
+              <td className={table.cell} data-label="Comision">
                 <AnimatedCurrency value={trade.commissionAmount} currency={currency} rate={rate} />
               </td>
-              <td className="p-[0.85rem_0.75rem] text-left border-b border-[var(--main-page-border)]" data-label="Neto"><AnimatedCurrency value={trade.netAmount} currency={currency} rate={rate} /></td>
+              <td className={table.cell} data-label="Neto"><AnimatedCurrency value={trade.netAmount} currency={currency} rate={rate} /></td>
             </tr>
           ))}
         </tbody>

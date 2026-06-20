@@ -3,6 +3,8 @@ import { useAdminConfigs } from "../../../shared/api/hooks";
 import { admin } from "../../../shared/content/strings";
 import { surface } from "../../../shared/design-system/surfaces";
 import { loadingScreen } from "../../../shared/design-system/layout";
+import { table } from '../../../shared/design-system';
+import { textSoft, textMuted } from '../../../shared/design-system/typography';
 import { SectionCard } from "../../../shared/components/SectionCard";
 import { QueryErrorState } from "../../../shared/components/QueryErrorState";
 import { ConfigEditModal } from "../components/ConfigEditModal";
@@ -57,7 +59,7 @@ export function AdminConfigPage() {
               className={`rounded-full px-3 py-1 text-[0.78rem] font-medium transition-colors ${
                 selectedTag === "all"
                   ? "bg-[var(--main-page-accent-soft)] text-[var(--main-page-accent-strong)]"
-                  : "bg-[var(--main-page-surface-muted)] text-[var(--main-page-text-soft)] hover:bg-[var(--main-page-accent-soft)]"
+                  : `bg-[var(--main-page-surface-muted)] ${textSoft} hover:bg-[var(--main-page-accent-soft)]`
               }`}
               onClick={() => setSelectedTag("all")}
             >
@@ -70,7 +72,7 @@ export function AdminConfigPage() {
                 className={`rounded-full px-3 py-1 text-[0.78rem] font-medium transition-colors ${
                   selectedTag === tag
                     ? "bg-[var(--main-page-accent-soft)] text-[var(--main-page-accent-strong)]"
-                    : "bg-[var(--main-page-surface-muted)] text-[var(--main-page-text-soft)] hover:bg-[var(--main-page-accent-soft)]"
+                    : `bg-[var(--main-page-surface-muted)] ${textSoft} hover:bg-[var(--main-page-accent-soft)]`
                 }`}
                 onClick={() => setSelectedTag(tag)}
               >
@@ -84,22 +86,22 @@ export function AdminConfigPage() {
           <table className="w-full min-w-[640px] border-separate border-spacing-0">
             <thead>
               <tr>
-                <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">
+                <th className={`${table.header}`}>
                   {admin.config.fields.name}
                 </th>
-                <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">
+                <th className={`${table.header}`}>
                   {admin.config.fields.tags}
                 </th>
-                <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">
+                <th className={`${table.header}`}>
                   {admin.config.fields.value}
                 </th>
-                <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">
+                <th className={`${table.header}`}>
                   {admin.config.fields.status}
                 </th>
-                <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">
+                <th className={`${table.header}`}>
                   {admin.config.fields.lastUsed}
                 </th>
-                <th className="p-[0.85rem_0.75rem] text-right text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">
+                <th className={`p-[0.85rem_0.75rem] text-right text-[0.86rem] font-semibold ${textSoft}`}>
                   {admin.config.fields.actions}
                 </th>
               </tr>
@@ -109,7 +111,7 @@ export function AdminConfigPage() {
                 <tr>
                   <td
                     colSpan={6}
-                    className="p-[0.85rem_0.75rem] text-center text-[var(--main-page-text-soft)]"
+                    className={`p-[0.85rem_0.75rem] text-center ${textSoft}`}
                   >
                     {admin.config.empty}
                   </td>
@@ -128,7 +130,7 @@ export function AdminConfigPage() {
                       </div>
 
                       {cfg.name ? (
-                        <div className="mt-0.5 font-mono text-[0.75rem] text-[var(--main-page-text-muted)]">
+                        <div className={`mt-0.5 font-mono text-[0.75rem] ${textMuted}`}>
                           {cfg.key}
                         </div>
                       ) : null}
@@ -144,14 +146,14 @@ export function AdminConfigPage() {
                           {cfg.tags.map((tag) => (
                             <span
                               key={tag}
-                              className="inline-flex items-center rounded-full bg-[var(--main-page-surface-muted)] px-2 py-0.5 text-[0.7rem] font-medium text-[var(--main-page-text-muted)]"
+                              className={`inline-flex items-center rounded-full bg-[var(--main-page-surface-muted)] px-2 py-0.5 text-[0.7rem] font-medium ${textMuted}`}
                             >
                               {tag}
                             </span>
                           ))}
                         </div>
                       ) : (
-                        <span className="text-[var(--main-page-text-muted)]">
+                        <span className={`${textMuted}`}>
                           —
                         </span>
                       )}
@@ -161,7 +163,7 @@ export function AdminConfigPage() {
                       {cfg.appliesOn === "restart" &&
                       cfg.effectiveValue !== undefined &&
                       String(cfg.value) !== String(cfg.effectiveValue) ? (
-                        <span className="ml-2 text-[0.75rem] text-[var(--main-page-text-muted)]">
+                        <span className={`ml-2 text-[0.75rem] ${textMuted}`}>
                           ({admin.config.fields.effectiveValue}:{" "}
                           {String(cfg.effectiveValue)})
                         </span>
@@ -169,14 +171,14 @@ export function AdminConfigPage() {
                     </td>
                     <td className="p-[0.85rem_0.75rem]">
                       <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[0.78rem] font-medium ${cfg.inUse ? "bg-[var(--main-page-accent-soft)] text-[var(--main-page-accent-strong)]" : "bg-[var(--main-page-surface-muted)] text-[var(--main-page-text-muted)]"}`}
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[0.78rem] font-medium ${cfg.inUse ? "bg-[var(--main-page-accent-soft)] text-[var(--main-page-accent-strong)]" : `bg-[var(--main-page-surface-muted)] ${textMuted}`}`}
                       >
                         {cfg.inUse
                           ? admin.config.tags.active
                           : admin.config.tags.inactive}
                       </span>
                     </td>
-                    <td className="p-[0.85rem_0.75rem] text-[0.85rem] text-[var(--main-page-text-soft)]">
+                    <td className={`p-[0.85rem_0.75rem] text-[0.85rem] ${textSoft}`}>
                       {cfg.lastUsedAt
                         ? new Date(cfg.lastUsedAt).toLocaleString("es-CL")
                         : "—"}
@@ -192,7 +194,7 @@ export function AdminConfigPage() {
                         </button>
                         <button
                           type="button"
-                          className="rounded-[var(--main-page-radius-md)] px-3 py-1.5 text-[0.82rem] font-medium text-[var(--main-page-text-soft)] transition-colors hover:bg-[var(--main-page-surface-muted)]"
+                          className={`rounded-[var(--main-page-radius-md)] px-3 py-1.5 text-[0.82rem] font-medium ${textSoft} transition-colors hover:bg-[var(--main-page-surface-muted)]`}
                           onClick={() => setHistoryTarget(cfg.key)}
                         >
                           {admin.actions.history}

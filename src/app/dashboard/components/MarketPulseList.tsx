@@ -1,8 +1,9 @@
 import type { StockQuote } from '../../../shared/api/types';
 import { formatPercentage } from '../../../shared/utils/format';
 import { AnimatedCurrency } from '../../../shared/components/AnimatedCurrency';
+import { surface, gradient } from '../../../shared/design-system/surfaces';
 import { marketPulseGrid } from '../../../shared/design-system/layout';
-import { textPositive, textNegative } from '../../../shared/design-system/typography';
+import { textPositive, textNegative, textMuted } from '../../../shared/design-system/typography';
 
 interface MarketPulseListProps {
   quotes: StockQuote[];
@@ -14,9 +15,9 @@ export function MarketPulseList({ quotes, currency, rate }: MarketPulseListProps
   return (
     <div className={marketPulseGrid}>
       {quotes.map((quote) => (
-        <article key={quote.symbol} className="flex justify-between gap-4 rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-4 shadow-[var(--main-page-shadow-soft)] [background:var(--gradient-pulse-card)]">
+        <article key={quote.symbol} className={`flex justify-between gap-4 ${surface.innerCard} shadow-[var(--main-page-shadow-soft)] ${gradient.pulseCard}`}>
           <div>
-            <span className="block text-[var(--main-page-text-muted)]">{quote.symbol}</span>
+            <span className={`block ${textMuted}`}>{quote.symbol}</span>
             <strong className="mt-[0.2rem] block">{quote.name}</strong>
           </div>
           <div>

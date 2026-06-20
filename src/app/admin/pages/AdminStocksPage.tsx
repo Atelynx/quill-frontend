@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useAdminStocks, useDeleteAdminStock } from '../../../shared/api/hooks';
 import { admin } from '../../../shared/content/strings';
 import { button, surface } from '../../../shared/design-system/surfaces';
-import { loadingScreen } from '../../../shared/design-system/layout';
+import { loadingScreen, sectionGap } from '../../../shared/design-system/layout';
+import { table } from '../../../shared/design-system';
+import { textSoft, textMuted } from '../../../shared/design-system/typography';
 import { SectionCard } from '../../../shared/components/SectionCard';
 import { AdminStockCreateModal } from '../components/AdminStockCreateModal';
 import { AdminStockPriceModal } from '../components/AdminStockPriceModal';
@@ -72,7 +74,7 @@ export function AdminStocksPage() {
                 className={`rounded-full px-3 py-1 text-[0.78rem] font-medium transition-colors ${
                   sourceFilter === s
                     ? 'bg-[var(--main-page-accent-soft)] text-[var(--main-page-accent-strong)]'
-                    : 'bg-[var(--main-page-surface-muted)] text-[var(--main-page-text-soft)] hover:bg-[var(--main-page-accent-soft)]'
+                    : `bg-[var(--main-page-surface-muted)] ${textSoft} hover:bg-[var(--main-page-accent-soft)]`
                 }`}
                 onClick={() => { setSourceFilter(s); setPage(1); }}
               >
@@ -86,18 +88,18 @@ export function AdminStocksPage() {
           <table className="w-full min-w-[640px] border-separate border-spacing-0">
             <thead>
               <tr>
-                <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{admin.stocks.fields.symbol}</th>
-                <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{admin.stocks.fields.name}</th>
-                <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{admin.stocks.fields.price}</th>
-                <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{admin.stocks.fields.dayChange}</th>
-                <th className="p-[0.85rem_0.75rem] text-left text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{admin.stocks.fields.source}</th>
-                <th className="p-[0.85rem_0.75rem] text-right text-[0.86rem] font-semibold text-[var(--main-page-text-soft)]">{admin.config.fields.actions}</th>
+                <th className={`${table.header}`}>{admin.stocks.fields.symbol}</th>
+                <th className={`${table.header}`}>{admin.stocks.fields.name}</th>
+                <th className={`${table.header}`}>{admin.stocks.fields.price}</th>
+                <th className={`${table.header}`}>{admin.stocks.fields.dayChange}</th>
+                <th className={`${table.header}`}>{admin.stocks.fields.source}</th>
+                <th className={`p-[0.85rem_0.75rem] text-right text-[0.86rem] font-semibold ${textSoft}`}>{admin.config.fields.actions}</th>
               </tr>
             </thead>
             <tbody>
               {!stocks.length ? (
                 <tr>
-                  <td colSpan={6} className="p-[0.85rem_0.75rem] text-center text-[var(--main-page-text-soft)]">{admin.stocks.empty}</td>
+                  <td colSpan={6} className={`p-[0.85rem_0.75rem] text-center ${textSoft}`}>{admin.stocks.empty}</td>
                 </tr>
               ) : (
                 stocks.map((stock) => (
@@ -141,7 +143,7 @@ export function AdminStocksPage() {
                           className={`rounded-[var(--main-page-radius-md)] px-3 py-1.5 text-[0.82rem] font-medium transition-colors ${
                             stock.source === 'admin'
                               ? 'text-[var(--main-page-danger)] hover:bg-[var(--main-page-danger)]/10'
-                              : 'cursor-not-allowed text-[var(--main-page-text-muted)] opacity-50'
+                              : `cursor-not-allowed ${textMuted} opacity-50`
                           }`}
                           disabled={stock.source !== 'admin'}
                           title={stock.source !== 'admin' ? admin.stocks.notDeletable : undefined}
@@ -159,7 +161,7 @@ export function AdminStocksPage() {
         </div>
 
         {meta && meta.totalPages > 1 ? (
-          <div className="mt-4 flex items-center justify-between text-[0.85rem] text-[var(--main-page-text-soft)]">
+          <div className={`mt-4 flex items-center justify-between text-[0.85rem] ${textSoft}`}>
             <span>
               {meta.total} resultados — Página {meta.page} de {meta.totalPages}
             </span>
@@ -197,10 +199,10 @@ export function AdminStocksPage() {
       ) : null}
 
       {deleteTarget ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setDeleteTarget(null)}>
-          <div className="w-full max-w-md rounded-[var(--main-page-radius-lg)] border border-[var(--main-page-border)] bg-[var(--main-page-surface-strong)] p-6 shadow-[var(--main-page-shadow)]" onClick={(e) => e.stopPropagation()}>
+        <div className={surface.modalOverlay} onClick={() => setDeleteTarget(null)}>
+          <div className={surface.modalContentMd} onClick={(e) => e.stopPropagation()}>
             <h3 className="m-0 mb-2 text-text">{admin.actions.delete}</h3>
-            <p className="mb-4 text-[var(--main-page-text-soft)]">{admin.stocks.deleteConfirm.replace('{symbol}', deleteTarget.symbol)}</p>
+            <p className={`mb-4 ${textSoft}`}>{admin.stocks.deleteConfirm.replace('{symbol}', deleteTarget.symbol)}</p>
             <div className="mb-4 rounded-[var(--main-page-radius-md)] border border-[var(--main-page-border)] p-4">
               <strong className="font-mono text-text">{deleteTarget.symbol}</strong>
             </div>
