@@ -23,8 +23,6 @@ const movementColor: Record<string, string> = {
   steady: '',
 }
 
-const MAX_VISIBLE_ROWS = 4;
-
 export function MarketTable({
   quotes,
   selectedSymbol,
@@ -38,21 +36,20 @@ export function MarketTable({
   const [search, setSearch] = useState('');
   const displayQuotes = useMemo(
     () => {
-      const matches = search
+      return search
         ? quotes.filter(
             (q) =>
               q.symbol.toLowerCase().includes(search.toLowerCase()) ||
               q.name.toLowerCase().includes(search.toLowerCase()),
           )
         : quotes;
-      return matches.slice(0, MAX_VISIBLE_ROWS);
     },
     [quotes, search],
   );
 
   const marketTableText1 = "p-[0.5rem_0.6rem] text-left text-[0.78rem] font-semibold text-[var(--main-page-text-soft)] bg-[color-mix(in_srgb,var(--color-text)_2.5%,_transparent)]";
   return (
-    <div className={`${surface.tableWrapper} responsive-table`}>
+    <div className={`${surface.tableWrapper} max-h-[13.5rem] responsive-table`}>
       <div className="sticky top-0 z-10 border-b border-[var(--main-page-border)] bg-[var(--main-page-surface-strong)]">
         <input
           className="w-full bg-transparent px-3 py-2 text-[0.85rem] text-[var(--color-text)] outline-none placeholder:text-[var(--main-page-text-muted)]"
@@ -74,20 +71,7 @@ export function MarketTable({
           </tr>
         </thead>
         <tbody>
-          {Array.from({ length: MAX_VISIBLE_ROWS }).map((_, i) => {
-            const quote = displayQuotes[i];
-            if (!quote) {
-              return (
-                <tr key={`empty-${i}`} className="invisible">
-                  {watchlist !== undefined ? <td className="p-[0.5rem_0.6rem]" /> : null}
-                  <td className="p-[0.5rem_0.6rem]">&nbsp;</td>
-                  <td className="p-[0.5rem_0.6rem]">&nbsp;</td>
-                  <td className="p-[0.5rem_0.6rem]">&nbsp;</td>
-                  <td className="p-[0.5rem_0.6rem]">&nbsp;</td>
-                </tr>
-              );
-            }
-
+          {displayQuotes.map((quote) => {
             const isSelected = quote.symbol === selectedSymbol;
             const isWatched = watchlist?.includes(quote.symbol) ?? false;
             const marketTableBodyText1 = "p-[0.5rem_0.6rem] text-left border-b border-[var(--main-page-border)]";
